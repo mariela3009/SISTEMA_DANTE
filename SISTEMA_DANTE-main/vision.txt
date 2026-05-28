@@ -1,0 +1,287 @@
+UNIVERSIDAD PRIVADA DE TACNA
+FACULTAD DE 
+INGENIERÍA
+Escuela Profesional de Ingeniería de Sistemas
+ 
+INFORME DE VISIÓN
+Curso: 
+Gestión de Proyectos de TI
+Docente: 
+Martha Judith Paredes Vignola
+Integrantes:
+Laos González, Adriana Rafaela        
+(2023077474)
+Ramos Loza, Mariela Estefany
+(2023077478)
+Calloticona Chambilla, Marymar Danytza   (2023076791)
+Choqueña Choque, Mauricio Arian
+(2023076799)
+Tacna – Perú
+2026
+CONTROL DE VERSIONES
+Versión
+Hecha por
+Revisada por
+Aprobada por
+Fecha
+Motivo
+1.0
+MPV
+ELV
+ARV
+10/10/2020
+Versión Original
+Sistema Web de Gestión inteligente de inventarios y pasarela de pagos con PayPal para la cafetería ‘Dante’
+Versión 
+1.0
+CONTROL DE VERSIONES
+Versión
+Hecha por
+Revisada por
+Aprobada por
+Fecha
+Motivo
+1.0
+MPV
+ELV
+ARV
+10/10/2020
+Versión Original
+ÍNDICE
+ GENERAL
+1. Introducción
+4
+1.1 Propósito
+4
+1.2 Alcance
+4
+1.3 Definiciones, Siglas y Abreviaturas
+4
+1.4 Referencias
+4
+1.5 Visión General
+4
+2. Posicionamiento
+5
+2.1 Oportunidad de negocio
+5
+2.2 Definición del problema
+5
+3. Descripción de los interesados y usuarios
+5
+3.1 Resumen de los interesados
+5
+3.2 Resumen de los usuarios
+5
+3.3 Entorno de usuario
+5
+3.4 Perfiles de los interesados
+6
+3.5 Perfiles de los Usuarios
+6
+3.6 Necesidades de los interesados y usuarios
+6
+4. Vista General del Producto
+6
+4.1 Perspectiva del producto
+6
+4.2 Resumen de capacidades
+6
+4.3 Suposiciones y dependencias
+7
+4.4 Costos y precios
+7
+4.5 Licenciamiento e instalación
+7
+5. Características del producto
+7
+6. Restricciones
+7
+7. Rangos de calidad
+8
+8. Precedencia y Prioridad
+8
+9. Otros requerimientos del producto
+8
+b) Estándares legales
+8
+c) Estándares de comunicación
+8
+d) Estándares de cumplimiento de la plataforma
+8
+e) Estándares de calidad y seguridad
+8
+CONCLUSIONES
+9
+RECOMENDACIONES
+9
+BIBLIOGRAFÍA
+9
+WEBGRAFÍA
+9
+Introducción
+Propósito
+El propósito de este documento es recopilar, analizar y definir las necesidades de alto nivel y las características del "Sistema Web de Control de Inventarios para la Cafetería Dante". Se enfoca en las capacidades que debe tener el sistema para gestionar eficazmente el flujo de insumos, estableciendo las bases para su diseño y desarrollo en un plazo de 10 semanas.
+Alcance
+El sistema será una solución de software compuesta por una aplicación web de página única (SPA) en el frontend y una API RESTful en el backend. Su alcance se limita a:
+Gestión de catálogo de insumos (categorías, unidades de medida).
+Registro de ingresos de insumos (compras a proveedores).
+Registro de salidas de insumos (mermas o pases a cocina).
+Generación de reportes básicos de stock actual.
+Consumo de pasarela de pagos simulada/integrada vía PayPal para flujos de caja o pre-cargos (según requerimiento de la cafetería).
+Exclusiones: El sistema no contemplará módulos de facturación electrónica a clientes, recursos humanos, ni contabilidad financiera avanzada.
+Definiciones, Siglas y Abreviaturas
+Next.js: Framework de React para el desarrollo de aplicaciones web ágiles con renderizado en el lado del servidor (SSR) o estático (SSG).
+Laravel: Framework de PHP basado en el patrón MVC, utilizado en este proyecto estrictamente como una API RESTful para la lógica de negocio y persistencia de datos.
+API REST: Interfaz de programación de aplicaciones que utiliza peticiones HTTP para la transferencia de datos en formato JSON.
+VPS (Virtual Private Server): Servidor virtual privado en la nube utilizado para el despliegue de la API y la base de datos.
+SPA (Single Page Application): Aplicación web que interactúa con el usuario reescribiendo dinámicamente la página actual en lugar de cargar páginas enteras desde el servidor.
+MariaDB / MySQL: Sistema de gestión de bases de datos relacionales utilizado para el almacenamiento de datos del inventario.
+Stock: Cantidad actual de un insumo disponible en el almacén. 
+Referencias
+Documentación oficial de Next.js.
+Documentación oficial de Laravel API.
+Documentación oficial de MariaDB / MySQL.
+Visión General
+Este documento detalla el problema actual de la Cafetería Dante respecto a su inventario, describe a los usuarios que interactuarán con el sistema, define las capacidades esenciales que se desarrollarán en el periodo de 10 semanas, y establece las restricciones y estándares tecnológicos a cumplir.
+Posicionamiento
+Oportunidad de negocio
+Para la Cafetería Dante, la correcta gestión de insumos representa una oportunidad para reducir costos operativos. Al migrar a una arquitectura moderna (Next.js + Laravel), se garantiza una velocidad de interfaz óptima para los operarios de cocina, reduciendo la pérdida de productos por caducidad, controlando mermas en tiempo real y asegurando alta disponibilidad desde una VPS.
+Definición del problema
+Actualmente, la Cafetería Dante carece de un control automatizado y preciso sobre el flujo de sus insumos. Esto genera pérdida de tiempo en auditorías manuales, riesgo latente de quiebre de stock en horas pico y dificultad para calcular costos reales diarios.
+Descripción de los interesados y usuarios
+Resumen de los interesados
+Lista de interesados (Stakeholders)
+Administrador de la cafetería “Dante”:
+ responsable de supervisar el inventario, aprobar o rechazar solicitudes de reabastecimiento y revisar los reportes del sistema.
+Personal de cocina y atención: 
+registra las salidas de insumos y el consumo diario durante la operación de la cafetería.
+Dueño y administrador de la cafetería “Dante”: 
+principal beneficiario del sistema, responsable de la toma de decisiones sobre el inventario y la aprobación de compras.
+Resumen de los usuarios
+Administrador
+: Encargado de gestionar el catálogo de insumos, ver reportes de stock y supervisar las operaciones.
+Personal de Almacén/Cocina:
+ Encargado de registrar las entradas de proveedores y las salidas de insumos hacia la cocina.
+Proveedores: 
+Visualiza stock y envía boleta de pre cargo. 
+Entorno de usuario
+El sistema se utilizará dentro de las instalaciones de la cafetería a través de computadoras de escritorio, laptops o tablets con conexión a internet. Dado que el entorno operativo de la cocina es de ritmo rápido, la SPA en Next.js garantizará cargas instantáneas de pantalla sin recargas de página molestas.  
+Perfiles de los interesados
+Administrador:
+ Acceso total al sistema. Capacidad para gestionar catálogos, ver analíticas de stock y administrar usuarios y proveedores.
+Personal Operativo (Cocina/Almacén): 
+Interfaz sumamente limpia y optimizada (Mobile-First / Responsiva). Solo interactúan con los botones de ingreso y salida rápida de insumos.
+Perfiles de los Usuarios
+Administrador:
+ Usuario con conocimientos básicos de ofimática y gestión. Tendrá acceso total al sistema (creación de usuarios, insumos, reportes).
+Personal Operativo:
+ Usuario con conocimientos informáticos limitados. Su interfaz debe ser sumamente intuitiva y restringida solo al ingreso y salida de productos.
+Necesidades de los interesados y usuarios
+Interfaz limpia y fácil de usar para no retrasar el trabajo en cocina.
+Información de stock actualizada en tiempo real.
+Sistema estable y disponible durante todo el horario de atención de la cafetería.
+Vista General del Producto
+Perspectiva del producto
+El sistema deja de ser un software monolítico local. Ahora opera bajo un modelo Cliente-Servidor distribuido:
+Frontend (Next.js): Se ejecuta en el navegador del usuario, ofreciendo una experiencia fluida e interactiva.
+Backend (Laravel API): Se aloja en una VPS, centralizando las reglas de negocio y exponiendo endpoints seguros en formato JSON.
+Base de Datos (MariaDB/MySQL): Alojada en la VPS, asegurando la consistencia e integridad de los datos de inventario.
+Resumen de capacidades
+Módulo de Seguridad: 
+Autenticación basada en tokens JWT o Laravel Sanctum para comunicar de forma segura Next.js con el backend.
+Módulo de Mantenimiento: 
+CRUD optimizado de insumos y categorías con validaciones reactivas en el cliente.
+Módulo de Movimientos: 
+Registro instantáneo de entradas, salidas y alertas de stock mínimo. 
+Módulo de Integración: 
+Pasarela de pagos con PayPal para el control de transacciones financieras del negocio. 
+Suposiciones y dependencias
+Dependencia de Red: Al estar alojado en una VPS, el sistema requiere una conexión a internet estable en la cafetería para comunicarse con la API.
+Infraestructura: Se asume la configuración y mantenimiento previo de la VPS (configuración de dominios, certificados SSL y entornos productivos).
+Costos y precios
+Desarrollo:
+ Asumido por el equipo de estudiantes como parte del curso.
+Infraestructura:
+ Requiere obligatoriamente el pago de un plan VPS en la nube (ej. DigitalOcean, AWS, Vultr) estimado entre 
+$5.00 a $12.00 USD mensuales
+ para hospedar el backend y la base de datos MariaDB, sumado al despliegue del frontend (el cual puede ser gratuito en plataformas como Vercel o Netlify). 
+Licenciamiento e instalación
+El sistema se construirá integrando tecnologías modernas respaldadas por licencias de software libre y de código abierto (
+Open Source
+), lo que anula la necesidad de adquirir licencias comerciales costosas y garantiza la viabilidad económica del proyecto:
+Next.js y React:
+ Distribuidos bajo la 
+Licencia MIT
+, lo que permite su uso, modificación y distribución comercial de forma gratuita y sin restricciones.
+Laravel Framework:
+ Distribuido bajo la 
+Licencia MIT
+, otorgando total libertad para el desarrollo de la API de negocio y su explotación en entornos productivos.
+MariaDB / MySQL:
+ Regido por la Licencia Pública General GNU (
+GPLv2
+), asegurando el uso gratuito del motor de base de datos relacional en el servidor de la cafetería.
+Componentes de Terceros (SDK de PayPal):
+ Provisto por PayPal bajo licencias abiertas estándar para desarrolladores, sujetas únicamente a los términos de servicio y tasas por transacción de la pasarela financiera.
+Características del producto
+Independencia de Código: 
+El desacoplamiento permite actualizar o rediseñar por completo la interfaz visual en Next.js sin alterar ni poner en riesgo las reglas de negocio codificadas en Laravel.
+Carga Asíncrona Eficiente: 
+El uso de Next.js reduce drásticamente el consumo de ancho de banda al solicitar únicamente datos planos JSON a la API, optimizando el rendimiento en dispositivos móviles.
+Cobros Seguros sin Almacenamiento Financiero: 
+El procesamiento de pagos se delega al entorno seguro de PayPal. La aplicación nunca procesa ni guarda números de tarjetas de crédito o códigos CVV, eliminando vulnerabilidades críticas de cumplimiento financiero.
+6.
+Restricciones
+Tecnológicas:
+ Obligatoriedad en el uso de Next.js para el Frontend, Laravel 10+ para el API, y MariaDB o MySQL en la base de datos.
+Hospedaje: 
+Tanto la base de datos como el código PHP (Laravel) deben implementarse directamente en un entorno VPS configurado con la dirección IP, accesos de administración y credenciales de entorno correspondientes.
+Tiempo de Ejecución: 
+El desarrollo, pruebas unitarias del inventario, integración de la API de PayPal y despliegue final en la VPS deberán realizarse dentro del calendario académico del curso.
+7.
+Rangos de calidad
+Eficiencia de Respuesta: 
+Las consultas de stock, validaciones de tokens y llamadas a la API de Laravel deben resolverse en un tiempo promedio inferior a 1.5 segundos en condiciones estándar de red.
+Disponibilidad del Servicio:
+ La configuración de la VPS debe garantizar un Uptime del 99.9% para evitar la inoperatividad del sistema de inventarios y caja durante las horas de atención de la cafetería.
+Consistencia Transaccional: 
+El sistema debe emplear transacciones de base de datos (DB::transaction en Laravel) para asegurar que un registro de venta o salida de inventario solo se confirme si la pasarela de PayPal retorna un estado verificado de cobro exitoso.
+8.
+Precedencia y Prioridad
+Alta
+: Es el pilar fundamental. No se puede consumir ningún endpoint de inventario ni realizar transacciones sin un intercambio seguro de tokens JWT.
+Core de Gestión de Inventarios (CRUD de Insumos y Movimientos): Representa la base operativa del sistema. Almacena la lógica relacional en MariaDB y disponibiliza las consultas asíncronas para el flujo de la cafetería.
+Media
+: 
+Módulo Transaccional de Pagos (PayPal API): Su construcción depende de que el catálogo de insumos y los precios estén correctamente validados en el backend. Permite habilitar los flujos de caja digitales.
+Alertas de Stock Crítico y Dashboard en Tiempo Real: Proporciona el valor agregado de analítica visual en Next.js consumiendo los datos agregados de la API.
+Baja
+: 
+Historiales de Auditoría Financiera Extensa: Reportes complementarios e históricos de transacciones pasadas y mermas acumuladas para la revisión mensual del administrador.
+9.
+Otros requerimientos del producto
+b) Requerimientos Legales y de Privacidad de Datos
+El sistema se centra exclusivamente en el control logístico interno de insumos de la cafetería y en transacciones procesadas por un tercero (PayPal). Por lo tanto, no almacena datos masivos de carácter sensible ni historial crediticio de clientes externos. No obstante, cumple con los lineamientos generales de la Ley N° 29733 (Ley de Protección de Datos Personales en el Perú) respecto al resguardo y cifrado de las credenciales de acceso, contraseñas y bitácoras de los empleados registrados en el sistema.
+c) Estándares de comunicación
+Toda la transferencia de información entre la capa de presentación (Next.js) y la capa de datos/negocio (Laravel API en la VPS) se realizará estrictamente bajo el protocolo seguro HTTPS, empleando el formato estandarizado JSON (JavaScript Object Notation) para el intercambio asíncrono de peticiones y respuestas.
+d) Estándares de cumplimiento de la plataforma
+La aplicación web (SPA) compilada en Next.js debe garantizar compatibilidad total (Cross-Browser) y rendimiento optimizado en las versiones más recientes de los principales navegadores del mercado: Google Chrome, Mozilla Firefox, Microsoft Edge y Apple Safari, asegurando interfaces responsivas adecuadas para dispositivos móviles y de escritorio.
+e) Estándares de calidad y seguridad
+Prevención de Inyección SQL: Uso obligatorio y nativo del ORM Eloquent de Laravel y consultas parametrizadas (PDO) para anular cualquier vulnerabilidad en el motor MariaDB.
+Seguridad Financiera: Delegación absoluta del procesamiento de tarjetas y datos bancarios a los servidores de PayPal mediante sus Smart Buttons. Ningún dato de pago sensible toca o se almacena en la infraestructura de la VPS.
+Control de Origen Cruzado (CORS): Configuración explícita en Laravel para aceptar peticiones HTTP únicamente desde el dominio asignado al frontend de Next.js.
+CONCLUSIONES
+Viabilidad y Modernización Arquitectónica: La migración de una estructura monolítica tradicional en PHP hacia una arquitectura web desacoplada (Next.js y Laravel API) constituye una solución de software altamente eficiente y escalable para la Cafetería Dante. Esta separación de responsabilidades optimiza drásticamente el rendimiento de la interfaz de usuario en el establecimiento y garantiza una alta disponibilidad mediante el despliegue en una VPS.
+Mitigación de Riesgos Financieros y Logísticos: La integración directa de la API REST de PayPal bajo un flujo de validación en dos pasos (servidor-servidor) dota al negocio de una pasarela de pagos segura y confiable. Esto, sumado al control automatizado de mermas y alertas de stock crítico en tiempo real, resuelve de manera directa la problemática de descontrol e incertidumbre operativa diagnosticada en el establecimiento.
+Alineamiento con los Objetivos del Proyecto: El acotamiento riguroso del alcance (excluyendo módulos complejos como la facturación SUNAT o planillas de RRHH) asegura que el núcleo logístico y transaccional del sistema pueda ser desarrollado, testeado minuciosamente y desplegado con éxito dentro de los límites de tiempo estrictos establecidos en el calendario académico del curso.
+RECOMENDACIONES
+Implementación de Entornos de Aislamiento (Sandbox): Se recomienda al equipo de desarrollo mantener una separación estricta de las credenciales de la API de PayPal, operando permanentemente en modo Sandbox (entorno de pruebas) con tarjetas y cuentas ficticias durante toda la fase de desarrollo y QA, realizando el cambio a credenciales Live (producción) únicamente tras validar la estabilidad del inventario.
+Estrategia de Pruebas en Paralelo: Se sugiere a la gerencia de la Cafetería Dante establecer un periodo de marcha blanca o prueba piloto de 3 a 5 días hábiles tras el despliegue final en la VPS. Durante este lapso, el sistema operará en paralelo con los registros manuales actuales del negocio para afianzar la confianza del personal y calibrar los umbrales de stock mínimo de seguridad.
+Políticas de Respaldo Automatizado: Configurar en la VPS tareas cronometradas (Cron Jobs) para la ejecución de copias de seguridad (backups) automáticas y diarias de la base de datos MariaDB, almacenándolas en un repositorio externo aislado para prevenir pérdidas de información ante fallos fortuitos del servidor.
+WEBGRAFÍA
+Next.js Framework Documentation: Vercel. (2026). Next.js Docs: Routing, Data Fetching, and Rendering. Recuperado de https://nextjs.org/docs
+Laravel Framework API and Security: Otwell, T. (2025). Laravel Documentation: RESTful APIs, Sanctum Authentication and Eloquent ORM. Recuperado de https://laravel.com/docs
+PayPal Developer Portal: PayPal Inc. (2026). PayPal REST APIs: Integrate Smart Payment Buttons and Order Capturing. Recuperado de https://developer.paypal.com/docs/api/
+MariaDB Server Documentation: MariaDB Foundation. (2025). MariaDB Knowledge Base: Relational Database Optimization and SQL Statements. Recuperado de https://mariadb.com/kb/en/
+Estándares de Ingeniería de Software: IEEE Computer Society. (1998). IEEE Std 830-1998: IEEE Recommended Practice for Software Requirements Specifications. New York: IEEE.

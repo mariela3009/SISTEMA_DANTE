@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cafetería Dante - Gerencia</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#2e1503",
+                        "surface-container-high": "#f0e7d3",
+                        "on-error-container": "#93000a",
+                        "sand": "#E8D5B0",
+                        "on-tertiary-fixed-variant": "#594320",
+                        "inverse-surface": "#353022",
+                        "background": "#fff9ef",
+                        "on-secondary-fixed-variant": "#603f29",
+                        "on-tertiary-container": "#fffdff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#380d00",
+                        "primary-fixed-dim": "#ffb59b",
+                        "inverse-on-surface": "#f9f0db",
+                        "surface-bright": "#fff9ef",
+                        "tertiary": "#715934",
+                        "secondary-fixed": "#ffdcc7",
+                        "tertiary-container": "#8c714a",
+                        "on-background": "#1f1b0f",
+                        "on-primary-container": "#fffdff",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#a23f15",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#7a553d",
+                        "primary-container": "#c0552a",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#a03d13",
+                        "surface-container-low": "#fcf3de",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#edbd9f",
+                        "latte": "#C8A97E",
+                        "on-tertiary-fixed": "#281800",
+                        "surface-dim": "#e2d9c5",
+                        "terracota": "#C0552A",
+                        "tertiary-fixed-dim": "#e2c195",
+                        "outline": "#8a7269",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#ffdbcf",
+                        "mist": "#F9F4EC",
+                        "espresso": "#4A2C17",
+                        "dark": "#2A1A0E",
+                        "on-surface-variant": "#57423b",
+                        "surface-container-highest": "#ebe2cd",
+                        "inverse-primary": "#ffb59b",
+                        "surface-container": "#f6edd8",
+                        "surface": "#fff9ef",
+                        "on-surface": "#1f1b0f",
+                        "tertiary-fixed": "#ffddb0",
+                        "outline-variant": "#dec0b7",
+                        "secondary": "#7b563e",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#812900",
+                        "cream": "#F5ECD7",
+                        "surface-variant": "#ebe2cd",
+                        "secondary-container": "#ffcdaf"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "0.5rem",
+                        "sidebar-width": "260px",
+                        "stack-md": "1rem",
+                        "container-padding": "2rem",
+                        "stack-lg": "2rem",
+                        "gutter": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "body-md": ["DM Sans"],
+                        "label-md": ["DM Sans"],
+                        "headline-md": ["Playfair Display"],
+                        "label-lg": ["DM Sans"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-lg": ["DM Sans"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "headline-xl": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-cream text-on-surface font-body-md antialiased min-h-screen">
+<!-- Shared Component: SideNavBar -->
+<nav class="bg-espresso dark:bg-dark w-[260px] h-full fixed left-0 top-0 bg-espresso border-r border-latte/20 flat no shadows flex flex-col py-6 space-y-2 z-50">
+<!-- Header -->
+<div class="px-6 pb-6 border-b border-latte/20 mb-4 flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-full bg-terracota flex items-center justify-center mb-4 border-2 border-sand">
+<span class="font-headline-xl text-headline-xl text-cream">E</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-cream text-terracotta">EVA</h1>
+<p class="font-label-md text-label-md text-mist/70 uppercase tracking-widest mt-1">Cafetería Dante</p>
+</div>
+<!-- Main Navigation -->
+<div class="flex-1 flex flex-col space-y-1">
+<!-- Gerencia (Active) -->
+<a class="bg-primary text-on-primary rounded-lg mx-3 px-4 py-3 flex items-center gap-3 Active: scale-95 transition-transform duration-150 group" href="#">
+<span class="material-symbols-outlined fill">dashboard</span>
+<span class="font-label-lg text-label-lg">Gerencia</span>
+</a>
+<!-- Ventas (Inactive) -->
+<a class="text-mist/80 hover:text-cream hover:bg-tertiary/30 rounded-lg mx-3 px-4 py-3 flex items-center gap-3 transition-all hover:bg-tertiary/40 transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined">point_of_sale</span>
+<span class="font-label-lg text-label-lg">Ventas</span>
+</a>
+<!-- Productos (Inactive) -->
+<a class="text-mist/80 hover:text-cream hover:bg-tertiary/30 rounded-lg mx-3 px-4 py-3 flex items-center gap-3 transition-all hover:bg-tertiary/40 transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined">local_cafe</span>
+<span class="font-label-lg text-label-lg">Productos</span>
+</a>
+<!-- Inventario (Inactive) -->
+<a class="text-mist/80 hover:text-cream hover:bg-tertiary/30 rounded-lg mx-3 px-4 py-3 flex items-center gap-3 transition-all hover:bg-tertiary/40 transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-lg text-label-lg">Inventario</span>
+</a>
+</div>
+<!-- Footer Navigation -->
+<div class="mt-auto flex flex-col space-y-1 border-t border-latte/20 pt-4">
+<a class="text-mist/80 hover:text-cream hover:bg-tertiary/30 rounded-lg mx-3 px-4 py-3 flex items-center gap-3 transition-all hover:bg-tertiary/40 transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label-lg text-label-lg">Perfil</span>
+</a>
+<a class="text-mist/80 hover:text-cream hover:bg-tertiary/30 rounded-lg mx-3 px-4 py-3 flex items-center gap-3 transition-all hover:bg-tertiary/40 transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-lg text-label-lg">Configuración</span>
+</a>
+</div>
+</nav>
+<!-- Shared Component: TopAppBar -->
+<header class="bg-background dark:bg-surface-dim fixed top-0 right-0 w-[calc(100%-260px)] z-40 border-b border-latte/30 bg-background/95 backdrop-blur-sm flat no shadows flex items-center justify-between px-gutter py-4">
+<div class="flex items-center gap-4">
+<h2 class="font-headline-md text-headline-md text-espresso dark:text-cream">Cafetería Dante</h2>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-on-surface-variant font-medium hover:bg-mist dark:hover:bg-surface-container rounded-full p-2 transition-colors flex items-center justify-center Active: opacity-70 duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant font-medium hover:bg-mist dark:hover:bg-surface-container rounded-full p-2 transition-colors flex items-center justify-center Active: opacity-70 duration-200">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="text-on-surface-variant font-medium hover:bg-mist dark:hover:bg-surface-container rounded-full p-2 transition-colors flex items-center justify-center Active: opacity-70 duration-200">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="ml-[260px] pt-[80px] p-container-padding">
+<div class="flex items-center justify-between mb-stack-lg">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-espresso">Dashboard</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Visión general del rendimiento del día.</p>
+</div>
+<div class="font-label-md text-label-md text-espresso bg-sand px-4 py-2 rounded-lg border border-latte flex items-center gap-2">
+<span class="material-symbols-outlined text-terracota" style="font-size: 18px;">calendar_today</span>
+                Hoy, 24 Oct 2023
+            </div>
+</div>
+<!-- KPI Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-gutter">
+<!-- KPI 1: Ingresos -->
+<div class="bg-sand border border-latte rounded-xl p-6 flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-latte/10 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+<div class="flex items-start justify-between mb-4 relative z-10">
+<span class="font-label-lg text-label-lg text-on-surface-variant uppercase tracking-wide">Ingresos</span>
+<span class="material-symbols-outlined text-terracota bg-terracota/10 p-2 rounded-lg">payments</span>
+</div>
+<div class="relative z-10">
+<div class="font-headline-lg text-headline-lg text-espresso mb-1">$4,250.00</div>
+<div class="font-label-md text-label-md text-terracota flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">trending_up</span>
+                        +12.5% vs ayer
+                    </div>
+</div>
+</div>
+<!-- KPI 2: Ventas -->
+<div class="bg-sand border border-latte rounded-xl p-6 flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-latte/10 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+<div class="flex items-start justify-between mb-4 relative z-10">
+<span class="font-label-lg text-label-lg text-on-surface-variant uppercase tracking-wide">Ventas Totales</span>
+<span class="material-symbols-outlined text-terracota bg-terracota/10 p-2 rounded-lg">receipt_long</span>
+</div>
+<div class="relative z-10">
+<div class="font-headline-lg text-headline-lg text-espresso mb-1">128</div>
+<div class="font-label-md text-label-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">trending_flat</span>
+                        Promedio $33.20/ticket
+                    </div>
+</div>
+</div>
+<!-- KPI 3: Alertas Insumos -->
+<div class="bg-sand border border-latte rounded-xl p-6 flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-latte/10 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+<div class="flex items-start justify-between mb-4 relative z-10">
+<span class="font-label-lg text-label-lg text-on-surface-variant uppercase tracking-wide">Alertas Insumos</span>
+<span class="material-symbols-outlined text-error bg-error/10 p-2 rounded-lg">warning</span>
+</div>
+<div class="relative z-10">
+<div class="font-headline-lg text-headline-lg text-espresso mb-1">3 <span class="font-body-md text-body-md text-on-surface-variant">items</span></div>
+<div class="font-label-md text-label-md text-error flex items-center gap-1">
+                        Leche entera crítica
+                    </div>
+</div>
+</div>
+<!-- KPI 4: Productos sin venta -->
+<div class="bg-sand border border-latte rounded-xl p-6 flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-latte/10 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+<div class="flex items-start justify-between mb-4 relative z-10">
+<span class="font-label-lg text-label-lg text-on-surface-variant uppercase tracking-wide">Sin Vender Hoy</span>
+<span class="material-symbols-outlined text-tertiary bg-tertiary/10 p-2 rounded-lg">remove_shopping_cart</span>
+</div>
+<div class="relative z-10">
+<div class="font-headline-lg text-headline-lg text-espresso mb-1">12</div>
+<div class="font-label-md text-label-md text-on-surface-variant flex items-center gap-1">
+                        Revisar vitrina pastelera
+                    </div>
+</div>
+</div>
+</div>
+<!-- Chart Section (Simulated Recharts) -->
+<div class="bg-sand border border-latte rounded-xl p-6 mb-gutter">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-headline-md text-espresso">Tendencia de Ingresos</h3>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-terracota text-cream rounded-full font-label-md text-label-md">Hoy</span>
+<span class="px-3 py-1 bg-transparent border border-latte text-espresso rounded-full font-label-md text-label-md cursor-pointer hover:bg-latte/20">Semana</span>
+</div>
+</div>
+<div class="h-[300px] w-full relative pt-4">
+<!-- Y Axis Labels -->
+<div class="absolute left-0 top-0 bottom-0 flex flex-col justify-between font-label-md text-label-md text-on-surface-variant pb-8">
+<span>$5k</span>
+<span>$4k</span>
+<span>$3k</span>
+<span>$2k</span>
+<span>$1k</span>
+<span>$0</span>
+</div>
+<!-- Chart Area -->
+<div class="ml-10 h-[260px] relative border-b border-l border-latte/50">
+<!-- Grid Lines -->
+<div class="absolute w-full h-full flex flex-col justify-between">
+<div class="border-b border-latte/20 w-full h-0"></div>
+<div class="border-b border-latte/20 w-full h-0"></div>
+<div class="border-b border-latte/20 w-full h-0"></div>
+<div class="border-b border-latte/20 w-full h-0"></div>
+<div class="border-b border-latte/20 w-full h-0"></div>
+</div>
+<!-- Simulated Line SVG -->
+<svg class="absolute inset-0 h-full w-full" preserveaspectratio="none" viewbox="0 0 1000 260">
+<!-- Gradient Fill under line -->
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#C0552A" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#C0552A" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0 200 C 100 180, 200 220, 300 150 C 400 80, 500 120, 600 60 C 700 0, 800 90, 900 40 L 1000 20 L 1000 260 L 0 260 Z" fill="url(#chartGradient)"></path>
+<!-- Line -->
+<path d="M0 200 C 100 180, 200 220, 300 150 C 400 80, 500 120, 600 60 C 700 0, 800 90, 900 40 L 1000 20" fill="none" stroke="#C0552A" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"></path>
+<!-- Data Points -->
+<circle cx="300" cy="150" fill="#fff9ef" r="5" stroke="#C0552A" stroke-width="3"></circle>
+<circle cx="600" cy="60" fill="#fff9ef" r="5" stroke="#C0552A" stroke-width="3"></circle>
+<circle cx="900" cy="40" fill="#fff9ef" r="5" stroke="#C0552A" stroke-width="3"></circle>
+</svg>
+<!-- X Axis Labels -->
+<div class="absolute -bottom-8 w-full flex justify-between font-label-md text-label-md text-on-surface-variant px-2">
+<span>08:00</span>
+<span>10:00</span>
+<span>12:00</span>
+<span>14:00</span>
+<span>16:00</span>
+<span>18:00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Rankings Bento Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+<!-- Productos Rankings -->
+<div class="flex flex-col gap-gutter">
+<!-- Top 5 Vendidos -->
+<div class="bg-sand border border-latte rounded-xl p-6">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-headline-md text-espresso flex items-center gap-2">
+<span class="material-symbols-outlined text-terracota">workspace_premium</span>
+                            Top 5 Más Vendidos
+                        </h3>
+</div>
+<div class="space-y-4">
+<!-- Item 1 -->
+<div>
+<div class="flex justify-between font-body-md text-body-md text-espresso mb-1">
+<span>Flat White</span>
+<span class="font-bold">45 uni.</span>
+</div>
+<div class="w-full h-2 bg-latte/30 rounded-full overflow-hidden">
+<div class="h-full bg-terracota rounded-full" style="width: 100%"></div>
+</div>
+</div>
+<!-- Item 2 -->
+<div>
+<div class="flex justify-between font-body-md text-body-md text-espresso mb-1">
+<span>Croissant Almendras</span>
+<span class="font-bold">38 uni.</span>
+</div>
+<div class="w-full h-2 bg-latte/30 rounded-full overflow-hidden">
+<div class="h-full bg-terracota rounded-full opacity-90" style="width: 85%"></div>
+</div>
+</div>
+<!-- Item 3 -->
+<div>
+<div class="flex justify-between font-body-md text-body-md text-espresso mb-1">
+<span>Cold Brew</span>
+<span class="font-bold">30 uni.</span>
+</div>
+<div class="w-full h-2 bg-latte/30 rounded-full overflow-hidden">
+<div class="h-full bg-terracota rounded-full opacity-80" style="width: 66%"></div>
+</div>
+</div>
+<!-- Item 4 -->
+<div>
+<div class="flex justify-between font-body-md text-body-md text-espresso mb-1">
+<span>Avocado Toast</span>
+<span class="font-bold">25 uni.</span>
+</div>
+<div class="w-full h-2 bg-latte/30 rounded-full overflow-hidden">
+<div class="h-full bg-terracota rounded-full opacity-70" style="width: 55%"></div>
+</div>
+</div>
+<!-- Item 5 -->
+<div>
+<div class="flex justify-between font-body-md text-body-md text-espresso mb-1">
+<span>Espresso Doble</span>
+<span class="font-bold">20 uni.</span>
+</div>
+<div class="w-full h-2 bg-latte/30 rounded-full overflow-hidden">
+<div class="h-full bg-terracota rounded-full opacity-60" style="width: 44%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom 5 Vendidos -->
+<div class="bg-mist border border-latte/50 rounded-xl p-6">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-headline-md text-espresso opacity-80 flex items-center gap-2">
+<span class="material-symbols-outlined text-espresso opacity-60">trending_down</span>
+                            Bottom 5 (Menos Movimiento)
+                        </h3>
+</div>
+<div class="space-y-4">
+<!-- Item 1 -->
+<div>
+<div class="flex justify-between font-body-md text-body-md text-on-surface-variant mb-1">
+<span>Té Menta Piperita</span>
+<span>2 uni.</span>
+</div>
+<div class="w-full h-1.5 bg-latte/20 rounded-full overflow-hidden">
+<div class="h-full bg-latte rounded-full" style="width: 10%"></div>
+</div>
+</div>
+<!-- Item 2 -->
+<div>
+<div class="flex justify-between font-body-md text-body-md text-on-surface-variant mb-1">
+<span>Muffin Arándanos Vegano</span>
+<span>3 uni.</span>
+</div>
+<div class="w-full h-1.5 bg-latte/20 rounded-full overflow-hidden">
+<div class="h-full bg-latte rounded-full" style="width: 15%"></div>
+</div>
+</div>
+<!-- Item 3 -->
+<div>
+<div class="flex justify-between font-body-md text-body-md text-on-surface-variant mb-1">
+<span>Agua Mineral Gas</span>
+<span>4 uni.</span>
+</div>
+<div class="w-full h-1.5 bg-latte/20 rounded-full overflow-hidden">
+<div class="h-full bg-latte rounded-full" style="width: 20%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Insumos Rankings -->
+<div class="flex flex-col gap-gutter">
+<!-- Top 5 Insumos Usados -->
+<div class="bg-sand border border-latte rounded-xl p-6">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-headline-md text-espresso flex items-center gap-2">
+<span class="material-symbols-outlined text-terracota">science</span>
+                            Insumos de Mayor Rotación
+                        </h3>
+</div>
+<div class="space-y-4">
+<!-- Item 1 -->
+<div>
+<div class="flex justify-between font-body-md text-body-md text-espresso mb-1">
+<span>Café Grano 'Origen Perú'</span>
+<span class="font-bold">4.5 kg</span>
+</div>
+<div class="w-full h-2 bg-latte/30 rounded-full overflow-hidden">
+<div class="h-full bg-terracota rounded-full" style="width: 95%"></div>
+</div>
+</div>
+<!-- Item 2 -->
+<div>
+<div class="flex justify-between font-body-md text-body-md text-espresso mb-1">
+<span>Leche Entera</span>
+<span class="font-bold">18 L</span>
+</div>
+<div class="w-full h-2 bg-latte/30 rounded-full overflow-hidden">
+<div class="h-full bg-terracota rounded-full opacity-90" style="width: 80%"></div>
+</div>
+</div>
+<!-- Item 3 -->
+<div>
+<div class="flex justify-between font-body-md text-body-md text-espresso mb-1">
+<span>Leche Avena (Oatly)</span>
+<span class="font-bold">8 L</span>
+</div>
+<div class="w-full h-2 bg-latte/30 rounded-full overflow-hidden">
+<div class="h-full bg-terracota rounded-full opacity-80" style="width: 60%"></div>
+</div>
+</div>
+<!-- Item 4 -->
+<div>
+<div class="flex justify-between font-body-md text-body-md text-espresso mb-1">
+<span>Vasos Take-away 8oz</span>
+<span class="font-bold">85 uni.</span>
+</div>
+<div class="w-full h-2 bg-latte/30 rounded-full overflow-hidden">
+<div class="h-full bg-terracota rounded-full opacity-70" style="width: 50%"></div>
+</div>
+</div>
+<!-- Item 5 -->
+<div>
+<div class="flex justify-between font-body-md text-body-md text-espresso mb-1">
+<span>Azúcar Rubia (Sobres)</span>
+<span class="font-bold">120 uni.</span>
+</div>
+<div class="w-full h-2 bg-latte/30 rounded-full overflow-hidden">
+<div class="h-full bg-terracota rounded-full opacity-60" style="width: 40%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Estancados Insumos -->
+<div class="bg-mist border border-latte/50 rounded-xl p-6 h-full">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-headline-md text-espresso opacity-80 flex items-center gap-2">
+<span class="material-symbols-outlined text-espresso opacity-60">inventory</span>
+                            Insumos Sin Movimiento
+                        </h3>
+</div>
+<!-- Table style for a different look -->
+<div class="overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-latte/30 font-label-md text-label-md text-on-surface-variant">
+<th class="pb-2 font-medium">Insumo</th>
+<th class="pb-2 font-medium text-right">Días estancado</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md text-espresso">
+<tr class="border-b border-latte/10 hover:bg-latte/5 transition-colors">
+<td class="py-3">Sirope Vainilla Sin Azúcar</td>
+<td class="py-3 text-right">14 días</td>
+</tr>
+<tr class="border-b border-latte/10 hover:bg-latte/5 transition-colors">
+<td class="py-3">Té Matcha Culinario</td>
+<td class="py-3 text-right">12 días</td>
+</tr>
+<tr class="border-b border-latte/10 hover:bg-latte/5 transition-colors">
+<td class="py-3">Bolsas Papel Kraft Grandes</td>
+<td class="py-3 text-right">8 días</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

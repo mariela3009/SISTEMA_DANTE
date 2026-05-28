@@ -1,0 +1,472 @@
+UNIVERSIDAD PRIVADA DE TACNA
+FACULTAD DE INGENIERÍA
+Escuela Profesional de Ingeniería de Sistemas
+ Sistema Web de Gestión inteligente de inventarios y pasarela de pagos con PayPal para la cafetería ‘Dante’
+Curso: 
+Gestión de proyectos de TI
+Docente: 
+Dra. Martha Paredes Vignola
+Integrantes:
+Laos González, Adriana Rafaela        
+(2023077474)
+Ramos Loza, Mariela Estefany
+(2023077478)
+Calloticona Chambilla, Marymar Danytza   (2023076791)
+Choqueña Choque, Mauricio Arian
+(2023076799)
+Tacna – Perú
+2026
+Sistema Web de Gestión inteligente de inventarios y pasarela de pagos con PayPal para la cafetería ‘Dante’
+Versión 
+1.0
+CONTROL DE VERSIONES
+Versión
+Hecha por
+Revisada por
+Aprobada por
+Fecha
+Motivo
+1.0
+MPV
+ELV
+ARV
+10/10/2020
+Versión Original
+ÍNDICE GENERAL
+1. Descripción del Proyecto
+4
+1.1 Nombre del proyecto
+4
+1.2 Duración del proyecto
+4
+1.3 Descripción
+4
+2
+. 
+Riesgos
+5
+3. Análisis de la Situación actual
+8
+3.1 Planteamiento del problema
+8
+3.2 Consideraciones de hardware y software
+10
+4. Estudio de Factibilidad
+11
+4.1 Factibilidad Técnica
+11
+4.2 Factibilidad Económica
+12
+4.2.1 Costos Generales
+12
+4.2.2 Costos operativos durante el desarrollo
+12
+4.2.3 Costos del ambiente
+13
+4.2.4 Costos de personal
+13
+4.2.5 Costos totales del desarrollo del sistema
+14
+4.3 Factibilidad Operativa
+15
+Lista de interesados (Stakeholders)
+15
+4.4 Factibilidad Legal
+16
+Uso de licencias de software
+16
+4.5 Factibilidad Social
+17
+4.6 Factibilidad Ambiental
+17
+5. Análisis Financiero
+18
+5.1 Justificación de la Inversión
+18
+5.1.1 Beneficios del Proyecto
+18
+Informe de Factibilidad
+Descripción del Proyecto
+Nombre del proyecto
+Sistema Web de Gestión inteligente de inventarios y pasarela de pagos con PayPal para la cafetería ‘Dante’  
+Duración del proyecto
+Fecha inicio:  9 de abril
+Fecha fin: 24 de junio
+Descripción
+El proyecto consiste en el desarrollo de una plataforma web integral diseñada para la gestión 
+inteligente de inventarios 
+en una cafetería. A diferencia de un sistema de almacén convencional, esta solución vincula directamente la salida de productos finalizados con el stock de materia prima. 
+Mediante la digitalización de recetas estándar, el sistema realiza un descuento automático y proporcional de los insumos en el momento en que se registra la venta de un producto, permitiendo un control de existencias y en tiempo real sin necesidad de intervención manual constante. 
+Adicionalmente, el sistema incorporará una pasarela de pagos integrada que permitirá procesar transacciones digitales en el punto de venta, aceptando pagos con billeteras digitales. Esta funcionalidad ampliará las opciones de cobro para la cafetería “Dante”, reducirá el manejo de efectivo y facilitará la conciliación automática de las ventas registradas con los movimientos de insumos en el inventario
+.
+ Objetivos
+Objetivo General 
+Desarrollar un sistema web de gestión inteligente de inventarios integrado con una pasarela de pagos mediante PayPal para optimizar el control de productos, agilizar las ventas y mejorar la administración operativa de la cafetería “Dante”.
+Objetivo Específicos
+Desarrollar un panel de control que permita visualizar información relevante sobre ventas, inventario y productos más vendidos para apoyar la toma de decisiones en la cafetería “Dante”.
+Diseñar un sistema de gestión de productos que facilite el registro, actualización y control de los productos ofrecidos por la cafetería.
+Implementar un módulo de control de inventario que permita registrar y monitorear las entradas y salidas de productos e insumos en tiempo real.
+Desarrollar un sistema de control de insumos basado en el método Kardex para medir y administrar el consumo de materias primas utilizadas en la preparación de productos.
+Implementar un módulo de ventas que permita registrar transacciones, generar comprobantes y actualizar automáticamente el inventario según las ventas realizadas.
+Integrar una pasarela de pagos mediante PayPal para facilitar transacciones seguras y rápidas dentro del sistema web.
+Diseñar un sistema de autenticación y gestión de usuarios que permita controlar el acceso al sistema según los roles establecidos.
+Riesgos
+N°
+Riesgo
+Nivel Del Riesgo 
+Probabilidad de que suceda
+Plan de contingencia
+1
+Cambios en los requisitos durante el desarrollo del sistema, que alteren el alcance definido inicialmente y generen reprocesos en módulos ya implementados.
+Medio
+Medio
+Realizar reuniones de control de alcance al inicio de cada sprint con el cliente, documentando formalmente cualquier cambio mediante un acta de control de cambios antes de implementarlo.
+2
+Fallos técnicos en la integración de la pasarela de pagos con el módulo de ventas, que interrumpan el flujo de transacciones digitales durante las pruebas o en producción.
+Alta
+Alta
+Desarrollar la integración de la pasarela de pagos en un módulo aislado con pruebas unitarias específicas.
+3
+Retrasos en la entrega de módulos por subestimación del tiempo de desarrollo, especialmente en funcionalidades complejas como el kardex automático o la conciliación de pagos.
+Medio
+Media
+Aplicar estimación por puntos de historia al inicio del proyecto e incluir un margen de holgura del 20% en el cronograma. Revisar el avance semanalmente y reasignar tareas si se detectan desviaciones.
+4
+Incompatibilidad entre las tecnologías seleccionadas que dificulte la integración y provoque errores en el entorno de pruebas.
+Bajo
+Baja
+Validar la compatibilidad entre tecnologías mediante un prototipo de integración en la fase inicial del proyecto. Revisar la documentación oficial de cada API o SDK antes de su uso en el sistema.
+5
+Pérdida de avances del proyecto por falta de control de versiones adecuado o conflictos en el repositorio de código al trabajar múltiples integrantes en paralelo.
+Alto
+Baja
+Establecer un flujo de trabajo con ramas por funcionalidad en GitHub (GitFlow), realizar commits diarios y revisiones de código entre pares antes de fusionar cambios a la rama principal.
+6
+Dificultades en la fase de pruebas por ausencia de un entorno de staging similar al de producción, que impida detectar errores críticos antes del despliegue final.
+Alto
+Media
+Configurar un entorno de pruebas local con Docker que replique la configuración del servidor de producción. Ejecutar un plan de pruebas de aceptación antes de cada entrega parcial.
+7
+Indisponibilidad temporal de alguno de los integrantes del equipo por motivos académicos o personales, que genere cuellos de botella en módulos asignados a un único desarrollador.
+Medio
+Media
+Documentar cada módulo de forma continua para facilitar el reemplazo temporal entre integrantes. Mantener una matriz de habilidades del equipo y una lista de tareas pendientes actualizada en el repositorio.
+Análisis de la Situación actual
+Planteamiento del problema
+En la actualidad, ‘Dante’ carece de un sistema integral que permita realizar el inventario y control de insumos con actualizaciones en tiempo real, adaptado a sus necesidades y dinámicas operativas específicas. Esta inexistencia tecnológica genera una limitación crítica para la gestión de recursos, pues no se puede conocer de manera precisa y oportuna el consumo real de los insumos que abastecen los procesos de ‘Dante’.
+La falta de un sistema con capacidades de actualización inmediata impide registrar las entradas, salidas y movimientos de insumos al momento en que ocurren, lo que provoca desfases entre la información disponible y la realidad del almacén o puntos de uso. Esta situación se agrava porque tampoco existe una herramienta que permita generar reportes dinámicos y visuales que resalten la información más relevante sobre el comportamiento del consumo, como patrones de uso, niveles críticos de stock, insumos de mayor rotación o aquellos con alto índice de pérdida.
+Como consecuencia directa de esta problemática, ‘Dante’ enfrenta múltiples afectaciones operativas y económicas, entre las que destacan:
+Pérdidas de insumos por vencimiento, obsolescencia, extravío o mal manejo, al no existir trazabilidad ni alertas tempranas.
+Stock en demasía acumulado innecesariamente, lo que incrementa los costos de almacenamiento, inmoviliza capital y genera ocupación ineficiente de espacios.
+Falta de insumos críticos en momentos clave (como consecuencia indirecta de no tener visibilidad real), lo que puede paralizar actividades o forzar compras de emergencia.
+Toma de decisiones reactiva y poco fundamentada, basada en datos desactualizados o incompletos, lo que perpetúa ciclos de sobrecompra o desabasto.
+Dificultad para planificar compras y presupuestos, al no contar con históricos confiables ni tendencias de consumo reales.
+De esta manera, la ausencia de un sistema de inventario y control en tiempo real adaptado a los requerimientos de ‘Dante’ no solo limita el conocimiento objetivo del consumo de insumos, sino que genera ineficiencias operativas progresivas que impactan directamente en la rentabilidad, la continuidad de los procesos y la capacidad de respuesta de la organización.
+Consideraciones de hardware y software
+Para la implementación del sistema se requieren los siguientes recursos de hardware y software:
+Hardware requerido:
+• Computadoras de desarrollo: procesador Intel Core i5 o superior, 8 GB de RAM mínimo, almacenamiento SSD de 256 GB, sistema operativo Windows 10/11 o Linux Ubuntu 22.04.
+• Servidor VPS en la nube (para producción): 2 vCPU, 4 GB RAM, 50 GB SSD, con soporte para PHP 8.x y MySQL.
+• Dispositivos de acceso en la cafetería: computadora de escritorio o tablet con navegador web moderno (Chrome, Firefox o Edge) y conexión a internet estable.
+Software requerido:
+Frontend: Next.js 15.x (corriendo sobre Node.js 24.x o superior). Al ser un framework de React, se lleva de maravilla con interfaces dinámicas y un consumo de API fluido.
+Backend API: Laravel 11.x (corriendo sobre PHP 8.3 u 8.4). Es la versión actual más robusta para construir APIs RESTful estructuradas de forma rápida.
+Base de Datos: MySQL 8.4 LTS o MySQL 9. Es ideal para el manejo relacional del sistema Kardex que planeas implementar.
+Entorno de desarrollo: Visual Studio Code 2026  con extensiones para PHP.
+Control de versiones: GitHub 2.4 con flujo de trabajo por ramas (GitFlow).
+• Pasarela de pagos: API de Paypal, con soporte para tarjetas de crédito, débito y billeteras digitales.
+• Infraestructura de red: conexión a internet de banda ancha (mínimo 10 Mbps), dominio web (.com) y certificado SSL/TLS para comunicaciones seguras (HTTPS).
+• Navegadores compatibles: Google Chrome 110+, Mozilla Firefox 110+ o Microsoft Edge 110+ para el acceso al sistema desde los dispositivos de la cafetería.
+Estudio de Factibilidad
+Factibilidad Técnica
+El proyecto es técnicamente viable. A continuación se describe la situación tecnológica actual de la cafetería “Dante” y los recursos con los que cuenta el equipo de desarrollo para llevar a cabo la implementación del sistema.
+Hardware:
+La cafetería “Dante” cuenta actualmente con una computadora de escritorio básica utilizada para tareas administrativas generales, con acceso a internet por cable y un router WiFi de uso compartido. No dispone de servidor local propio ni de software especializado de gestión. Además adquirió tablets para el servicio de atención al cliente.
+Software:
+Actualmente cuenta con un semi ERP que se encarga de las áreas de venta y cobranza (Wally).
+Factibilidad Económica
+El desarrollo del proyecto es viable, ya que no requiere una inversión elevada en infraestructura ni en licencias de software, debido al uso de herramientas gratuitas y recursos disponibles.
+Costos Generales
+El equipo de desarrollo cuenta con los equipos propios necesarios. Todas las herramientas utilizadas (VS Code, Git, GitHub, PHP, MySQL, Tailwind CSS) son gratuitas y de código abierto, por lo que no se generan costos en materiales o accesorios de oficina durante el desarrollo del sistema.
+Costos operativos durante el desarrollo
+Se evalúan los costos necesarios para mantener operativas las actividades del equipo de desarrollo durante el periodo en el que se realizará el proyecto. Dado que el equipo trabaja de forma remota, los costos operativos corresponden a los servicios básicos utilizados por cada integrante en su domicilio.
+Servicio
+Tiempo (meses)
+Costo Unitario (S/./mes)
+Costo Total (S/.)
+Internet
+3
+80
+240
+Energía eléctrica
+3
+45
+135
+Total
+375
+Costos del ambiente
+Para la implementación del sistema se evalúan los recursos tecnológicos necesarios para su despliegue y funcionamiento. En este caso, el proyecto tendrá los siguientes costos:
+licencias de software
+Recurso
+Tiempo (meses)
+Costo Unitario (S/./mes)
+Costo (S/.)
+Dominio web (.com o .pe)
+Anual (precio fijo)
+100
+100
+VPS de Elastika
+ (backend/frontend)
+3
+20
+60
+Total
+160
+Costos de personal
+En el desarrollo del proyecto se considera el recurso humano encargado del análisis, diseño e implementación del sistema. Se realiza una valoración del trabajo para estimar el costo real.
+Rol
+Cantidad
+Horas totales
+Pago por hora (S/.)
+Costo Total (S/.)
+Frontend Developer
+1
+120
+14.00
+1680.00
+Backend Developer
+1
+120
+16.00
+1920.00
+Data & Persistence Specialist
+1
+120
+15.00
+1800.00
+Tester e Integrador de Sistemas
+1
+120
+12.00
+1440.00
+Total
+6840.00
+Costos totales del desarrollo del sistema 
+A continuación, se presenta el resumen de los costos asociados al desarrollo del sistema, considerando costos generales, operativos, del ambiente y de personal.
+Concepto
+Costo (S/.)
+Costos generales
+0
+Costos operativos
+375.00
+Costos del ambiente
+160.00
+Costos de personal
+6840.00
+Total general del proyecto
+7375.00
+El costo total estimado para el desarrollo del sistema “Sistema Integral de Gestión de Insumos y Ventas Automatizadas” es de: S/ 7375.00 (Siete mil trescientos setenta y cinco soles).
+Factibilidad Operativa
+El sistema es operativamente viable y generará un impacto positivo directo en los procesos de la cafetería "Dante":
+Permite llevar un registro preciso y en tiempo real del inventario de insumos, eliminando los registros manuales propensos a errores humanos.
+Genera un kardex automatizado que relaciona cada venta con el consumo teórico de insumos, permitiendo detectar discrepancias con el consumo real.
+Emite alertas automáticas de stock mínimo para prevenir desabastecimiento en horas de operación.
+Reduce el tiempo dedicado al control manual del inventario en aproximadamente 3 horas semanales, que el administrador puede redirigir a actividades de mayor valor.
+Mejora la comunicación con proveedores al centralizar el historial de compras y movimientos de stock en un solo sistema.
+Puede ser operado por personal con conocimientos básicos en informática, gracias a una interfaz intuitiva diseñada con Tailwind CSS.
+Lista de interesados (Stakeholders)
+Administrador de la cafetería "Dante": principal usuario del sistema, responsable de supervisar el inventario, revisar reportes y tomar decisiones de reabastecimiento.
+Personal de cocina y atención: registra las salidas de insumos y el consumo diario durante la operación.
+Dueño de la cafetería "Dante": beneficiario directo del sistema mediante la reducción de pérdidas y mejora de la rentabilidad.
+Equipo desarrollador (Backend #1, Backend #2, Frontend, DBA, Tester): encargado del análisis, diseño, implementación y mantenimiento del sistema.
+Factibilidad Legal
+Uso de licencias de software
+El sistema será desarrollado utilizando exclusivamente herramientas de software libre: PHP (licencia PHP License), MySQL y Visual Studio Code (licencia MIT). Todas estas licencias permiten el uso comercial, modificación y distribución del software sin restricciones para este tipo de proyecto.
+Derechos de Autor y Propiedad Intelectual
+El código fuente desarrollado será propiedad intelectual del equipo de desarrollo. Cualquier librería o framework de terceros utilizado será debidamente referenciado y empleado conforme a sus licencias correspondientes.
+Cumplimiento Normativo
+El sistema cumple con las disposiciones de la Ley N° 29733, Ley de Protección de Datos Personales del Perú, garantizando la privacidad de la información de los usuarios registrados, el historial de transacciones y los datos operativos de la cafetería "Dante". Se implementarán mecanismos de autenticación segura y control de acceso por roles para proteger la información sensible del negocio.
+Factibilidad Social
+Aceptación del Sistema
+El sistema propuesto presenta alta aceptación por parte de los stakeholders identificados, dado que responde directamente a una necesidad operativa concreta: la gestión eficiente del inventario. La interfaz será diseñada para ser intuitiva y accesible para personal con conocimientos tecnológicos básicos, reduciendo la curva de aprendizaje. Este enfoque contribuye al ODS 9: Industria, innovación e infraestructura, al promover la digitalización de procesos en pequeños negocios mediante soluciones tecnológicas accesibles.
+Impacto Social
+El sistema contribuye a la formalización y digitalización de los procesos internos de la cafetería “Dante”, promoviendo una cultura de orden, transparencia y toma de decisiones basada en datos reales. Esto repercute positivamente en la sostenibilidad económica del negocio y en la calidad del servicio ofrecido a los clientes, alineándose con el ODS 8: Trabajo decente y crecimiento económico, al mejorar la eficiencia operativa, la organización interna y la productividad del negocio.
+Aspectos Éticos
+El proyecto se desarrolla bajo principios de transparencia y responsabilidad. El sistema centraliza y protege la información del negocio, fomenta prácticas de gestión ordenadas y evita la manipulación arbitraria del inventario mediante el registro auditable de cada movimiento de stock. Esto se relaciona con el ODS 16: Paz, justicia e instituciones sólidas, al fortalecer la confianza, la trazabilidad de la información y la correcta gestión de los recursos internos.
+Factibilidad Ambiental
+El proyecto no genera contaminación directa ni residuos físicos, al tratarse de una aplicación de software. Su funcionamiento en entornos digitales elimina la necesidad de registros en papel, reduciendo indirectamente el impacto ambiental generado por la gestión manual del inventario. El consumo de recursos se limita al uso de equipos de cómputo y energía eléctrica, propio de cualquier actividad informática de este tipo. La implementación en un VPS en la nube optimiza el consumo energético al evitar la operación de servidores físicos locales. En términos generales, el sistema contribuye a prácticas de negocio más sostenibles al reemplazar procesos físicos por procesos digitales eficientes, en concordancia con el ODS 12: Producción y consumo responsables y el ODS 13: Acción por el clima.
+Análisis Financiero
+El análisis financiero del proyecto tiene como objetivo demostrar que la inversión requerida para su desarrollo e implementación es recuperable en un plazo razonable y que genera un retorno superior al costo de oportunidad del capital. Para ello, se cuantifican los beneficios económicos que el sistema aporta a la cafetería "Dante" y se evalúan los indicadores financieros estándar de rentabilidad.
+Justificación de la Inversión
+Beneficios del Proyecto
+Los beneficios del sistema se dividen en beneficios tangibles (cuantificables en términos monetarios) e intangibles (mejoras cualitativas que impactan positivamente la operación del negocio).
+Beneficios Tangibles
+Los beneficios tangibles se estiman a partir de la situación actual de la cafetería "Dante", donde las pérdidas mensuales por una gestión manual del inventario se calculan de la siguiente manera:
+Ben
+eficio Económico
+Situación Actual (S/./mes)
+Con el Sistema (S/./mes)
+Ahorro Estimado (Anual)
+Reducción de pérdidas por exceso o desabastecimiento de stock
+350.00
+70.00
+3,360.00
+Reducción de insumos desperdiciados por vencimiento o mala gestión
+200.00
+40.00
+1,920.00
+Reducción de tiempo en control manual de inventario 2h/semana a S/8/h)
+120.00
+24.00
+1,152.00
+Reducción de compras de emergencia a precio mayorista
+180.00
+36.00
+1,728.00
+AHORRO MENSUAL TOTAL
+850.00
+170.00
+S/ 8,160.00
+Ahorro anual: S/ 8,160.00      
+Beneficios Intangibles:
+Mejora en la imagen y profesionalismo de la gestión del negocio frente a proveedores y clientes.
+Mayor confianza del administrador en la información del inventario para tomar decisiones estratégicas de compra.
+Reducción del estrés operativo del personal al contar con alertas automáticas de stock mínimo.
+Trazabilidad completa de los movimientos de insumos, lo que facilita auditorías internas y detecta posibles irregularidades.
+Base tecnológica escalable que puede ampliarse en el futuro con módulos de facturación, gestión de proveedores o análisis predictivo de demanda.
+Criterios de Inversión
+Parámetros Base (Anual)
+Parámetro
+Valor
+Inversión total (I₀)
+S/ 7,375.00
+Ahorro anual  (beneficio) (S/680 × 12)
+S/ 8,160.00
+Tasa de descuento anual (COK)
+10%
+Egresos
+S/. 940.00
+Horizonte de evaluación
+3 años
+Duración del desarrollo
+3 meses — 9 abr al 24 junio 2026
+Valor Presente de Beneficios (VP)
+Flujo Neto Anual = S/. 8,160.00 - S/. 940.00 = S/. 7,220.00
+Relación Beneficio/Costo (B/C)
+Componente
+Valor (S/.)
+VP de Beneficios (3 años, 10%)
+17,955.07
+Inversión Total — VP de Costos (I₀)
+7,375.00
+B/C = 17,955.07 / 7,375.00 =
+2.43
+Resultado: B/C = 2.43  >  1   →  El proyecto se ACEPTA. Por cada sol invertido se recuperan S/ 2.43 en beneficios.
+Valor Actual Neto (VAN)
+Componente
+Valor (S/.)
+VP de Beneficios
+17,955.07
+Inversión Inicial (I₀)
+− 7,375.00
+VAN = 20,292.71 − 7,375.00 =
+S/ 10,580.07
+ 
+Resultado: VAN = S/ 10,580.07  >  0   →  El proyecto se ACEPTA. Genera valor real por encima del costo de oportunidad del capital.
+ Tasa Interna de Retorno (TIR)
+Parámetro
+Valor
+TIR calculada
+84.77% anual
+Tasa de descuento (COK)
+10.00% anual
+TIR (84.77%) > COK (10%) →
+PROYECTO ACEPTADO
+Resultado: TIR = 84.77%  >>  10%   →  El proyecto es muy rentable. Su rendimiento supera casi 10 veces el costo de oportunidad del capital.
+Flujo de Caja del Proyecto
+Supuestos
+El proyecto dura 3 meses de desarrollo (9 abril – 24 junio 2026), período en el que se incurren todos los costos sin generar ingresos.
+ El costo del ambiente (S/ 160.00) se paga al inicio (Mes 0): dominio anual S/100 + primer mes de hosting S/20 × meses del plan.
+ Distribución de
+ Egresos anuales
+Concepto
+Total (S/.)
+Por Año (S/.)
+Costos del Ambiente: Dominio
+100.00
+100.00 
+Costos del Ambiente: Host
+20 * 12 = 240.00
+240.00
+Costos de Personal de mantenimiento
+50.00
+600.00
+Egresos por año  
+S/ 940.00 
+ Flujo de Caja Mensual
+Año
+Período
+Ingresos (S/.)
+Egresos (S/.)
+Flujo Neto (S/.)
+Saldo Acumulado (S/.)
+0
+Inversión
+0.00
+7,375.00
+−7,375.00
+−7,375.00
+1
+Operación
+8,160.00
+940.00
++7,785.00
+-155.00
+2
+Operación
+8,160.00
+940.00
++7,785.00
++7,065.00
+3
+Operación
+8,160.00
+940.00
++7,785.00
++14,285.00
+ 
+Resumen Ejecutivo y Conclusiones
+Indicador
+Valor Calculado
+Interpretación
+Inversión Total (I₀)
+S/ 7,375.00
+Costo total del proyecto (Fase de diseño, desarrollo en Next.js/Laravel, bases de datos MySQL y despliegue inicial de 12 semanas).
+Ahorro mensual neto
+S/ 680.00 / mes
+Beneficio económico mensual neto obtenido en la cafetería gracias a la mitigación de mermas y optimización de tiempos tras implementar el sistema.
+Ahorro anual
+S/ 8,160.00 / año
+S/680 × 12 meses.
+VP de Beneficios (3 años, 10%)
+S/ 17,955.07
+Valor presente de todos los ahorros futuros.
+B/C (Beneficio/Costo)
+2.43
+S/2.43 recuperados por cada sol invertido.
+VAN (Valor Actual Neto)
+S/ 10,580.07
+Ganancia en soles de hoy.
+TIR (Tasa Interna de Retorno)
+84.77% anual
+Rendimiento porcentual interno de la inversión. Supera por más de 8 veces el COK exigido del 10%, demostrando una rentabilidad excepcional. 
+Payback desde implementación
+~12.25 meses
+La inversión inicial de desarrollo se recupera íntegramente tras un año de operación en producción (equivalente al mes 15.25 contados desde el inicio del cronograma). 
+ 
+Conclusiones
+Viabilidad Económica Robusta: Los tres indicadores financieros calculados con el nuevo esquema de costos (B/C = 2.43, VAN = S/ 10,580.07 y TIR = 84.77%) confirman de manera categórica que el proyecto EVA es altamente rentable, genera un valor neto positivo para la Cafetería "Dante" y su ejecución técnica está plenamente justificada.
+Consolidación del Análisis Financiero: Se ha estructurado y completado íntegramente la sección de Análisis Financiero del documento, subsanando las omisiones del planteamiento original mediante la proyección rigurosa de flujos de caja anualizados reales y la aplicación formal de criterios de evaluación de proyectos de TI.
+Modernización y Sinceramiento del Stack: La adopción de una arquitectura desacoplada basada en Next.js 15.x (Frontend), Laravel 11.x (Backend API) y MySQL 8.4 LTS (Base de datos) dota al sistema de altos estándares de escalabilidad y rendimiento. Asimismo, la inclusión de un presupuesto de S/ 600.00 anuales para soporte técnico preventivo sincera la operación cloud del software, mitigando riesgos de depreciación o abandono tecnológico.
+Absorción de Observaciones Críticas: Se resolvieron con éxito las inconsistencias estructurales del presupuesto inicial. Se eliminó la ambigüedad de la nota "por integrante × 5" en los costos operativos —fijando sólidamente la inversión en S/ 7,375.00— y se normalizó la tabla del entorno, separando con claridad los conceptos de renovación anual de dominio frente al hosting mensualizado.
+Retorno Técnico de la Inversión (Payback): El análisis del flujo neto anualizado demuestra que el capital inicial queda comprometido al cierre de las 12 semanas (3 meses comerciales) de la fase de desarrollo. Gracias a los ahorros generados en el control de mermas y tiempos, la inversión se recupera de forma íntegra a los 12.25 meses desde su puesta en producción (equivalente al mes 15.25 contados desde el día uno del cronograma de trabajo).

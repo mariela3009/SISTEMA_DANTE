@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gestión de Productos - EVA</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&amp;family=Playfair+Display:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#2e1503",
+                        "surface-container-high": "#f0e7d3",
+                        "on-error-container": "#93000a",
+                        "sand": "#E8D5B0",
+                        "on-tertiary-fixed-variant": "#594320",
+                        "inverse-surface": "#353022",
+                        "background": "#fff9ef",
+                        "on-secondary-fixed-variant": "#603f29",
+                        "on-tertiary-container": "#fffdff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#380d00",
+                        "primary-fixed-dim": "#ffb59b",
+                        "inverse-on-surface": "#f9f0db",
+                        "surface-bright": "#fff9ef",
+                        "tertiary": "#715934",
+                        "secondary-fixed": "#ffdcc7",
+                        "tertiary-container": "#8c714a",
+                        "on-background": "#1f1b0f",
+                        "on-primary-container": "#fffdff",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#a23f15",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#7a553d",
+                        "primary-container": "#c0552a",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#a03d13",
+                        "surface-container-low": "#fcf3de",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#edbd9f",
+                        "latte": "#C8A97E",
+                        "on-tertiary-fixed": "#281800",
+                        "surface-dim": "#e2d9c5",
+                        "terracota": "#C0552A",
+                        "tertiary-fixed-dim": "#e2c195",
+                        "outline": "#8a7269",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#ffdbcf",
+                        "mist": "#F9F4EC",
+                        "espresso": "#4A2C17",
+                        "dark": "#2A1A0E",
+                        "on-surface-variant": "#57423b",
+                        "surface-container-highest": "#ebe2cd",
+                        "inverse-primary": "#ffb59b",
+                        "surface-container": "#f6edd8",
+                        "surface": "#fff9ef",
+                        "on-surface": "#1f1b0f",
+                        "tertiary-fixed": "#ffddb0",
+                        "outline-variant": "#dec0b7",
+                        "secondary": "#7b563e",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#812900",
+                        "cream": "#F5ECD7",
+                        "surface-variant": "#ebe2cd",
+                        "secondary-container": "#ffcdaf"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "0.5rem",
+                        "sidebar-width": "260px",
+                        "stack-md": "1rem",
+                        "container-padding": "2rem",
+                        "stack-lg": "2rem",
+                        "gutter": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "body-md": ["DM Sans"],
+                        "label-md": ["DM Sans"],
+                        "headline-md": ["Playfair Display"],
+                        "label-lg": ["DM Sans"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-lg": ["DM Sans"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "headline-xl": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-background flex antialiased">
+<!-- SideNavBar Component -->
+<nav class="w-[260px] h-full fixed left-0 top-0 bg-espresso border-r border-latte/20 flex flex-col py-6 space-y-2 z-50">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-latte flex items-center justify-center text-espresso font-headline-md">E</div>
+<div>
+<h1 class="font-headline-xl text-headline-xl text-cream">EVA</h1>
+<p class="text-latte text-label-md">Cafetería Dante</p>
+</div>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-2">
+<a class="text-mist/80 hover:text-cream hover:bg-tertiary/30 rounded-lg mx-3 px-4 py-3 flex items-center gap-3 transition-all hover:bg-tertiary/40 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-lg text-label-lg">Gerencia</span>
+</a>
+<a class="text-mist/80 hover:text-cream hover:bg-tertiary/30 rounded-lg mx-3 px-4 py-3 flex items-center gap-3 transition-all hover:bg-tertiary/40 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">point_of_sale</span>
+<span class="font-label-lg text-label-lg">Ventas</span>
+</a>
+<a class="bg-primary text-on-primary rounded-lg mx-3 px-4 py-3 flex items-center gap-3 scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">local_cafe</span>
+<span class="font-label-lg text-label-lg">Productos</span>
+</a>
+<a class="text-mist/80 hover:text-cream hover:bg-tertiary/30 rounded-lg mx-3 px-4 py-3 flex items-center gap-3 transition-all hover:bg-tertiary/40 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-lg text-label-lg">Inventario</span>
+</a>
+</div>
+<div class="mt-auto flex flex-col gap-2">
+<a class="text-mist/80 hover:text-cream hover:bg-tertiary/30 rounded-lg mx-3 px-4 py-3 flex items-center gap-3 transition-all hover:bg-tertiary/40 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label-lg text-label-lg">Perfil</span>
+</a>
+<a class="text-mist/80 hover:text-cream hover:bg-tertiary/30 rounded-lg mx-3 px-4 py-3 flex items-center gap-3 transition-all hover:bg-tertiary/40 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-lg text-label-lg">Configuración</span>
+</a>
+</div>
+</nav>
+<!-- TopAppBar Component -->
+<header class="fixed top-0 right-0 w-[calc(100%-260px)] z-40 border-b border-latte/30 bg-background/95 backdrop-blur-sm flex items-center justify-between px-gutter py-4">
+<div>
+<h2 class="font-headline-md text-headline-md text-espresso">Cafetería Dante</h2>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-on-surface-variant font-medium hover:bg-mist rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant font-medium hover:bg-mist rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="text-on-surface-variant font-medium hover:bg-mist rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[260px] pt-[88px] w-full px-container-padding pb-container-padding min-h-screen">
+<div class="flex items-center justify-between mb-stack-lg mt-stack-md">
+<h2 class="font-headline-lg text-headline-lg text-espresso">Catálogo de Productos</h2>
+<button class="bg-primary text-on-primary font-label-lg text-label-lg px-6 py-3 rounded flex items-center gap-2 hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+                Nuevo producto
+            </button>
+</div>
+<!-- Grid of Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
+<!-- Product Card 1: Normal State -->
+<article class="bg-sand border border-latte rounded-lg overflow-hidden flex flex-col">
+<div class="h-48 w-full relative">
+<img alt="Cappuccino" class="w-full h-full object-cover" data-alt="A top-down, high-resolution shot of an artisanal cappuccino in a rustic, textured ceramic cup. The drink rests on a distressed wooden table, illuminated by soft, warm natural light that accentuates the delicate latte art. The overall aesthetic perfectly captures a boutique cafe atmosphere, blending earthy tones with a sense of minimalist elegance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVPfjL2_M62DUEMM-q11I6sMNY40Nfv3nv3KL3zvhWaheBXxP0q9N6pzPuupASZ_yQN1mBUS3yvNakoBc5rbTKuD9p6kl-HpR583E1wMk8Nh-aK9PMU7N84AxScbIQ9KnpaaKN4qDgrGIyJeFR01NcB0MhhmMaysaUhk0slso_XSGnNKnxvfGhVjfPRmMsLwxcihk0qe7UTu7ALfKtrxoiZQPGhrkPcUGM9ERXW7BdXaf0A1zOU775dVdDBxH32n7QorfNJEgp3qGI"/>
+</div>
+<div class="p-5 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-headline-md text-espresso leading-tight">Cappuccino Clásico</h3>
+<span class="font-label-lg text-label-lg text-terracota">$4.50</span>
+</div>
+<div class="mt-4 flex-1">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-1">Insumos principales</p>
+<ul class="text-body-md text-espresso/80 space-y-1">
+<li>• 18g Café de especialidad</li>
+<li>• 150ml Leche entera</li>
+</ul>
+</div>
+<button class="mt-6 border border-latte text-espresso font-label-lg text-label-lg py-2 w-full rounded hover:bg-mist transition-colors">
+                        Editar Detalles
+                    </button>
+</div>
+</article>
+<!-- Product Card 2: Warning State -->
+<article class="bg-sand border border-latte rounded-lg overflow-hidden flex flex-col relative">
+<div class="h-48 w-full relative">
+<img alt="Avocado Toast" class="w-full h-full object-cover opacity-80 grayscale-[30%]" data-alt="A beautifully plated avocado toast served on a thick slice of artisanal sourdough bread, resting on a minimalist off-white plate. The setting is bathed in bright, soft morning light, creating clean shadows that highlight the textures of the crust and the smooth avocado. The image embodies a modern, healthy boutique cafe vibe with subtle warm undertones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYHWgoQx38BOtcLyqBNA1A6Pq3pPvNagQNNVsWo1FGeBYhYj4ob_i8yGsaLrVDgiJyICEp-9PSMKDh5dYlO6QysojQJeBTzRQHK-ZDGtoHcBt3O7KVvvLs40GlX05z-J28cxY2jic4D-NFkEZ1LwmiTd8aharAkvFrnxJr_8FO6W2gxzTm5uUbXv_u6lui8rWPuexTo_mkDmuco2jKy5xrIV9s16GlK1VKYmFU9Ih_3R_yreeN6uoEJMbKuMbfts-4hxi-ue8ARHOD"/>
+<div class="absolute top-3 right-3 bg-error-container text-on-error-container border border-error/20 px-3 py-1 rounded-full flex items-center gap-1 shadow-sm backdrop-blur-md">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+<span class="font-label-md text-label-md font-bold">Sin stock de insumos</span>
+</div>
+</div>
+<div class="p-5 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-headline-md text-espresso leading-tight">Tostada de Aguacate</h3>
+<span class="font-label-lg text-label-lg text-terracota">$8.00</span>
+</div>
+<div class="mt-4 flex-1">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-1">Insumos principales</p>
+<ul class="text-body-md text-espresso/80 space-y-1">
+<li class="text-error font-medium">• 0 unidades Pan Masa Madre</li>
+<li>• 1 unidad Aguacate Hass</li>
+<li>• 5g Mix de semillas</li>
+</ul>
+</div>
+<button class="mt-6 border border-latte text-espresso font-label-lg text-label-lg py-2 w-full rounded hover:bg-mist transition-colors">
+                        Editar Detalles
+                    </button>
+</div>
+</article>
+<!-- Product Card 3: Normal State -->
+<article class="bg-sand border border-latte rounded-lg overflow-hidden flex flex-col">
+<div class="h-48 w-full relative">
+<img alt="Cold Brew" class="w-full h-full object-cover" data-alt="A tall glass of cold brew coffee filled with ice cubes, resting on a smooth marble countertop. Condensation beads form on the outside of the glass, catching soft natural light from a nearby window. The background is slightly out of focus, revealing hints of a warm, sophisticated cafe interior with soft beige tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHfKxeuzPWrrGVSjrNrKqq1uLWEJW3c4VcjfQTD0WERHpxsu66fSlw3zGV6jcvRcrI2IiKBxnFQSVECII1EMayyvKBb7cMK_NUZSyhCHCExMrXRvm68lBcS1veSSwPJqNa1a-ShhmtTsnYaf9RjrlaKp-YPRYZYTV_cnI2yC7e50Qm3JtDD7gSCI72a9x4F6dCddqCd1-tJBPI75rTAQrtLPsH4qeEU1eypVV9c9s-3MBrU1hwfS6G4L6aymfaCm7unjsz5mV_GN5g"/>
+</div>
+<div class="p-5 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-headline-md text-espresso leading-tight">Cold Brew Origin</h3>
+<span class="font-label-lg text-label-lg text-terracota">$5.50</span>
+</div>
+<div class="mt-4 flex-1">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-1">Insumos principales</p>
+<ul class="text-body-md text-espresso/80 space-y-1">
+<li>• 250ml Extracción en frío</li>
+<li>• 100g Hielo en cubo</li>
+</ul>
+</div>
+<button class="mt-6 border border-latte text-espresso font-label-lg text-label-lg py-2 w-full rounded hover:bg-mist transition-colors">
+                        Editar Detalles
+                    </button>
+</div>
+</article>
+<!-- Add new card placeholder -->
+<article class="bg-mist border border-dashed border-latte rounded-lg flex flex-col items-center justify-center p-6 text-center cursor-pointer hover:bg-sand/50 transition-colors min-h-[350px]">
+<div class="w-16 h-16 rounded-full bg-cream flex items-center justify-center mb-4 text-terracota">
+<span class="material-symbols-outlined text-[32px]">add</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-espresso mb-2">Crear Receta</h3>
+<p class="text-body-md text-on-surface-variant">Añade un nuevo producto a tu catálogo configurando sus insumos.</p>
+</article>
+</div>
+</main>
+<!-- Overlay & Drawer: "Editar producto" (Simulated Open State) -->
+<div class="fixed inset-0 bg-dark/30 z-50 backdrop-blur-sm transition-opacity"></div>
+<aside class="fixed right-0 top-0 h-full w-[440px] bg-background shadow-2xl z-50 flex flex-col border-l border-latte transition-transform transform translate-x-0">
+<!-- Drawer Header -->
+<div class="px-8 py-6 border-b border-latte/30 flex items-center justify-between bg-surface-bright">
+<h2 class="font-headline-md text-headline-md text-espresso">Editar producto</h2>
+<button class="text-on-surface-variant hover:text-espresso p-2 rounded-full hover:bg-mist transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Drawer Body -->
+<div class="flex-1 overflow-y-auto p-8 space-y-8 bg-background">
+<!-- Image Upload Area -->
+<div>
+<label class="block font-label-md text-label-md text-espresso uppercase tracking-widest mb-2">Fotografía</label>
+<div class="bg-sand border border-latte rounded-lg overflow-hidden relative group cursor-pointer h-48 w-full">
+<img alt="Cappuccino" class="w-full h-full object-cover" data-alt="A top-down, high-resolution shot of an artisanal cappuccino in a rustic, textured ceramic cup. The drink rests on a distressed wooden table, illuminated by soft, warm natural light that accentuates the delicate latte art. The overall aesthetic perfectly captures a boutique cafe atmosphere, blending earthy tones with a sense of minimalist elegance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyV5UvruaBxrGz8JF41tsNtH7bY6-umtcExCw8rYz4u4pBPG_89UoGhW1w5fzCvs7W91zNHTp-A9QiPAqGhPJrCJVFmZTvVdzpvNqmA0g_4WeD-7275mcNXiNHxjLgXDqZhnNNq0-ZSZsxD_IEuENo23kpN-k6_YKlbLVV_0MxP4Yqrhe7GRlXs2Fxn5duHY3kNYhuntWLkU6JeD5Cm8inWGwCreHiSSpvFioGFbcKivSnPxYtgmUARV0gqavVKL1QnJ_T8RQOQlZm"/>
+<div class="absolute inset-0 bg-dark/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-white text-[32px]">photo_camera</span>
+</div>
+</div>
+</div>
+<!-- Basic Info -->
+<div class="space-y-4">
+<div>
+<label class="block font-label-md text-label-md text-espresso uppercase tracking-widest mb-2">Nombre del producto</label>
+<input class="w-full bg-mist border border-latte/50 rounded px-4 py-3 font-body-md text-espresso focus:outline-none focus:border-terracota focus:ring-1 focus:ring-terracota" type="text" value="Cappuccino Clásico"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-espresso uppercase tracking-widest mb-2">Precio de Venta ($)</label>
+<input class="w-full bg-mist border border-latte/50 rounded px-4 py-3 font-body-md text-espresso focus:outline-none focus:border-terracota focus:ring-1 focus:ring-terracota" type="text" value="4.50"/>
+</div>
+</div>
+<hr class="border-latte/30"/>
+<!-- Recipe / Ingredients Configurator -->
+<div>
+<div class="flex items-center justify-between mb-4">
+<label class="block font-label-md text-label-md text-espresso uppercase tracking-widest">Receta e Insumos</label>
+<span class="font-label-md text-label-md text-terracota bg-terracota/10 px-2 py-1 rounded">2 ítems</span>
+</div>
+<div class="space-y-3">
+<!-- Ingredient Row 1 -->
+<div class="flex items-center gap-3 bg-mist p-3 rounded border border-latte/30">
+<div class="flex-1">
+<p class="font-body-md text-espresso font-medium">Café de especialidad</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Stock actual: 2.5 kg</p>
+</div>
+<input class="w-20 bg-background border border-latte/50 rounded px-2 py-2 text-center font-body-md text-espresso focus:outline-none focus:border-terracota" type="number" value="18"/>
+<span class="font-body-md text-on-surface-variant w-8">gr</span>
+<button class="text-on-surface-variant hover:text-error p-1">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+<!-- Ingredient Row 2 -->
+<div class="flex items-center gap-3 bg-mist p-3 rounded border border-latte/30">
+<div class="flex-1">
+<p class="font-body-md text-espresso font-medium">Leche entera</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Stock actual: 12 L</p>
+</div>
+<input class="w-20 bg-background border border-latte/50 rounded px-2 py-2 text-center font-body-md text-espresso focus:outline-none focus:border-terracota" type="number" value="150"/>
+<span class="font-body-md text-on-surface-variant w-8">ml</span>
+<button class="text-on-surface-variant hover:text-error p-1">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<button class="w-full mt-4 border border-dashed border-latte text-terracota font-label-lg text-label-lg py-3 rounded flex items-center justify-center gap-2 hover:bg-mist transition-colors">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                    Añadir insumo a la receta
+                </button>
+</div>
+</div>
+<!-- Drawer Footer -->
+<div class="px-8 py-5 border-t border-latte/30 bg-surface-bright flex justify-end gap-4">
+<button class="font-label-lg text-label-lg text-espresso px-6 py-2 hover:bg-mist rounded transition-colors">
+                Cancelar
+            </button>
+<button class="bg-primary text-on-primary font-label-lg text-label-lg px-6 py-2 rounded shadow-sm hover:bg-primary/90 transition-colors">
+                Guardar cambios
+            </button>
+</div>
+</aside>
+</body></html>

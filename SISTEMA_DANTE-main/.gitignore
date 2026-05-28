@@ -1,0 +1,5 @@
+eva-frontend/node_modules/
+eva-frontend/.next/
+eva-backend/vendor/
+eva-backend/.env
+
