@@ -89,6 +89,8 @@ export default function POSPage() {
       return;
     }
 
+    const itemPrice = product.discounted_price ?? product.price;
+
     setCart(prev => {
       const existing = prev.find(item => item.product_id === product.id);
       if (existing) {
@@ -101,9 +103,9 @@ export default function POSPage() {
       return [...prev, { 
         product_id: product.id, 
         name: product.name, 
-        price: product.price, 
+        price: itemPrice, 
         quantity: 1, 
-        subtotal: product.price 
+        subtotal: itemPrice 
       }];
     });
   };
@@ -195,6 +197,11 @@ export default function POSPage() {
         paypalOrderId = "PAY-" + Math.random().toString(36).substr(2, 9).toUpperCase();
       }
 
+      const currentClient = clients.find(c => c.id.toString() === selectedClientId);
+      const invoiceType = currentClient
+        ? (currentClient.document_type === 'ruc' ? 'factura' : 'boleta')
+        : 'ticket';
+
       const res = await apiFetch("http://localhost:8000/api/sales", {
         method: "POST",
         headers: {
@@ -203,6 +210,7 @@ export default function POSPage() {
         body: JSON.stringify({
           items: cart.map(item => ({ product_id: item.product_id, quantity: item.quantity })),
           payment_method: paymentMethod,
+          invoice_type: invoiceType,
           client_id: selectedClientId ? parseInt(selectedClientId) : null,
           paypal_order_id: paypalOrderId
         })

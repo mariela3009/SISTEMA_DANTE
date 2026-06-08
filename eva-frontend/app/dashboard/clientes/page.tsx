@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Modal from "../../components/Modal";
+import { apiFetch } from "../../lib/api";
 
 interface Client {
   id: number;
@@ -35,14 +36,11 @@ export default function ClientesPage() {
 
   const fetchClients = async () => {
     try {
-      const token = localStorage.getItem("eva_token");
       const url = new URL("http://localhost:8000/api/clients");
       if (searchTerm) url.searchParams.append("search", searchTerm);
       if (documentFilter) url.searchParams.append("document_type", documentFilter);
 
-      const res = await fetch(url.toString(), {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
+      const res = await apiFetch(url.toString());
       if (res.ok) {
         const data = await res.json();
         setClients(data.data || []); // Laravel paginated response
@@ -103,7 +101,6 @@ export default function ClientesPage() {
     setError("");
 
     try {
-      const token = localStorage.getItem("eva_token");
       const url = editClient 
         ? `http://localhost:8000/api/clients/${editClient.id}`
         : "http://localhost:8000/api/clients";
@@ -117,12 +114,10 @@ export default function ClientesPage() {
         phone: phone || null,
       };
 
-      const res = await fetch(url, {
+      const res = await apiFetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(body)
       });
@@ -145,10 +140,8 @@ export default function ClientesPage() {
     if (!confirm(`¿Estás seguro de que deseas eliminar a ${client.name}?`)) return;
 
     try {
-      const token = localStorage.getItem("eva_token");
-      const res = await fetch(`http://localhost:8000/api/clients/${client.id}`, {
+      const res = await apiFetch(`http://localhost:8000/api/clients/${client.id}`, {
         method: "DELETE",
-        headers: { "Authorization": `Bearer ${token}` }
       });
 
       const data = await res.json();

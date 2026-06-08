@@ -33,9 +33,9 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/audit-logs', [\App\Http\Controllers\Api\AuditController::class, 'index']);
     });
 
-    // Dashboard (Solo Admin)
-    Route::get('/dashboard/stats', [DashboardController::class, 'stats'])->middleware('role:admin');
-    Route::get('/alerts/stock',    [DashboardController::class, 'stockAlerts'])->middleware('role:admin');
+    // Dashboard (Admin y Cajero)
+    Route::get('/dashboard/stats', [DashboardController::class, 'stats'])->middleware('role:admin,cajero');
+    Route::get('/alerts/stock',    [DashboardController::class, 'stockAlerts'])->middleware('role:admin,cajero');
 
     // Categorías (Todos autenticados)
     Route::get('/categories', [CategoryController::class, 'index']);

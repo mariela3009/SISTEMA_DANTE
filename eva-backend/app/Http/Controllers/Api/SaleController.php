@@ -30,7 +30,7 @@ class SaleController extends Controller
             'items.*.quantity' => 'required|integer|min:1',
             'client_id' => 'nullable|exists:clients,id',
             'invoice_type' => 'required|in:ticket,boleta,factura',
-            'payment_method' => 'required|in:cash,paypal',
+            'payment_method' => 'required|in:cash,efectivo,paypal',
             'paypal_order_id' => 'required_if:payment_method,paypal'
         ]);
 
@@ -63,13 +63,15 @@ class SaleController extends Controller
 
             $invoiceType = $request->invoice_type;
 
+            $paymentMethod = $request->payment_method === 'cash' ? 'efectivo' : $request->payment_method;
+
             $sale = Sale::create([
                 'user_id'         => $request->user()->id,
                 'client_id'       => $request->client_id,
                 'subtotal'        => $subtotal,
                 'tax'             => $igv,
                 'total'           => $total,
-                'payment_method'  => $request->payment_method,
+                'payment_method'  => $paymentMethod,
                 'paypal_order_id' => $request->paypal_order_id,
                 'invoice_type'    => $invoiceType,
                 'status'          => 'completed',

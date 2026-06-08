@@ -104,6 +104,8 @@ class InventoryController extends Controller
             'quantity'      => $request->quantity,
             'reason'        => $request->reason,
             'status'        => 'pending', // pendiente de aprobación del admin
+            'saldo_cantidad'=> $ingredient->stock_actual,
+            'cost_per_unit' => $ingredient->costo_promedio,
         ]);
 
         return response()->json(['message' => 'Solicitud de merma enviada. Pendiente de aprobación.', 'id' => $movement->id], 201);
@@ -134,6 +136,7 @@ class InventoryController extends Controller
         DB::transaction(function () use ($request, $product, &$movements) {
             foreach ($product->recipeItems as $recipeItem) {
                 $required = $recipeItem->quantity * $request->quantity;
+                $ingredient = $recipeItem->ingredient;
                 $movements[] = InventoryMovement::create([
                     'ingredient_id' => $recipeItem->ingredient_id,
                     'user_id'       => $request->user()->id,
@@ -141,6 +144,8 @@ class InventoryController extends Controller
                     'quantity'      => $required,
                     'reason'        => $request->reason . " (Merma de {$request->quantity}x {$product->name})",
                     'status'        => 'pending',
+                    'saldo_cantidad'=> $ingredient->stock_actual,
+                    'cost_per_unit' => $ingredient->costo_promedio,
                 ]);
             }
         });

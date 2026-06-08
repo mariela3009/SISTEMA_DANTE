@@ -114,20 +114,31 @@ class ProductController extends Controller
     /** Formatea el producto para la respuesta */
     private function formatProduct(Product $product): array
     {
+        $activePromotion = $product->active_promotion;
+
         return [
-            'id'          => $product->id,
-            'name'        => $product->name,
-            'price'       => $product->price,
-            'image_url'   => $product->image_url,
-            'is_active'   => $product->is_active,
-            'category'    => $product->category ? ['id' => $product->category->id, 'name' => $product->category->name] : null,
-            'recipe_items' => $product->recipeItems->map(fn($r) => [
+            'id'              => $product->id,
+            'name'            => $product->name,
+            'price'           => $product->price,
+            'discounted_price' => $product->discounted_price,
+            'active_promotion' => $activePromotion ? [
+                'id' => $activePromotion->id,
+                'name' => $activePromotion->name,
+                'discount_percentage' => $activePromotion->discount_percentage,
+                'start_date' => $activePromotion->start_date,
+                'end_date' => $activePromotion->end_date,
+                'is_active' => $activePromotion->is_active,
+            ] : null,
+            'image_url'       => $product->image_url,
+            'is_active'       => $product->is_active,
+            'category'        => $product->category ? ['id' => $product->category->id, 'name' => $product->category->name] : null,
+            'recipe_items'    => $product->recipeItems->map(fn($r) => [
                 'id'            => $r->id,
                 'ingredient_id' => $r->ingredient_id,
                 'ingredient'    => ['id' => $r->ingredient->id, 'name' => $r->ingredient->name, 'unit' => $r->ingredient->unit, 'stock_actual' => $r->ingredient->stock_actual],
                 'quantity'      => $r->quantity,
             ])->values(),
-            'has_stock'   => $product->is_active ? $product->load('recipeItems.ingredient')->hasStock() : false,
+            'has_stock'       => $product->is_active ? $product->load('recipeItems.ingredient')->hasStock() : false,
         ];
     }
 }

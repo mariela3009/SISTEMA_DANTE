@@ -53,7 +53,7 @@ class Product extends Model
 
     public function promotions()
     {
-        return $this->belongsToMany(Promotion::class);
+        return $this->belongsToMany(Promotion::class, 'promotion_product');
     }
 
     // Verifica si todos los insumos de la receta tienen stock
