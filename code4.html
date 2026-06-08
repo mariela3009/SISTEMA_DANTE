@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Control de Inventario - Cafetería Dante</title>
+<!-- Google Fonts: Playfair Display for Headlines, DM Sans for Body/Labels -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#2e1503",
+                        "surface-container-high": "#f0e7d3",
+                        "on-error-container": "#93000a",
+                        "sand": "#E8D5B0",
+                        "on-tertiary-fixed-variant": "#594320",
+                        "inverse-surface": "#353022",
+                        "background": "#fff9ef",
+                        "on-secondary-fixed-variant": "#603f29",
+                        "on-tertiary-container": "#fffdff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#380d00",
+                        "primary-fixed-dim": "#ffb59b",
+                        "inverse-on-surface": "#f9f0db",
+                        "surface-bright": "#fff9ef",
+                        "tertiary": "#715934",
+                        "secondary-fixed": "#ffdcc7",
+                        "tertiary-container": "#8c714a",
+                        "on-background": "#1f1b0f",
+                        "on-primary-container": "#fffdff",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#a23f15",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#7a553d",
+                        "primary-container": "#c0552a",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#a03d13",
+                        "surface-container-low": "#fcf3de",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#edbd9f",
+                        "latte": "#C8A97E",
+                        "on-tertiary-fixed": "#281800",
+                        "surface-dim": "#e2d9c5",
+                        "terracota": "#C0552A",
+                        "tertiary-fixed-dim": "#e2c195",
+                        "outline": "#8a7269",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#ffdbcf",
+                        "mist": "#F9F4EC",
+                        "espresso": "#4A2C17",
+                        "dark": "#2A1A0E",
+                        "on-surface-variant": "#57423b",
+                        "surface-container-highest": "#ebe2cd",
+                        "inverse-primary": "#ffb59b",
+                        "surface-container": "#f6edd8",
+                        "surface": "#fff9ef",
+                        "on-surface": "#1f1b0f",
+                        "tertiary-fixed": "#ffddb0",
+                        "outline-variant": "#dec0b7",
+                        "secondary": "#7b563e",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#812900",
+                        "cream": "#F5ECD7",
+                        "surface-variant": "#ebe2cd",
+                        "secondary-container": "#ffcdaf"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "0.5rem",
+                        "sidebar-width": "260px",
+                        "stack-md": "1rem",
+                        "container-padding": "2rem",
+                        "stack-lg": "2rem",
+                        "gutter": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "body-md": ["DM Sans"],
+                        "label-md": ["DM Sans"],
+                        "headline-md": ["Playfair Display"],
+                        "label-lg": ["DM Sans"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-lg": ["DM Sans"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "headline-xl": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md h-screen overflow-hidden flex">
+<!-- SideNavBar (Shared Component) -->
+<nav class="w-sidebar-width h-full fixed left-0 top-0 bg-espresso dark:bg-dark border-r border-latte/20 flex flex-col py-6 space-y-2 z-50 hidden md:flex">
+<!-- Brand Header -->
+<div class="px-6 pb-6 mb-4 border-b border-latte/10 flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-cream flex items-center justify-center text-espresso">
+<span class="material-symbols-outlined">local_cafe</span>
+</div>
+<div>
+<h1 class="font-headline-xl text-headline-xl text-cream">EVA</h1>
+<p class="font-label-md text-label-md text-mist/70">Cafetería Dante</p>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<div class="flex-1 flex flex-col space-y-1">
+<a class="text-mist/80 hover:text-cream hover:bg-tertiary/40 rounded-lg mx-3 px-4 py-3 flex items-center gap-3 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-lg text-label-lg">Gerencia</span>
+</a>
+<a class="text-mist/80 hover:text-cream hover:bg-tertiary/40 rounded-lg mx-3 px-4 py-3 flex items-center gap-3 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">point_of_sale</span>
+<span class="font-label-lg text-label-lg">Ventas</span>
+</a>
+<a class="text-mist/80 hover:text-cream hover:bg-tertiary/40 rounded-lg mx-3 px-4 py-3 flex items-center gap-3 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">local_cafe</span>
+<span class="font-label-lg text-label-lg">Productos</span>
+</a>
+<!-- Active Tab -->
+<a class="bg-primary text-on-primary rounded-lg mx-3 px-4 py-3 flex items-center gap-3 scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-lg text-label-lg">Inventario</span>
+</a>
+</div>
+<!-- Footer Tabs -->
+<div class="mt-auto flex flex-col space-y-1 border-t border-latte/10 pt-4">
+<a class="text-mist/80 hover:text-cream hover:bg-tertiary/40 rounded-lg mx-3 px-4 py-3 flex items-center gap-3 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label-lg text-label-lg">Perfil</span>
+</a>
+<a class="text-mist/80 hover:text-cream hover:bg-tertiary/40 rounded-lg mx-3 px-4 py-3 flex items-center gap-3 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-lg text-label-lg">Configuración</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="md:ml-sidebar-width w-full md:w-[calc(100%-260px)] h-full flex flex-col relative">
+<!-- TopAppBar (Shared Component) -->
+<header class="fixed top-0 right-0 w-full md:w-[calc(100%-260px)] z-40 bg-background/95 backdrop-blur-sm border-b border-latte/30 flex items-center justify-between px-gutter py-4 hidden md:flex">
+<div class="font-headline-md text-headline-md text-espresso">
+                Cafetería Dante
+            </div>
+<div class="flex items-center gap-2">
+<button class="text-on-surface-variant hover:bg-mist rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-mist rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="text-on-surface-variant hover:bg-mist rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+</div>
+</header>
+<!-- Canvas Area -->
+<main class="flex-1 overflow-y-auto pt-[80px] p-container-padding">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-stack-lg">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-espresso mb-1">Control de Inventario</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Gestiona los insumos y materias primas de la cafetería.</p>
+</div>
+<button class="bg-primary text-on-primary font-label-lg text-label-lg px-6 py-3 rounded-lg hover:bg-surface-tint transition-colors flex items-center gap-2 shadow-sm self-start md:self-auto">
+<span class="material-symbols-outlined" style="font-size: 20px;">add</span>
+                    Registrar insumo
+                </button>
+</div>
+<!-- Filters Section -->
+<div class="bg-surface-container-high/50 border border-latte/40 rounded-xl p-4 mb-stack-lg flex flex-col md:flex-row gap-4 items-end">
+<div class="w-full md:w-64">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Buscar insumo</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/70" style="font-size: 20px;">search</span>
+<input class="w-full bg-mist border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-body-md font-body-md text-espresso focus:outline-none focus:border-tertiary focus:ring-1 focus:ring-tertiary placeholder:text-on-surface-variant/50" placeholder="Ej. Grano de café..." type="text"/>
+</div>
+</div>
+<div class="w-full md:w-48">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Unidad de medida</label>
+<select class="w-full bg-mist border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md text-espresso focus:outline-none focus:border-tertiary focus:ring-1 focus:ring-tertiary appearance-none">
+<option value="">Todas las unidades</option>
+<option value="kg">Kilogramos (kg)</option>
+<option value="l">Litros (L)</option>
+<option value="un">Unidades (un)</option>
+</select>
+</div>
+<div class="w-full md:w-48">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Estado</label>
+<select class="w-full bg-mist border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md text-espresso focus:outline-none focus:border-tertiary focus:ring-1 focus:ring-tertiary appearance-none">
+<option value="">Todos los estados</option>
+<option value="normal">Normal</option>
+<option value="bajo">Stock Bajo</option>
+<option value="vencer">Por vencer</option>
+</select>
+</div>
+<button class="w-full md:w-auto px-4 py-2 border border-latte text-espresso font-label-lg text-label-lg rounded-lg hover:bg-mist transition-colors flex items-center justify-center gap-2 h-[42px]">
+<span class="material-symbols-outlined" style="font-size: 18px;">filter_list</span>
+                    Filtrar
+                </button>
+</div>
+<!-- Data Table Card (Bento Style approach) -->
+<div class="bg-sand border border-latte rounded-xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-high border-b border-latte">
+<tr>
+<th class="py-4 px-6 font-label-lg text-label-lg text-espresso/70 font-semibold w-1/3">Nombre del Insumo</th>
+<th class="py-4 px-6 font-label-lg text-label-lg text-espresso/70 font-semibold text-right">Cantidad</th>
+<th class="py-4 px-6 font-label-lg text-label-lg text-espresso/70 font-semibold">Unidad</th>
+<th class="py-4 px-6 font-label-lg text-label-lg text-espresso/70 font-semibold">Vencimiento</th>
+<th class="py-4 px-6 font-label-lg text-label-lg text-espresso/70 font-semibold">Estado</th>
+<th class="py-4 px-6 font-label-lg text-label-lg text-espresso/70 font-semibold text-center">Acciones</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md text-espresso">
+<!-- Row 1: Normal -->
+<tr class="border-b border-latte/30 hover:bg-mist/60 transition-colors">
+<td class="py-4 px-6 font-medium">Grano de Café (Etiopía)</td>
+<td class="py-4 px-6 text-right">24.5</td>
+<td class="py-4 px-6 text-on-surface-variant">kg</td>
+<td class="py-4 px-6 text-on-surface-variant">15/10/2024</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container border border-outline-variant text-espresso font-label-md text-label-md">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+                                        Normal
+                                    </span>
+</td>
+<td class="py-4 px-6 text-center">
+<button class="text-on-surface-variant hover:text-terracota p-1 transition-colors"><span class="material-symbols-outlined" style="font-size: 20px;">more_vert</span></button>
+</td>
+</tr>
+<!-- Row 2: Low Stock -->
+<tr class="border-b border-latte/30 hover:bg-mist/60 transition-colors">
+<td class="py-4 px-6 font-medium">Leche de Avena (Barista)</td>
+<td class="py-4 px-6 text-right text-secondary-fixed-dim font-semibold">3.0</td>
+<td class="py-4 px-6 text-on-surface-variant">Litros</td>
+<td class="py-4 px-6 text-on-surface-variant">22/08/2024</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md">
+<span class="material-symbols-outlined" style="font-size: 14px;">warning</span>
+                                        Stock Bajo
+                                    </span>
+</td>
+<td class="py-4 px-6 text-center">
+<button class="text-on-surface-variant hover:text-terracota p-1 transition-colors"><span class="material-symbols-outlined" style="font-size: 20px;">more_vert</span></button>
+</td>
+</tr>
+<!-- Row 3: Expiring -->
+<tr class="border-b border-latte/30 hover:bg-mist/60 transition-colors">
+<td class="py-4 px-6 font-medium">Jarabe de Vainilla Artesanal</td>
+<td class="py-4 px-6 text-right">1.5</td>
+<td class="py-4 px-6 text-on-surface-variant">Litros</td>
+<td class="py-4 px-6 text-error font-semibold">05/06/2024</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-error-container text-on-error-container font-label-md text-label-md">
+<span class="material-symbols-outlined" style="font-size: 14px;">error</span>
+                                        Por vencer
+                                    </span>
+</td>
+<td class="py-4 px-6 text-center">
+<button class="text-on-surface-variant hover:text-terracota p-1 transition-colors"><span class="material-symbols-outlined" style="font-size: 20px;">more_vert</span></button>
+</td>
+</tr>
+<!-- Row 4: Normal -->
+<tr class="border-b border-latte/30 hover:bg-mist/60 transition-colors">
+<td class="py-4 px-6 font-medium">Vasos Kraft (12oz)</td>
+<td class="py-4 px-6 text-right">850</td>
+<td class="py-4 px-6 text-on-surface-variant">unidades</td>
+<td class="py-4 px-6 text-on-surface-variant">N/A</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container border border-outline-variant text-espresso font-label-md text-label-md">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+                                        Normal
+                                    </span>
+</td>
+<td class="py-4 px-6 text-center">
+<button class="text-on-surface-variant hover:text-terracota p-1 transition-colors"><span class="material-symbols-outlined" style="font-size: 20px;">more_vert</span></button>
+</td>
+</tr>
+<!-- Row 5: Normal -->
+<tr class="hover:bg-mist/60 transition-colors">
+<td class="py-4 px-6 font-medium">Azúcar Mascabado</td>
+<td class="py-4 px-6 text-right">12.0</td>
+<td class="py-4 px-6 text-on-surface-variant">kg</td>
+<td class="py-4 px-6 text-on-surface-variant">30/12/2025</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container border border-outline-variant text-espresso font-label-md text-label-md">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+                                        Normal
+                                    </span>
+</td>
+<td class="py-4 px-6 text-center">
+<button class="text-on-surface-variant hover:text-terracota p-1 transition-colors"><span class="material-symbols-outlined" style="font-size: 20px;">more_vert</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="bg-surface-container-high/30 border-t border-latte px-6 py-4 flex items-center justify-between">
+<p class="font-body-md text-body-md text-on-surface-variant/80">Mostrando 1 a 5 de 42 insumos</p>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-lg text-on-surface-variant hover:bg-mist transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined" style="font-size: 20px;">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-tertiary/10 text-tertiary font-label-lg text-label-lg flex items-center justify-center">1</button>
+<button class="w-8 h-8 rounded-lg text-on-surface-variant hover:bg-mist font-label-lg text-label-lg flex items-center justify-center transition-colors">2</button>
+<button class="w-8 h-8 rounded-lg text-on-surface-variant hover:bg-mist font-label-lg text-label-lg flex items-center justify-center transition-colors">3</button>
+<button class="p-2 rounded-lg text-on-surface-variant hover:bg-mist transition-colors">
+<span class="material-symbols-outlined" style="font-size: 20px;">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
