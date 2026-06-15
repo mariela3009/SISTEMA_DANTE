@@ -1,8 +1,10 @@
 "use client";
+import { API_BASE_URL } from "@/app/lib/api";
 
 import { useEffect, useState } from "react";
 import Modal from "../../components/Modal";
 import { apiFetch } from "../../lib/api";
+import { showToast } from "../../components/Toast";
 
 interface Client {
   id: number;
@@ -36,7 +38,7 @@ export default function ClientesPage() {
 
   const fetchClients = async () => {
     try {
-      const url = new URL("http://localhost:8000/api/clients");
+      const url = new URL(`${API_BASE_URL}/api/clients`);
       if (searchTerm) url.searchParams.append("search", searchTerm);
       if (documentFilter) url.searchParams.append("document_type", documentFilter);
 
@@ -102,8 +104,8 @@ export default function ClientesPage() {
 
     try {
       const url = editClient 
-        ? `http://localhost:8000/api/clients/${editClient.id}`
-        : "http://localhost:8000/api/clients";
+        ? `${API_BASE_URL}/api/clients/${editClient.id}`
+        : `${API_BASE_URL}/api/clients`;
       const method = editClient ? "PUT" : "POST";
       
       const body = {
@@ -124,11 +126,17 @@ export default function ClientesPage() {
 
       const data = await res.json();
       if (!res.ok) {
+        // Parsear errores de validación Laravel
+        if (data.errors) {
+          const first = Object.values(data.errors)[0] as string[];
+          throw new Error(first[0]);
+        }
         throw new Error(data.message || data.errors?.document_number?.[0] || "Error al procesar el cliente.");
       }
 
       setIsModalOpen(false);
       fetchClients();
+      showToast(editClient ? "Cliente actualizado correctamente." : "Cliente creado correctamente.", "success");
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -140,19 +148,20 @@ export default function ClientesPage() {
     if (!confirm(`¿Estás seguro de que deseas eliminar a ${client.name}?`)) return;
 
     try {
-      const res = await apiFetch(`http://localhost:8000/api/clients/${client.id}`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/clients/${client.id}`, {
         method: "DELETE",
       });
 
       const data = await res.json();
       if (res.ok) {
         fetchClients();
+        showToast("Cliente eliminado correctamente.", "success");
       } else {
-        alert(data.message || "Error al eliminar cliente.");
+        showToast(data.message || "Error al eliminar cliente.", "error");
       }
     } catch (err) {
       console.error(err);
-      alert("Error de red.");
+      showToast("Error de conexión con el servidor.", "error");
     }
   };
 

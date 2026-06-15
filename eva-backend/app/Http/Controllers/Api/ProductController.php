@@ -9,6 +9,7 @@ use App\Models\Ingredient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -45,7 +46,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'        => 'required|string|max:255',
+            'name'        => 'required|string|max:255|unique:products,name',
             'price'       => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
             'image_url'   => 'nullable|string',
@@ -63,7 +64,7 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $data = $request->validate([
-            'name'        => 'sometimes|string|max:255',
+            'name'        => ['sometimes', 'string', 'max:255', Rule::unique('products', 'name')->ignore($product->id)],
             'price'       => 'sometimes|numeric|min:0',
             'category_id' => 'sometimes|exists:categories,id',
             'image_url'   => 'nullable|string',

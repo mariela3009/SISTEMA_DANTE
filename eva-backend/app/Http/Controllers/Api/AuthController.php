@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -49,12 +51,14 @@ class AuthController extends Controller
         return response()->json(['message' => 'Sesión cerrada correctamente.']);
     }
 
-    /**
-     * GET /api/me
-     */
     public function me()
     {
-        return response()->json(auth('api')->user());
+        $user = auth('api')->user();
+        $permissions = \App\Models\RolePermission::where('role', $user->role)
+            ->get()
+            ->keyBy('module');
+
+        return response()->json(array_merge($user->toArray(), ['permissions' => $permissions]));
     }
 
     /**
@@ -67,11 +71,33 @@ class AuthController extends Controller
 
     protected function respondWithToken($token)
     {
+        $user = auth('api')->user();
+        $permissions = \App\Models\RolePermission::where('role', $user->role)
+            ->get()
+            ->keyBy('module');
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 60,
-            'user' => auth('api')->user()
+            'user' => array_merge($user->toArray(), ['permissions' => $permissions])
         ]);
+    }
+
+    /**
+     * POST /api/reset-password
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $user = User::where('email', $request->email)->firstOrFail();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response()->json(['message' => 'Contraseña actualizada correctamente.']);
     }
 }

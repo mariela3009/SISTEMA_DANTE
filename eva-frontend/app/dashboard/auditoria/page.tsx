@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/app/lib/api";
 
 import { useEffect, useState } from "react";
 import { apiFetch } from "../../lib/api";
@@ -10,7 +11,7 @@ export default function AuditoriaPage() {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const res = await apiFetch("http://localhost:8000/api/audit-logs");
+        const res = await apiFetch(`${API_BASE_URL}/api/audit-logs`);
         if (res.ok) {
           setLogs(await res.json());
         }

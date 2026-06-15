@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 
 // Rutas públicas
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 // Rutas protegidas (requieren token JWT)
 Route::middleware('auth:api')->group(function () {
@@ -27,10 +28,16 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/me',      [AuthController::class, 'me']);
 
-    // Usuarios y Auditoría (Solo admin)
+    // Usuarios, Auditoría y Roles (Solo admin)
     Route::middleware('role:admin')->group(function () {
         Route::apiResource('/users', \App\Http\Controllers\Api\UserController::class);
         Route::get('/audit-logs', [\App\Http\Controllers\Api\AuditController::class, 'index']);
+
+        // Gestión de Roles y Permisos
+        Route::get('/role-permissions', [\App\Http\Controllers\Api\RolePermissionController::class, 'index']);
+        Route::get('/role-permissions/{role}', [\App\Http\Controllers\Api\RolePermissionController::class, 'show']);
+        Route::put('/role-permissions/{role}', [\App\Http\Controllers\Api\RolePermissionController::class, 'update']);
+        Route::post('/role-permissions/{role}/reset', [\App\Http\Controllers\Api\RolePermissionController::class, 'reset']);
     });
 
     // Dashboard (Admin y Cajero)
@@ -92,5 +99,8 @@ Route::middleware('auth:api')->group(function () {
     // Inteligencia Artificial (Admin)
     Route::middleware('role:admin')->group(function () {
         Route::get('/ai/dashboard', [\App\Http\Controllers\Api\AiDashboardController::class, 'index']);
+        // Sugerencias de productos por insumos próximos a vencer
+        Route::get('/ai/expiring-suggestions',  [\App\Http\Controllers\Api\ExpiringProductSuggestionController::class, 'index']);
+        Route::post('/ai/expiring-suggestions/create-product', [\App\Http\Controllers\Api\ExpiringProductSuggestionController::class, 'createProduct']);
     });
 });

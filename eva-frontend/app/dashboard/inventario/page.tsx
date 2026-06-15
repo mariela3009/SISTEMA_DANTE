@@ -1,8 +1,23 @@
 "use client";
+import { API_BASE_URL } from "@/app/lib/api";
 
 import { useEffect, useState } from "react";
 import Modal from "../../components/Modal";
 import { apiFetch } from "../../lib/api";
+import { showToast } from "../../components/Toast";
+
+async function extractErrorMessage(res: Response, fallback: string): Promise<string> {
+  try {
+    const data = await res.json();
+    if (data.errors) {
+      const first = Object.values(data.errors)[0] as string[];
+      return first[0];
+    }
+    return data.message || fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 export default function InventarioPage() {
   const [ingredients, setIngredients] = useState<any[]>([]);
@@ -11,6 +26,12 @@ export default function InventarioPage() {
   const [statusFilter, setStatusFilter] = useState("");
   const [products, setProducts] = useState<any[]>([]);
   const [pendingMermas, setPendingMermas] = useState<any[]>([]);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [perPage, setPerPage] = useState(15);
 
   // Create Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,16 +49,21 @@ export default function InventarioPage() {
   const [isMermaModalOpen, setIsMermaModalOpen] = useState(false);
   const [mermaData, setMermaData] = useState({ product_id: "", quantity: 1, reason: "" });
 
-  const fetchIngredients = async () => {
+  const fetchIngredients = async (page = currentPage) => {
     try {
-      const url = new URL("http://localhost:8000/api/ingredients");
+      const url = new URL(`${API_BASE_URL}/api/ingredients`);
       if (searchTerm) url.searchParams.append("search", searchTerm);
       if (statusFilter) url.searchParams.append("status", statusFilter);
+      url.searchParams.append("page", page.toString());
 
       const res = await apiFetch(url.toString());
       if (res.ok) {
         const data = await res.json();
-        setIngredients(data.data); // data.data because of pagination
+        setIngredients(data.data);
+        setCurrentPage(data.current_page);
+        setLastPage(data.last_page);
+        setTotal(data.total);
+        setPerPage(data.per_page);
       }
     } catch (error) {
       console.error(error);
@@ -48,7 +74,7 @@ export default function InventarioPage() {
 
   const fetchPendingMermas = async () => {
     try {
-      const res = await apiFetch("http://localhost:8000/api/inventory/movements?status=pending");
+      const res = await apiFetch(`${API_BASE_URL}/api/inventory/movements?status=pending`);
       if (res.ok) {
         const data = await res.json();
         setPendingMermas(data.data || []);
@@ -60,7 +86,7 @@ export default function InventarioPage() {
 
   const fetchProducts = async () => {
     try {
-      const res = await apiFetch("http://localhost:8000/api/products");
+      const res = await apiFetch(`${API_BASE_URL}/api/products`);
       if (res.ok) setProducts(await res.json());
     } catch (e) {
       console.error(e);
@@ -68,7 +94,8 @@ export default function InventarioPage() {
   };
 
   useEffect(() => {
-    fetchIngredients();
+    setCurrentPage(1); // reset to page 1 when filters change
+    fetchIngredients(1);
     fetchPendingMermas();
     fetchProducts();
   }, [searchTerm, statusFilter]);
@@ -92,7 +119,7 @@ export default function InventarioPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await apiFetch("http://localhost:8000/api/ingredients", {
+      const res = await apiFetch(`${API_BASE_URL}/api/ingredients`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -103,13 +130,14 @@ export default function InventarioPage() {
         setIsModalOpen(false);
         setFormData({ name: "", unit: "ml", stock_minimo: 0, stock_actual: 0, fecha_vencimiento: "" });
         fetchIngredients();
+        showToast("Insumo creado correctamente.", "success");
       } else {
-        const data = await res.json();
-        alert(data.message || "Error al crear insumo");
+        const msg = await extractErrorMessage(res, "Error al crear insumo");
+        showToast(msg, "error");
       }
     } catch (err) {
       console.error(err);
-      alert("Error de red");
+      showToast("Error de conexión con el servidor.", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -120,7 +148,7 @@ export default function InventarioPage() {
     if (!editIngredient) return;
     setIsSubmitting(true);
     try {
-      const res = await apiFetch(`http://localhost:8000/api/ingredients/${editIngredient.id}`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/ingredients/${editIngredient.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
@@ -128,8 +156,10 @@ export default function InventarioPage() {
       if (res.ok) {
         setEditIngredient(null);
         fetchIngredients();
+        showToast("Insumo actualizado correctamente.", "success");
       } else {
-        alert("Error al editar insumo");
+        const msg = await extractErrorMessage(res, "Error al editar insumo");
+        showToast(msg, "error");
       }
     } finally {
       setIsSubmitting(false);
@@ -140,20 +170,20 @@ export default function InventarioPage() {
     if (!confirm(`¿Estás seguro de que deseas desactivar el insumo "${item.name}"?`)) return;
     
     try {
-      const res = await apiFetch(`http://localhost:8000/api/ingredients/${item.id}`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/ingredients/${item.id}`, {
         method: "DELETE"
       });
       
       const data = await res.json();
       if (res.ok) {
-        alert("Insumo desactivado correctamente.");
+        showToast("Insumo desactivado correctamente.", "success");
         fetchIngredients();
       } else {
-        alert(data.message || "Error al desactivar el insumo.");
+        showToast(data.message || "Error al desactivar el insumo.", "error");
       }
     } catch (err) {
       console.error(err);
-      alert("Error de red.");
+      showToast("Error de conexión con el servidor.", "error");
     }
   };
 
@@ -162,7 +192,7 @@ export default function InventarioPage() {
     if (!entradaIngredient) return;
     setIsSubmitting(true);
     try {
-      const res = await apiFetch(`http://localhost:8000/api/inventory/entrada`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/inventory/entrada`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -173,8 +203,10 @@ export default function InventarioPage() {
         setEntradaIngredient(null);
         setEntradaData({ quantity: 0, cost_per_unit: 0 });
         fetchIngredients();
+        showToast("Entrada de stock registrada correctamente.", "success");
       } else {
-        alert("Error al registrar entrada");
+        const msg = await extractErrorMessage(res, "Error al registrar entrada");
+        showToast(msg, "error");
       }
     } finally {
       setIsSubmitting(false);
@@ -193,7 +225,7 @@ export default function InventarioPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await apiFetch(`http://localhost:8000/api/inventory/merma-producto`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/inventory/merma-producto`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(mermaData)
@@ -202,10 +234,10 @@ export default function InventarioPage() {
         setIsMermaModalOpen(false);
         setMermaData({ product_id: "", quantity: 1, reason: "" });
         fetchPendingMermas();
-        alert("Merma solicitada correctamente. Pendiente de aprobación.");
+        showToast("Merma solicitada. Pendiente de aprobación del admin.", "warning");
       } else {
         const data = await res.json();
-        alert(data.message || "Error al solicitar merma");
+        showToast(data.message || "Error al solicitar merma", "error");
       }
     } finally {
       setIsSubmitting(false);
@@ -215,15 +247,16 @@ export default function InventarioPage() {
   const handleApproveMerma = async (movementId: number, approve: boolean) => {
     try {
       const endpoint = approve ? "approve" : "reject";
-      const res = await apiFetch(`http://localhost:8000/api/inventory/merma/${movementId}/${endpoint}`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/inventory/merma/${movementId}/${endpoint}`, {
         method: "POST"
       });
       if (res.ok) {
         fetchPendingMermas();
         fetchIngredients();
+        showToast(approve ? "Merma aprobada." : "Merma rechazada.", approve ? "success" : "info");
       } else {
         const data = await res.json();
-        alert(data.message || "Error procesando la merma");
+        showToast(data.message || "Error procesando la merma", "error");
       }
     } catch (e) {
       console.error(e);
@@ -379,6 +412,74 @@ export default function InventarioPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Bar */}
+        {total > 0 && (
+          <div className="px-6 py-4 border-t border-latte/30 bg-mist flex flex-col sm:flex-row items-center justify-between gap-3">
+            {/* Info text */}
+            <p className="text-sm text-on-surface-variant">
+              Mostrando{" "}
+              <span className="font-semibold text-espresso">
+                {(currentPage - 1) * perPage + 1}–{Math.min(currentPage * perPage, total)}
+              </span>{" "}
+              de{" "}
+              <span className="font-semibold text-espresso">{total}</span> insumos
+              {lastPage > 1 && (
+                <span className="text-on-surface-variant/60 ml-1">
+                  · Usa el buscador para encontrar uno específico
+                </span>
+              )}
+            </p>
+
+            {/* Page controls */}
+            {lastPage > 1 && (
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => fetchIngredients(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-latte/50 text-sm font-medium text-espresso hover:bg-latte/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+                  Anterior
+                </button>
+
+                {Array.from({ length: lastPage }, (_, i) => i + 1)
+                  .filter(p => p === 1 || p === lastPage || Math.abs(p - currentPage) <= 1)
+                  .reduce<(number | string)[]>((acc, p, idx, arr) => {
+                    if (idx > 0 && (p as number) - (arr[idx - 1] as number) > 1) acc.push("...");
+                    acc.push(p);
+                    return acc;
+                  }, [])
+                  .map((p, i) =>
+                    p === "..." ? (
+                      <span key={`ellipsis-${i}`} className="px-2 text-on-surface-variant text-sm">…</span>
+                    ) : (
+                      <button
+                        key={p}
+                        onClick={() => fetchIngredients(p as number)}
+                        className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
+                          currentPage === p
+                            ? "bg-primary text-white shadow-sm"
+                            : "border border-latte/50 text-espresso hover:bg-latte/20"
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    )
+                  )}
+
+                <button
+                  onClick={() => fetchIngredients(currentPage + 1)}
+                  disabled={currentPage === lastPage}
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-latte/50 text-sm font-medium text-espresso hover:bg-latte/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  Siguiente
+                  <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Nuevo Insumo">

@@ -1,8 +1,10 @@
 "use client";
+import { API_BASE_URL } from "@/app/lib/api";
 
 import { useEffect, useState } from "react";
 import Modal from "../../components/Modal";
 import { apiFetch } from "../../lib/api";
+import { showToast } from "../../components/Toast";
 
 export default function PromocionesPage() {
   const [promotions, setPromotions] = useState<any[]>([]);
@@ -25,8 +27,8 @@ export default function PromocionesPage() {
   const fetchData = async () => {
     try {
       const [promoRes, prodRes] = await Promise.all([
-        apiFetch("http://localhost:8000/api/promotions"),
-        apiFetch("http://localhost:8000/api/products?active=1")
+        apiFetch(`${API_BASE_URL}/api/promotions`),
+        apiFetch(`${API_BASE_URL}/api/products?active=1`)
       ]);
 
       if (promoRes.ok && prodRes.ok) {
@@ -93,8 +95,8 @@ export default function PromocionesPage() {
 
     try {
       const url = editPromo 
-        ? `http://localhost:8000/api/promotions/${editPromo.id}`
-        : "http://localhost:8000/api/promotions";
+        ? `${API_BASE_URL}/api/promotions/${editPromo.id}`
+        : `${API_BASE_URL}/api/promotions`;
         
       const res = await apiFetch(url, {
         method: editPromo ? "PUT" : "POST",
@@ -106,13 +108,19 @@ export default function PromocionesPage() {
         setIsModalOpen(false);
         resetForm();
         fetchData();
+        showToast(editPromo ? "Promoción actualizada correctamente." : "Promoción creada correctamente.", "success");
       } else {
         const data = await res.json();
-        alert(data.message || "Error al guardar promoción");
+        if (data.errors) {
+          const first = Object.values(data.errors)[0] as string[];
+          showToast(first[0], "error");
+        } else {
+          showToast(data.message || "Error al guardar promoción", "error");
+        }
       }
     } catch (e) {
       console.error(e);
-      alert("Error de red");
+      showToast("Error de conexión con el servidor.", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -121,7 +129,7 @@ export default function PromocionesPage() {
   const handleDelete = async (id: number) => {
     if (!confirm("¿Deseas eliminar esta promoción?")) return;
     try {
-      const res = await apiFetch(`http://localhost:8000/api/promotions/${id}`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/promotions/${id}`, {
         method: "DELETE"
       });
       if (res.ok) {

@@ -1,7 +1,9 @@
 "use client";
+import { API_BASE_URL } from "@/app/lib/api";
 
 import { useEffect, useState } from "react";
 import Modal from "../../components/Modal";
+import { showToast } from "../../components/Toast";
 
 export default function MermasPage() {
   const [movements, setMovements] = useState<any[]>([]);
@@ -19,7 +21,7 @@ export default function MermasPage() {
   const fetchMovements = async () => {
     try {
       const token = localStorage.getItem("eva_token");
-      const res = await fetch("http://localhost:8000/api/inventory/movements?type=salida_merma", {
+      const res = await fetch(`${API_BASE_URL}/api/inventory/movements?type=salida_merma`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       if (res.ok) {
@@ -40,7 +42,7 @@ export default function MermasPage() {
     const fetchIngredients = async () => {
       try {
         const token = localStorage.getItem("eva_token");
-        const res = await fetch("http://localhost:8000/api/ingredients", {
+        const res = await fetch(`${API_BASE_URL}/api/ingredients`, {
           headers: { "Authorization": `Bearer ${token}` }
         });
         if (res.ok) {
@@ -61,7 +63,7 @@ export default function MermasPage() {
     setIsSubmitting(true);
     try {
       const token = localStorage.getItem("eva_token");
-      const res = await fetch("http://localhost:8000/api/inventory/merma", {
+      const res = await fetch(`${API_BASE_URL}/api/inventory/merma`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -75,13 +77,14 @@ export default function MermasPage() {
         setIsModalOpen(false);
         setFormData({ ingredient_id: "", quantity: "", reason: "" });
         fetchMovements();
+        showToast("Merma solicitada. Pendiente de aprobación.", "warning");
       } else {
         const data = await res.json();
-        alert(data.message || "Error al registrar merma");
+        showToast(data.message || "Error al registrar merma", "error");
       }
     } catch (err) {
       console.error(err);
-      alert("Error de red");
+      showToast("Error de conexión con el servidor.", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -92,7 +95,7 @@ export default function MermasPage() {
 
     try {
       const token = localStorage.getItem("eva_token");
-      const res = await fetch(`http://localhost:8000/api/inventory/merma/${id}/${action}`, {
+      const res = await fetch(`${API_BASE_URL}/api/inventory/merma/${id}/${action}`, {
         method: "POST",
         headers: {
           "Accept": "application/json",
@@ -102,13 +105,14 @@ export default function MermasPage() {
       
       if (res.ok) {
         fetchMovements();
+        showToast(action === 'approve' ? "Merma aprobada correctamente." : "Merma rechazada.", action === 'approve' ? "success" : "info");
       } else {
         const data = await res.json();
-        alert(data.message || "Error procesando solicitud");
+        showToast(data.message || "Error procesando solicitud", "error");
       }
     } catch (err) {
       console.error(err);
-      alert("Error de red");
+      showToast("Error de conexión con el servidor.", "error");
     }
   };
 

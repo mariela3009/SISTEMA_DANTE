@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/app/lib/api";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -24,7 +25,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/login", {
+      const response = await fetch(`${API_BASE_URL}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -136,7 +137,7 @@ export default function LoginPage() {
                 </label>
                 <a
                   className="font-label-md text-[12px] text-primary hover:text-espresso transition-colors"
-                  href="#"
+                  href="/recuperar-password"
                 >
                   ¿Olvidaste tu contraseña?
                 </a>

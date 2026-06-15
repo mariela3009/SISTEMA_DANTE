@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Promotion;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PromotionController extends Controller
 {
@@ -22,7 +23,7 @@ class PromotionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:promotions,name',
             'discount_percentage' => 'required|numeric|min:0|max:100',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
@@ -45,7 +46,7 @@ class PromotionController extends Controller
     public function update(Request $request, Promotion $promotion)
     {
         $request->validate([
-            'name' => 'string|max:255',
+            'name' => ['sometimes', 'string', 'max:255', Rule::unique('promotions', 'name')->ignore($promotion->id)],
             'discount_percentage' => 'numeric|min:0|max:100',
             'start_date' => 'date',
             'end_date' => 'date|after:start_date',

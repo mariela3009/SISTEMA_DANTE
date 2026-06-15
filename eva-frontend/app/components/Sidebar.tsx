@@ -21,14 +21,17 @@ export default function Sidebar() {
   };
 
   const navItems = [
-    { name: "Dashboard", href: "/dashboard", icon: "dashboard", roles: ["admin", "cajero"] },
-    { name: "Punto de Venta", href: "/dashboard/pos", icon: "point_of_sale", roles: ["admin", "cajero"] },
-    { name: "Inventario", href: "/dashboard/inventario", icon: "inventory_2", roles: ["admin", "cocina"] },
-    { name: "Productos y Recetas", href: "/dashboard/productos", icon: "restaurant_menu", roles: ["admin"] },
-    { name: "Mermas", href: "/dashboard/mermas", icon: "delete_sweep", roles: ["admin", "cocina"] },
-    { name: "Clientes", href: "/dashboard/clientes", icon: "group", roles: ["admin", "cajero"] },
-    { name: "Promociones", href: "/dashboard/promociones", icon: "campaign", roles: ["admin"] },
-    { name: "Personal", href: "/dashboard/personal", icon: "badge", roles: ["admin"] },
+    { name: "Dashboard", href: "/dashboard", icon: "dashboard", module: "dashboard" },
+    { name: "Punto de Venta", href: "/dashboard/pos", icon: "point_of_sale", module: "pos" },
+    { name: "Ventas", href: "/dashboard/ventas", icon: "receipt_long", module: "ventas" },
+    { name: "Inventario", href: "/dashboard/inventario", icon: "inventory_2", module: "inventario" },
+    { name: "Productos y Recetas", href: "/dashboard/productos", icon: "restaurant_menu", module: "productos" },
+    { name: "Mermas", href: "/dashboard/mermas", icon: "delete_sweep", module: "mermas" },
+    { name: "Clientes", href: "/dashboard/clientes", icon: "group", module: "clientes" },
+    { name: "Promociones", href: "/dashboard/promociones", icon: "campaign", module: "promociones" },
+    { name: "Sugerencias IA", href: "/dashboard/sugerencias-ia", icon: "auto_awesome", module: "ia" },
+    { name: "Personal", href: "/dashboard/personal", icon: "badge", module: "personal" },
+    { name: "Roles y Permisos", href: "/dashboard/roles", icon: "manage_accounts", module: "roles" },
   ];
 
   if (!user) {
@@ -56,7 +59,10 @@ export default function Sidebar() {
       {/* Navigation */}
       <nav className="flex-1 py-6 px-4 space-y-2">
         {navItems.map((item) => {
-          if (!item.roles.includes(user.role)) return null;
+          // Si el usuario es admin siempre puede ver, o si tiene permiso can_view en su rol
+          const isSuperAdmin = user.role === 'admin';
+          const hasPerm = user.permissions && user.permissions[item.module] && user.permissions[item.module].can_view;
+          if (!isSuperAdmin && !hasPerm) return null;
 
           const isActive = pathname === item.href;
           return (

@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/app/lib/api";
 
 import { useState, useEffect } from "react";
 import Modal from "../../components/Modal";
@@ -30,7 +31,7 @@ export default function PersonalPage() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const res = await apiFetch("http://127.0.0.1:8000/api/users");
+      const res = await apiFetch(`${API_BASE_URL}/api/users`);
       if (res.ok) {
         const data = await res.json();
         setUsers(data);
@@ -70,8 +71,8 @@ export default function PersonalPage() {
     setError("");
     try {
       const url = editUser 
-        ? `http://127.0.0.1:8000/api/users/${editUser.id}` 
-        : "http://127.0.0.1:8000/api/users";
+        ? `${API_BASE_URL}/api/users/${editUser.id}` 
+        : `${API_BASE_URL}/api/users`;
       
       const method = editUser ? "PUT" : "POST";
       const body: any = { name, email, role, is_active: isActive };

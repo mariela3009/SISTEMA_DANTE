@@ -1,8 +1,24 @@
 "use client";
+import { API_BASE_URL } from "@/app/lib/api";
 
 import { useEffect, useState } from "react";
 import Modal from "../../components/Modal";
 import { apiFetch } from "../../lib/api";
+import { showToast } from "../../components/Toast";
+
+// Helper: extrae el primer mensaje de error de una respuesta Laravel 422
+async function extractErrorMessage(res: Response, fallback: string): Promise<string> {
+  try {
+    const data = await res.json();
+    if (data.errors) {
+      const first = Object.values(data.errors)[0] as string[];
+      return first[0];
+    }
+    return data.message || fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 export default function ProductosPage() {
   const [products, setProducts] = useState<any[]>([]);
@@ -28,7 +44,7 @@ export default function ProductosPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await apiFetch("http://localhost:8000/api/categories");
+        const res = await apiFetch(`${API_BASE_URL}/api/categories`);
         if (res.ok) {
           setCategories(await res.json());
         }
@@ -43,7 +59,7 @@ export default function ProductosPage() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const url = new URL("http://localhost:8000/api/products");
+        const url = new URL(`${API_BASE_URL}/api/products`);
         if (searchTerm) url.searchParams.append("search", searchTerm);
         if (categoryFilter) url.searchParams.append("category_id", categoryFilter);
 
@@ -61,7 +77,7 @@ export default function ProductosPage() {
 
     const fetchIngredients = async () => {
       try {
-        const res = await apiFetch("http://localhost:8000/api/ingredients");
+        const res = await apiFetch(`${API_BASE_URL}/api/ingredients`);
         if (res.ok) {
           const data = await res.json();
           setAllIngredients(data.data || []);
@@ -79,7 +95,7 @@ export default function ProductosPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await apiFetch("http://localhost:8000/api/products", {
+      const res = await apiFetch(`${API_BASE_URL}/api/products`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -92,16 +108,16 @@ export default function ProductosPage() {
       if (res.ok) {
         setIsModalOpen(false);
         setFormData({ name: "", category_id: "", price: 0, is_active: true });
-        // Refetch products (forcing re-render)
-        const newRes = await apiFetch("http://localhost:8000/api/products");
+        const newRes = await apiFetch(`${API_BASE_URL}/api/products`);
         if (newRes.ok) setProducts(await newRes.json());
+        showToast("Producto creado correctamente.", "success");
       } else {
-        const data = await res.json();
-        alert(data.message || "Error al crear producto");
+        const msg = await extractErrorMessage(res, "Error al crear producto");
+        showToast(msg, "error");
       }
     } catch (err) {
       console.error(err);
-      alert("Error de red");
+      showToast("Error de conexión con el servidor.", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -112,18 +128,19 @@ export default function ProductosPage() {
     if (!editProduct) return;
     setIsSubmitting(true);
     try {
-      const res = await apiFetch(`http://localhost:8000/api/products/${editProduct.id}`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/products/${editProduct.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...formData, is_active: formData.is_active ? 1 : 0 })
       });
       if (res.ok) {
         setEditProduct(null);
-        // fetchProducts is called by dependency array if we want, but since we don't trigger it directly easily, just reload window or run a local state update. For now simplest is full refetch via a quick manual call
-        const newRes = await apiFetch("http://localhost:8000/api/products");
+        const newRes = await apiFetch(`${API_BASE_URL}/api/products`);
         if (newRes.ok) setProducts(await newRes.json());
+        showToast("Producto actualizado correctamente.", "success");
       } else {
-        alert("Error al editar producto");
+        const msg = await extractErrorMessage(res, "Error al editar producto");
+        showToast(msg, "error");
       }
     } finally {
       setIsSubmitting(false);
@@ -134,20 +151,21 @@ export default function ProductosPage() {
     if (!confirm("¿Estás seguro de que deseas desactivar este producto para la venta?")) return;
     
     try {
-      const res = await apiFetch(`http://localhost:8000/api/products/${id}`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/products/${id}`, {
         method: "DELETE"
       });
       
       if (res.ok) {
-        alert("Producto desactivado correctamente.");
-        const newRes = await apiFetch("http://localhost:8000/api/products");
+        showToast("Producto desactivado correctamente.", "success");
+        const newRes = await apiFetch(`${API_BASE_URL}/api/products`);
         if (newRes.ok) setProducts(await newRes.json());
       } else {
-        alert("Error al desactivar el producto.");
+        const msg = await extractErrorMessage(res, "Error al desactivar el producto.");
+        showToast(msg, "error");
       }
     } catch (err) {
       console.error(err);
-      alert("Error de red.");
+      showToast("Error de conexión con el servidor.", "error");
     }
   };
 
@@ -192,18 +210,19 @@ export default function ProductosPage() {
     if (!recipeProduct) return;
     setIsSubmitting(true);
     try {
-      const res = await apiFetch(`http://localhost:8000/api/products/${recipeProduct.id}/recipe`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/products/${recipeProduct.id}/recipe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ items: recipeItems.filter(r => r.ingredient_id && r.quantity) })
       });
       if (res.ok) {
         setRecipeProduct(null);
-        // Refetch products to update the recipe count badge
-        const newRes = await apiFetch("http://localhost:8000/api/products");
+        const newRes = await apiFetch(`${API_BASE_URL}/api/products`);
         if (newRes.ok) setProducts(await newRes.json());
+        showToast("Receta guardada correctamente.", "success");
       } else {
-        alert("Error al guardar receta");
+        const msg = await extractErrorMessage(res, "Error al guardar receta");
+        showToast(msg, "error");
       }
     } finally {
       setIsSubmitting(false);

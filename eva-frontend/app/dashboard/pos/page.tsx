@@ -1,8 +1,17 @@
 "use client";
+import { API_BASE_URL } from "@/app/lib/api";
 
 import { useEffect, useState } from "react";
 import Modal from "../../components/Modal";
 import { apiFetch } from "../../lib/api";
+import Script from "next/script";
+
+declare global {
+  interface Window {
+    Culqi: any;
+    culqi: () => void;
+  }
+}
 
 export default function POSPage() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -43,7 +52,7 @@ export default function POSPage() {
 
   const fetchClients = async () => {
     try {
-      const res = await apiFetch("http://localhost:8000/api/clients");
+      const res = await apiFetch(`${API_BASE_URL}/api/clients`);
       if (res.ok) {
         const data = await res.json();
         setClients(data.data || []);
@@ -58,8 +67,8 @@ export default function POSPage() {
     const fetchData = async () => {
       try {
         const [catRes, prodRes] = await Promise.all([
-          apiFetch("http://localhost:8000/api/categories"),
-          apiFetch("http://localhost:8000/api/products?active=1") // Solo activos con receta
+          apiFetch(`${API_BASE_URL}/api/categories`),
+          apiFetch(`${API_BASE_URL}/api/products?active=1`) // Solo activos con receta
         ]);
 
         if (catRes.ok && prodRes.ok) {
@@ -147,7 +156,7 @@ export default function POSPage() {
 
     setIsAddingClient(true);
     try {
-      const res = await apiFetch("http://localhost:8000/api/clients", {
+      const res = await apiFetch(`${API_BASE_URL}/api/clients`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -185,24 +194,53 @@ export default function POSPage() {
 
   const processSale = async () => {
     if (cart.length === 0) return;
+    
+    if (paymentMethod === "culqi") {
+      if (!window.Culqi) {
+        setErrorMsg("El sistema de pagos no está cargado.");
+        return;
+      }
+      // Configure Culqi
+      window.Culqi.publicKey = process.env.NEXT_PUBLIC_CULQI_PUBLIC_KEY || "pk_test_kgvtwFBjH89SWsSW";
+      window.Culqi.settings({
+          title: 'Cafetería Dante',
+          currency: 'PEN',
+          amount: Math.round(totalCart * 100),
+      });
+      window.Culqi.options({
+          lang: 'auto',
+          installments: false, 
+          modal: true,
+      });
+
+      // Bind the callback
+      window.culqi = async () => {
+        if (window.Culqi.token) {
+            const token = window.Culqi.token.id;
+            await submitSale(token);
+        } else if (window.Culqi.error) {
+            setErrorMsg(window.Culqi.error.user_message || "Error en el pago con tarjeta.");
+        }
+      };
+      
+      window.Culqi.open();
+    } else {
+      await submitSale(null);
+    }
+  };
+
+  const submitSale = async (culqiTokenId: string | null = null) => {
     setIsProcessing(true);
     setErrorMsg("");
     setSuccessMsg("");
 
     try {
-      // Simulacion de pasarela de pagos
-      let paypalOrderId = null;
-      if (paymentMethod === "paypal") {
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        paypalOrderId = "PAY-" + Math.random().toString(36).substr(2, 9).toUpperCase();
-      }
-
       const currentClient = clients.find(c => c.id.toString() === selectedClientId);
       const invoiceType = currentClient
         ? (currentClient.document_type === 'ruc' ? 'factura' : 'boleta')
         : 'ticket';
 
-      const res = await apiFetch("http://localhost:8000/api/sales", {
+      const res = await apiFetch(`${API_BASE_URL}/api/sales`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -212,7 +250,7 @@ export default function POSPage() {
           payment_method: paymentMethod,
           invoice_type: invoiceType,
           client_id: selectedClientId ? parseInt(selectedClientId) : null,
-          paypal_order_id: paypalOrderId
+          culqi_token_id: culqiTokenId
         })
       });
 
@@ -238,7 +276,7 @@ export default function POSPage() {
       setPaymentMethod("cash");
       setIsCartOpen(false);
       
-      const prodRes = await apiFetch("http://localhost:8000/api/products?active=1");
+      const prodRes = await apiFetch(`${API_BASE_URL}/api/products?active=1`);
       if (prodRes.ok) setProducts(await prodRes.json());
       
     } catch (err: any) {
@@ -259,6 +297,7 @@ export default function POSPage() {
 
   return (
     <>
+    <Script src="https://checkout.culqi.com/js/v4" strategy="lazyOnload" />
     <div className="h-[calc(100vh-2rem)] flex gap-6 -m-4 relative overflow-hidden print:hidden">
       <div className="flex-1 flex flex-col bg-surface-container-lowest lg:rounded-xl shadow-sm lg:border border-latte/30 overflow-hidden w-full max-w-full">
         
@@ -470,11 +509,11 @@ export default function POSPage() {
                 Efectivo
               </button>
               <button 
-                onClick={() => setPaymentMethod("paypal")}
-                className={`py-2 rounded-lg border-2 font-bold flex flex-col items-center justify-center transition-colors ${paymentMethod === "paypal" ? "border-[#003087] bg-[#003087]/10 text-[#003087]" : "border-latte text-on-surface-variant hover:bg-mist"}`}
+                onClick={() => setPaymentMethod("culqi")}
+                className={`py-2 rounded-lg border-2 font-bold flex flex-col items-center justify-center transition-colors ${paymentMethod === "culqi" ? "border-[#FF5A5F] bg-[#FF5A5F]/10 text-[#FF5A5F]" : "border-latte text-on-surface-variant hover:bg-mist"}`}
               >
                 <span className="material-symbols-outlined text-[20px]">credit_card</span>
-                PayPal
+                Culqi (Tarjeta)
               </button>
             </div>
           </div>

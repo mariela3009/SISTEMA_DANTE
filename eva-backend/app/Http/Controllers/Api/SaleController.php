@@ -30,11 +30,37 @@ class SaleController extends Controller
             'items.*.quantity' => 'required|integer|min:1',
             'client_id' => 'nullable|exists:clients,id',
             'invoice_type' => 'required|in:ticket,boleta,factura',
-            'payment_method' => 'required|in:cash,efectivo,paypal',
-            'paypal_order_id' => 'required_if:payment_method,paypal'
+            'payment_method' => 'required|in:cash,efectivo,culqi',
+            'culqi_token_id' => 'required_if:payment_method,culqi'
         ]);
 
-        $result = DB::transaction(function () use ($request) {
+        // Si el mÃ©todo es Culqi, cobramos primero usando el token
+        $culqiChargeId = null;
+        if ($request->payment_method === 'culqi') {
+            $totalCobrar = 0;
+            // Calcular el total
+            foreach ($request->items as $item) {
+                $product = Product::findOrFail($item['product_id']);
+                $totalCobrar += $product->discounted_price * $item['quantity'];
+            }
+            $totalCobrar = round($totalCobrar * 1.18, 2); // Sumar IGV
+
+            $response = \Illuminate\Support\Facades\Http::withToken(env('CULQI_SECRET_KEY'))
+                ->post('https://api.culqi.com/v2/charges', [
+                    'amount' => (int) ($totalCobrar * 100), // En cÃ©ntimos
+                    'currency_code' => 'PEN',
+                    'email' => $request->user()->email ?? 'caja@cafeteriadante.com',
+                    'source_id' => $request->culqi_token_id
+                ]);
+
+            if (!$response->successful()) {
+                $errorMsg = $response->json('user_message') ?? $response->json('merchant_message') ?? 'Error al procesar el pago con tarjeta.';
+                return response()->json(['message' => $errorMsg], 400);
+            }
+            $culqiChargeId = $response->json('id');
+        }
+
+        $result = DB::transaction(function () use ($request, $culqiChargeId) {
             $subtotal = 0;
             $saleItemsData = [];
 
@@ -72,7 +98,7 @@ class SaleController extends Controller
                 'tax'             => $igv,
                 'total'           => $total,
                 'payment_method'  => $paymentMethod,
-                'paypal_order_id' => $request->paypal_order_id,
+                'paypal_order_id' => $culqiChargeId, // Guardamos el ID del cargo en la columna existente
                 'invoice_type'    => $invoiceType,
                 'status'          => 'completed',
             ]);

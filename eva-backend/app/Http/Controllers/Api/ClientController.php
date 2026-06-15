@@ -40,7 +40,7 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'            => 'required|string|max:255',
+            'name'            => 'required|string|max:255|unique:clients,name',
             'document_type'   => 'required|in:dni,ruc',
             'document_number' => 'required|string|max:20|unique:clients,document_number',
             'email'           => 'nullable|email|max:255',
@@ -66,7 +66,7 @@ class ClientController extends Controller
     public function update(Request $request, Client $client)
     {
         $data = $request->validate([
-            'name'            => 'sometimes|required|string|max:255',
+            'name'            => ['sometimes', 'required', 'string', 'max:255', Rule::unique('clients', 'name')->ignore($client->id)],
             'document_type'   => 'sometimes|required|in:dni,ruc',
             'document_number' => [
                 'sometimes',

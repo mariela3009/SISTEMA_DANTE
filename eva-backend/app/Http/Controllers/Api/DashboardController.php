@@ -22,7 +22,9 @@ class DashboardController extends Controller
         $alertasPrincipal = Ingredient::whereColumn('stock_actual', '<=', 'stock_minimo')
             ->where('is_active', true)->get(['id', 'name', 'stock_actual', 'unit']);
             
+        // Solo alertar cocina si realmente tiene insumos asignados (stock_cocina > 0)
         $alertasCocina = Ingredient::whereColumn('stock_cocina', '<=', 'stock_minimo')
+            ->where('stock_cocina', '>', 0)
             ->where('is_active', true)->get(['id', 'name', 'stock_cocina as stock_actual', 'unit']);
             
         $alertasInsumos = $alertasPrincipal->concat($alertasCocina)->unique('id')->values();
@@ -64,6 +66,7 @@ class DashboardController extends Controller
             ->where('is_active', true)
             ->get(['id', 'name', 'stock_actual', 'stock_minimo', 'unit'])
             ->map(fn($item) => [
+                'alert_category' => 'stock',
                 'type' => 'principal',
                 'ingredient' => $item->name,
                 'current' => $item->stock_actual,
@@ -71,10 +74,13 @@ class DashboardController extends Controller
                 'unit' => $item->unit
             ]);
 
+        // Solo alertar cocina si realmente tiene insumos asignados (stock_cocina > 0)
         $alertasCocina = Ingredient::whereColumn('stock_cocina', '<=', 'stock_minimo')
+            ->where('stock_cocina', '>', 0)
             ->where('is_active', true)
             ->get(['id', 'name', 'stock_cocina', 'stock_minimo', 'unit'])
             ->map(fn($item) => [
+                'alert_category' => 'stock',
                 'type' => 'cocina',
                 'ingredient' => $item->name,
                 'current' => $item->stock_cocina,
@@ -82,8 +88,25 @@ class DashboardController extends Controller
                 'unit' => $item->unit
             ]);
 
+        // Alertas de vencimiento (vencidos o por vencer en <= 7 días)
+        $alertasVencimiento = Ingredient::whereNotNull('fecha_vencimiento')
+            ->where('is_active', true)
+            ->whereDate('fecha_vencimiento', '<=', now()->addDays(7))
+            ->where('stock_actual', '>', 0)
+            ->get(['id', 'name', 'fecha_vencimiento'])
+            ->map(function($item) {
+                $days = (int) now()->startOfDay()->diffInDays($item->fecha_vencimiento->startOfDay(), false);
+                return [
+                    'alert_category' => 'expiration',
+                    'type' => $days < 0 ? 'vencido' : 'por_vencer',
+                    'ingredient' => $item->name,
+                    'days' => $days,
+                    'date' => $item->fecha_vencimiento->format('d/m/Y')
+                ];
+            });
+
         return response()->json([
-            'alertas' => $alertasPrincipal->concat($alertasCocina)->values()
+            'alertas' => $alertasPrincipal->concat($alertasCocina)->concat($alertasVencimiento)->values()
         ]);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Ingredient;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class IngredientController extends Controller
 {
@@ -40,7 +41,7 @@ class IngredientController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'              => 'required|string|max:255',
+            'name'              => 'required|string|max:255|unique:ingredients,name',
             'unit'              => 'required|in:gr,kg,ml,l,unidad',
             'stock_actual'      => 'sometimes|numeric|min:0',
             'stock_minimo'      => 'sometimes|numeric|min:0',
@@ -62,7 +63,7 @@ class IngredientController extends Controller
     public function update(Request $request, Ingredient $ingredient)
     {
         $data = $request->validate([
-            'name'              => 'sometimes|string|max:255',
+            'name'              => ['sometimes', 'string', 'max:255', Rule::unique('ingredients', 'name')->ignore($ingredient->id)],
             'unit'              => 'sometimes|in:gr,kg,ml,l,unidad',
             'stock_minimo'      => 'sometimes|numeric|min:0',
             'fecha_vencimiento' => 'nullable|date',

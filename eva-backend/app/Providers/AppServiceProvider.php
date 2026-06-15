@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Auth\Notifications\ResetPassword;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,5 +29,9 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\Ingredient::observe(\App\Observers\AuditObserver::class);
         \App\Models\Sale::observe(\App\Observers\AuditObserver::class);
         \App\Models\InventoryMovement::observe(\App\Observers\AuditObserver::class);
+
+        ResetPassword::createUrlUsing(function ($notifiable, $token) {
+            return "http://localhost:3000/recuperar-password?token={$token}&email={$notifiable->getEmailForPasswordReset()}";
+        });
     }
 }

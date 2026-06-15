@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/app/lib/api";
 
 import { useEffect, useState } from "react";
 import { apiFetch } from "../../lib/api";
@@ -9,7 +10,7 @@ export default function CocinaPage() {
 
   const fetchOrders = async () => {
     try {
-      const res = await apiFetch("http://localhost:8000/api/kitchen");
+      const res = await apiFetch(`${API_BASE_URL}/api/kitchen`);
       if (res.ok) {
         setOrders(await res.json());
       }
@@ -29,7 +30,7 @@ export default function CocinaPage() {
 
   const changeStatus = async (itemId: number, newStatus: string) => {
     try {
-      const res = await apiFetch(`http://localhost:8000/api/kitchen/${itemId}/status`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/kitchen/${itemId}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus })
@@ -45,7 +46,7 @@ export default function CocinaPage() {
   const cancelItem = async (itemId: number) => {
     if (!confirm("¿Seguro que deseas cancelar esta orden y devolver los insumos?")) return;
     try {
-      const res = await apiFetch(`http://localhost:8000/api/kitchen/${itemId}/cancel`, {
+      const res = await apiFetch(`${API_BASE_URL}/api/kitchen/${itemId}/cancel`, {
         method: "POST"
       });
       if (res.ok) {

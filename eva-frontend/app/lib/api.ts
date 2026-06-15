@@ -1,3 +1,5 @@
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
 export const apiFetch = async (url: string, options: RequestInit = {}) => {
   let token = null;
   if (typeof window !== 'undefined') {
@@ -14,7 +16,7 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
 
   // Handle Token Expiration / Silent Refresh
   if (response.status === 401 && token) {
-    const refreshUrl = 'http://localhost:8000/api/refresh';
+    const refreshUrl = `${API_BASE_URL}/api/refresh`;
     
     // Only attempt refresh if we aren't already trying to refresh
     if (url !== refreshUrl) {

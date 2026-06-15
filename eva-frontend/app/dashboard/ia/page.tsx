@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/app/lib/api";
 
 import { useEffect, useState } from "react";
 import { apiFetch } from "../../lib/api";
@@ -23,7 +24,7 @@ export default function IADashboardPage() {
   useEffect(() => {
     const fetchAI = async () => {
       try {
-        const res = await apiFetch("http://localhost:8000/api/ai/dashboard");
+        const res = await apiFetch(`${API_BASE_URL}/api/ai/dashboard`);
         if (res.ok) {
           setData(await res.json());
         }
