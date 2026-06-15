@@ -1,168 +1,94 @@
-# 🚀 EVA — Guía de Instalación y Configuración
+# 🚀 EVA — Guía de Instalación y Configuración para Nueva PC
 
 Sistema de gestión para Cafetería Dante.  
-Stack: **Laravel (PHP)** + **Next.js (TypeScript)** + **MySQL** + **Python (IA)**
+Stack: **Laravel (PHP)** + **Next.js (TypeScript)** + **MySQL**
+
+Esta guía está diseñada específicamente para trasladar y arrancar el sistema en una computadora nueva llevando los archivos en un USB o descargándolos directamente.
 
 ---
 
-## ✅ Requisitos previos
+## ✅ 1. Requisitos Previos en la nueva PC
 
-| Herramienta | Versión mínima |
-|---|---|
-| PHP | 8.1+ |
-| Composer | 2.x |
-| Node.js | 18+ |
-| MySQL | 8.0 (XAMPP incluye MySQL) |
-| Python | 3.9+ |
-
-> Si usas **XAMPP**, MySQL está en `C:\xampp\mysql\bin\mysql.exe`
+Debes asegurarte de tener instalados estos programas en la computadora nueva:
+1. **XAMPP** (Asegúrate de instalar la versión que incluye **PHP 8.2** o superior).
+2. **Composer** (El instalador te pedirá la ruta de PHP, que suele ser `C:\xampp\php\php.exe`).
+3. **Node.js** (Instala la versión recomendada LTS, que suele ser la 18+ o 20+).
+4. **HeidiSQL** (Opcional, pero recomendado para importar tu base de datos fácilmente, XAMPP también trae phpMyAdmin).
 
 ---
 
-## 📋 Pasos de instalación (solo la primera vez)
+## 📁 2. Copia de Archivos y Credenciales
 
-### 1. Iniciar MySQL (XAMPP)
-Abre el panel de XAMPP y pon en marcha el servicio **MySQL**.
+1. Copia toda la carpeta del proyecto `SISTEMA_DANTE` a la nueva PC.
+2. Si el proyecto lo descargaste de GitHub en vez de usar un USB, notarás que faltan dos archivos importantes (las credenciales). Debes copiarlos manualmente desde tu USB a sus respectivas carpetas:
+   - Copia tu archivo **`.env`** y pégalo dentro de la carpeta `eva-backend`.
+   - Copia tu archivo **`.env.local`** y pégalo dentro de la carpeta `eva-frontend`.
+   
+*(Estos archivos contienen las contraseñas y las llaves secretas de Culqi y la IA Gemini, sin ellos el sistema no funcionará).*
 
 ---
 
-### 2. Importar la base de datos
+## 💾 3. Restaurar la Base de Datos
 
-En PowerShell el operador `<` no funciona. Usa `cmd` con `chcp 65001` para garantizar que los caracteres especiales (tildes, ñ) se importen correctamente:
+1. Abre **XAMPP** y dale a "Start" a **MySQL** y **Apache**.
+2. Abre **HeidiSQL** (o phpMyAdmin en `http://localhost/phpmyadmin`).
+3. Crea una base de datos nueva y llámala exactamente: **`eva_db`**.
+4. Importa el archivo `.sql` que exportaste de tu base de datos completa. En HeidiSQL esto se hace yendo a *Archivo > Cargar archivo SQL*, seleccionas tu archivo y luego presionas *Ejecutar* (el botón azul de "play" o F9).
 
+---
+
+## ⚙️ 4. Instalar Dependencias (Solo la primera vez)
+
+Como los módulos y librerías son pesados, no se suelen llevar en el USB, por lo que debes instalarlos:
+
+Abre una terminal (PowerShell o CMD) y ve a la carpeta del backend:
 ```powershell
-cmd /c "chcp 65001 && C:\xampp\mysql\bin\mysql.exe -u root --default-character-set=utf8mb4 eva_db < ""EVA_BDdef.sql"""
-```
+cd ruta\a\tu\carpeta\SISTEMA_DANTE\eva-backend
 
----
-
-### 3. Cargar datos de prueba
-
-```powershell
-cmd /c "chcp 65001 && C:\xampp\mysql\bin\mysql.exe -u root --default-character-set=utf8mb4 eva_db < ""eva_datos_seed.sql"""
-```
-
----
-
-### 4. Backend — Laravel
-
-```powershell
-cd eva-backend
-
-# Instalar dependencias PHP
+# Instalar dependencias de PHP
 composer install
-
-# Copiar archivo de entorno (si no existe)
-copy .env.example .env
-
-# Generar clave de aplicación
-php artisan key:generate
-
-# Correr migraciones (crea las tablas y usuarios)
-php artisan migrate --seed
 ```
 
-> ⚠️ Si `migrate --seed` da error porque las tablas ya existen, usa:
-> ```powershell
-> php artisan migrate:fresh --seed
-> ```
-
----
-
-### 5. Resetear contraseñas de usuarios (si es necesario)
-
-Si los usuarios ya existen pero la contraseña no funciona, resetéalas con:
-
+Luego abre otra terminal y ve a la carpeta del frontend:
 ```powershell
-php artisan tinker --execute="
-App\Models\User::where('email','admin@cafeteriadante.com')->update(['password' => bcrypt('admin123')]);
-App\Models\User::where('email','cajero@cafeteriadante.com')->update(['password' => bcrypt('cajero123')]);
-App\Models\User::where('email','cocina@cafeteriadante.com')->update(['password' => bcrypt('cocina123')]);
-echo 'Passwords actualizadas';
-"
-```
+cd ruta\a\tu\carpeta\SISTEMA_DANTE\eva-frontend
 
----
-
-### 6. Frontend — Next.js
-
-```powershell
-cd eva-frontend
-
-# Instalar dependencias JS
+# Instalar dependencias de JavaScript
 npm install
 ```
 
 ---
 
-### 7. Servicio IA — Python
+## ▶️ 5. Correr el Proyecto (Cada vez que lo uses)
 
-```powershell
-cd eva-ai
+Abre **XAMPP** y asegúrate de que **MySQL** esté en verde ("Start").
 
-# Instalar dependencias Python
-pip install -r requirements.txt
-```
-
----
-
-## ▶️ Correr el proyecto (cada vez)
-
-Abre **3 terminales separadas**:
+Abre **2 terminales separadas** (una para el servidor de fondo y otra para la interfaz).
 
 ### Terminal 1 — Backend (Laravel)
 ```powershell
-cd eva-backend
+cd ruta\a\tu\carpeta\SISTEMA_DANTE\eva-backend
 php artisan serve
 ```
-> Disponible en: http://127.0.0.1:8000
+*(No cierres esta ventana)*
 
 ### Terminal 2 — Frontend (Next.js)
 ```powershell
-cd eva-frontend
+cd ruta\a\tu\carpeta\SISTEMA_DANTE\eva-frontend
 npm run dev
 ```
-> Disponible en: http://localhost:3000
-
-### Terminal 3 — IA (opcional)
-```powershell
-cd eva-ai
-python sync_ai.py
-```
+*(No cierres esta ventana)*
 
 ---
 
-## 🔐 Credenciales de acceso
+## 🌐 6. Acceder al Sistema
 
+Una vez que ambos servidores estén corriendo, abre tu navegador (Chrome o Edge) e ingresa a:
+👉 **http://localhost:3000**
+
+### 🔐 Credenciales de acceso (Ejemplos por defecto si no cambiaste tu BD)
 | Rol | Email | Contraseña |
 |---|---|---|
 | 👑 Admin | admin@cafeteriadante.com | admin123 |
 | 💰 Cajero | cajero@cafeteriadante.com | cajero123 |
 | 🍳 Cocina | cocina@cafeteriadante.com | cocina123 |
-
----
-
-## 🐛 Problemas comunes
-
-### ❌ `mysql` no se reconoce en PowerShell
-PowerShell no tiene MySQL en el PATH. Usa la ruta completa:
-```powershell
-C:\xampp\mysql\bin\mysql.exe -u root eva_db -e "SHOW TABLES;"
-```
-
-### ❌ El operador `<` no funciona en PowerShell
-Reemplaza `mysql ... < archivo.sql` por:
-```powershell
-Get-Content "archivo.sql" | C:\xampp\mysql\bin\mysql.exe -u root
-```
-
-### ❌ `ModuleNotFoundError: No module named 'mysql'`
-```powershell
-pip install -r eva-ai/requirements.txt
-```
-
-### ❌ Error 401 en el dashboard
-El backend no está corriendo o no has iniciado sesión. Verifica que `php artisan serve` esté activo y haz login en http://localhost:3000.
-
-### ❌ Las credenciales son incorrectas
-Ejecuta el paso 5 (resetear contraseñas) de esta guía.
