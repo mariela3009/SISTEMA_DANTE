@@ -1,0 +1,770 @@
+UNIVERSIDAD PRIVADA DE TACNA
+FACULTAD DE 
+INGENIERÍA
+Escuela Profesional de Ingeniería de Sistemas
+ 
+Sistema Web de Gestión inteligente de inventarios y pasarela de pagos con PayPal para la cafetería ‘Dante’
+Curso: 
+Gestión de proyectos de TI
+Docente: 
+Dra. Martha Paredes Vignola
+Integrantes:
+Laos González, Adriana Rafaela        
+(2023077474)
+Ramos Loza, Mariela Estefany
+(2023077478)
+Calloticona Chambilla, Marymar Danytza   
+(2023076791)
+Choqueña Choque, Mauricio Arian
+(2023076799)
+Tacna – Perú
+2026
+CONTROL DE VERSIONES
+Versión
+Hecha por
+Revisada por
+Aprobada por
+Fecha
+Motivo
+1.0
+MERL
+MCC
+ALG
+14/05/2026
+Versión Original
+Sistema Web de Gestión inteligente de inventarios y pasarela de pagos con PayPal para la cafetería ‘Dante’
+Versión 
+1.0
+CONTROL DE VERSIONES
+Versión
+Hecha por
+Revisada por
+Aprobada por
+Fecha
+Motivo
+1.0
+MRL
+MCC
+ALG
+14/05/2026
+Versión Original
+ÍNDICE
+ GENERAL
+INTRODUCCIÓN
+4
+1. Generalidades de la empresa
+4
+1.1. Nombre de la Empresa
+4
+2. Visionamiento de la Empresa
+5
+2.1. Descripción del Problema
+5
+2.2. Objetivos de Negocios
+6
+2.3. Objetivos de Diseño
+6
+2.4. Alcance del proyecto
+6
+2.5. Viabilidad del Sistema
+7
+2.6. Información obtenida del Levantamiento de Información
+8
+3. Análisis de Procesos
+9
+3.1. Diagrama del Proceso Actual – Diagrama de actividades
+9
+3.2. Diagrama del Proceso Propuesto – Diagrama de actividades Inicial
+10
+4. Especificación de Requerimientos de Software
+15
+4.1. Cuadro de Requerimientos funcionales Inicial
+15
+4.2. Cuadro de Requerimientos No funcionales
+17
+4.3. Cuadro de Requerimientos funcionales Final
+19
+4.4. Reglas de Negocio
+21
+5. Fase de Desarrollo
+22
+5.1. Perfiles de Usuario
+22
+5.2. Modelo Conceptual
+23
+5.2.3.1. UC-001: Autenticar Usuario
+24
+5.2.3.2. UC-002: Gestionar Personal y Roles
+25
+5.2.3.3. UC-003: Gestionar Catálogo de Productos
+27
+5.2.3.4. UC-004: Administrar Recetas de Productos
+28
+5.2.3.5. UC-005: Gestionar Almacén de Insumos
+29
+5.2.3.6. UC-006: Registrar Entrada de Insumos
+30
+5.2.3.7. UC-007: Registrar Mermas Manualmente
+32
+5.2.3.8. UC-008: Registrar Venta de Productos
+33
+5.2.3.9. UC-009: Procesar Pago con PayPal
+35
+5.2.3.10. UC-010: Emitir Comprobante de Venta
+37
+5.2.3.11. UC-011: Consultar Dashboard e Informes
+39
+5.3. Modelo Lógico
+40
+CONCLUSIONES
+46
+RECOMENDACIONES
+47
+INTRODUCCIÓN
+El presente documento constituye la Especificación de Requerimientos de Software (SRS) del sistema web de gestión inteligente de inventarios integrado con pasarela de pagos para la cafetería "Dante". 
+El sistema surge ante la necesidad de digitalizar y automatizar los procesos de control de insumos, ventas y cobros, eliminando la gestión manual que actualmente genera pérdidas operativas y económicas en el negocio.
+Generalidades de la empresa
+Nombre de la Empresa
+Cafetería "Dante"
+Visión 
+Ser reconocida como una cafetería moderna, eficiente y de calidad, que brinde una experiencia óptima a sus clientes mediante la digitalización de sus procesos operativos y administrativos.
+Misión 
+Brindar productos y servicios de cafetería con calidad, rapidez y transparencia, optimizando la gestión de recursos mediante el uso de tecnología para garantizar la sostenibilidad del negocio.
+Organigrama de la Empresa
+A partir de la estructura organizada inferida en el diagrama jerárquico del documento , el organigrama se compone de la siguiente manera:
+Dirección General: Dueño de la cafetería. 
+Gestión y Supervisión: Administrador. 
+Área Operativa: 
+Personal de cocina. 
+Personal de Atención al Cliente
+Visionamiento de la Empresa
+Descripción del Problema
+La cafetería "Dante" carece de un sistema integral que permita realizar el inventario y el control de insumos con actualizaciones en tiempo real..Esta ausencia tecnológica genera las siguientes críticas problemáticas en el negocio:
+Pérdida de insumos: Se producen pérdidas materiales debido al vencimiento, obsolescencia, extravío o mal manejo de la materia prima, al no existir trazabilidad ni alertas tempranas. 
+Exceso de inventario: Acumulación innecesaria de stock en demasía, lo que eleva los costos de almacenamiento e inmoviliza el capital operativo.
+Desabastecimiento crítico: Falta de insumos esenciales en momentos clave de la operación, forzando la ejecución de compras de emergencia a precios desfavorables.
+Toma de decisiones reactivas: Decisiones administrativas poco fundamentadas, estructuradas sobre datos desactualizados o incompletos. 
+Deficiencia en la planificación: Dificultad severa para planificar compras y presupuestos ante la falta de históricos confiables y tendencias de consumo reales. 
+Objetivos de Negocios
+Reducir las pérdidas mensuales provocadas por la mala gestión del inventario actual. 
+Ampliar las modalidades de cobro de la cafetería, aceptando pagos digitales mediante la integración de PayPal.
+Mejorar la planificación de compras con datos históricos confiables del consumo de insumos.
+Agilizar la atención al cliente reduciendo el tiempo de registro de ventas y actualización del stock.
+ Objetivos de Diseño
+Desarrollar un panel de control (dashboard) con indicadores clave de ventas, inventario y productos más vendidos.
+Diseñar una interfaz intuitiva con Tailwind CSS, accesible para personal con conocimientos básicos en informática.
+Implementar una arquitectura que vincule directamente la venta de productos con el descuento de insumos en el inventario (via recetas digitalizadas).
+Integrar la API de PayPal para procesar transacciones seguras en el punto de venta.
+Garantizar la integridad referencial de los datos mediante PostgreSQL 16 con soporte ACID.
+Alcance del proyecto
+El sistema abarca el desarrollo e implementación de los siguientes módulos funcionales para la cafetería "Dante":
+Módulo de Autenticación y Gestión de Usuarios: control de acceso basado en roles (Administrador, Cajero, Cocina, Supervisor).
+Módulo de Gestión de Productos e Insumos: catálogos completos con gestión de recetas estándar para el cálculo automático de consumo.
+Módulo de Inventario y Kardex Automático: control de entradas, salidas y movimientos de insumos con valorización automática.
+Módulo de Punto de Venta (POS): registro de ventas, cálculo de totales y descuento automático de inventario.
+Módulo de Integración PayPal: procesamiento de pagos digitales mediante la API oficial de PayPal.
+Módulo de Dashboard y Reportes: panel de control con estadísticas en tiempo real y generación de reportes exportables.
+Módulo de Alertas: notificaciones automáticas de stock mínimo y eventos críticos del sistema.
+El sistema NO incluirá: facturación electrónica, integración con sistemas de contabilidad externos, gestión de nómina del personal, aplicaciones móviles nativas, ni módulos de gestión de delivery o pedidos en línea.
+Viabilidad del Sistema
+El análisis de factibilidad realizado en el documento FD01 confirma la viabilidad del proyecto en todas sus dimensiones:
+Viabilidad Técnica:
+El equipo de desarrollo dispone de las competencias técnicas requeridas en PHP 8.0, Mysql, JavaScript y Tailwind CSS. Las herramientas utilizadas son de código abierto y gratuitas, y la infraestructura de despliegue (VPS con soporte PHP y PostgreSQL) es accesible y de bajo costo.
+Viabilidad Económica:
+La inversión total del proyecto es de S/ 7,375.00, con un Valor Actual Neto (VAN) de S/ 12,917.71, una Tasa Interna de Retorno (TIR) del 95.93% muy superior al costo de oportunidad del capital del 10% y una relación Beneficio/Costo de 2.75. La inversión se recupera en aproximadamente 11 meses desde la implementación.
+Viabilidad Operativa:
+El sistema puede ser operado por el personal actual de la cafetería con conocimientos básicos de informática, gracias a la interfaz intuitiva diseñada con Tailwind CSS. El impacto operativo estimado incluye una reducción de 3 horas semanales en tareas de control manual y la eliminación de errores humanos en el registro de inventarios.
+Viabilidad Legal:
+Todas las tecnologías empleadas (PHP, PostgreSQL, Tailwind CSS, VS Code) están licenciadas bajo términos que permiten uso comercial sin restricciones. La integración con PayPal cumple con los términos de servicio de la plataforma.
+Información obtenida del Levantamiento de Información
+El levantamiento de información se realizó mediante reuniones directas con el propietario y el personal administrativo de la cafetería "Dante", complementado con la observación directa de los procesos operativos. Los hallazgos principales fueron:
+El registro de insumos se realiza en hojas de cálculo (Excel) de manera manual, sin actualizaciones en tiempo real.
+No existe un sistema automatizado de descuento de materia prima al momento de registrar una venta; el control se realiza de forma periódica y aproximada.
+Las alertas de reabastecimiento dependen exclusivamente de la memoria y experiencia del administrador.
+Los reportes de ventas se generan manualmente y no están integrados con el control de inventarios.
+La cafetería acepta únicamente pagos en efectivo, lo que limita las opciones para los clientes y genera riesgos operativos.
+El personal de cocina no tiene acceso a información actualizada sobre el stock de insumos disponibles.
+La cafetería cuenta con un semi-ERP (Wally) para ventas y cobranza básica, pero sin integración con inventarios ni módulo de recetas.
+Los stakeholders identificados son: el propietario (beneficiario final), el administrador (usuario principal), el personal de cocina y atención (usuarios operativos) y el equipo de desarrollo (implementadores).
+Análisis de Procesos
+Diagrama del Proceso Actual – Diagrama de actividades
+El proceso actual de gestión de inventarios y ventas en la cafetería "Dante" se desarrolla de manera manual y desarticulada, sin integración entre los diferentes puntos del flujo operativo.
+A continuación, se detalla la secuencia lógica del Proceso Actual de Control de Inventario reconstruida a partir del levantamiento de información.
+Proceso Actual de Control de Inventario:
+Frecuencia: El Administrador toma la decisión de verificar el inventario de una a dos veces por semana. 
+Acceso: Acceda a una hoja de cálculo en Excel destinada al registro manual de insumos. 
+Conteo: Se traslada al almacén para realizar un conteo físico y manual de las existencias. 
+Actualización: Regresa a la hoja de Excel para transcribir y actualizar los datos recopilados manualmente. 
+Evaluación de Stock: Se evalúa si el nivel de stock es bajo: 
+Si el stock es bajo: El administrador toma nota de los requerimientos y realiza un pedido al proveedor mediante una llamada telefónica o un mensaje de WhatsApp.Posteriormente, recibe la mercadería, realiza un conteo manual en físico y vuelve a actualizar la hoja de Excel antes de finalizar.
+Si el stock NO es bajo: El flujo avanza directamente hacia el fin del proceso. 
+Nota Crítica del Flujo Actual: No existe un registro automático de salidas de insumos por producción.El descuento de materia prima se realiza al cálculo estimado o, en su defecto, simplemente no se ejecuta. 
+Diagrama del Proceso Propuesto – Diagrama de actividades Inicial
+El modelo optimizado introduce la automatización mediante el sistema web para asegurar que la información fluya continuamente y sin errores humanos.. El diseño se segmenta en dos flujos esenciales:
+Proceso Propuesto de Control de Inventario:
+Autenticación: El usuario (Administrador o Supervisor) inicia sesión de forma segura en la plataforma. 
+Visualización: El sistema despliega inmediatamente el panel de control (dashboard) con el inventario actualizado en tiempo real.
+ 
+Evaluación de Acción: El usuario decide si registrará una nueva entrada de mercancía: 
+Si decide la entrada del registrador: Acceda al submódulo de Inventario e inicie una "Nueva Entrada".Complete el formulario digital ingresando el insumo, cantidad, precio, proveedor y el documento de compra correspondiente.El sistema procesa los datos y actualiza el Kardex automáticamente. 
+Si decide NO registrar entrada: El flujo salta directamente a la evaluación de umbrales. 
+Control de Escasez: El sistema evalúa si el stock de algún insumo alcanzó su nivel mínimo tolerable configurado: 
+Si alcanza el nivel mínimo: El sistema genera de forma automática una alerta visual parpadeante en el tablero y notifica de inmediato al administrador.
+Si NO alcanza el nivel mínimo: El proceso concluye exitosamente manteniendo el inventario actualizado de forma continua y automática.
+Proceso Propuesto de Registro de Ventas:
+Inicio de Turno: El Cajero inicia sesión y accede directamente al módulo de Punto de Venta (POS). 
+Configuración de la Orden: Selecciona los productos y las cantidades solicitadas del pedido del cliente.El sistema calcula de manera automática el monto total neto.
+Bifurcación por Método de Pago: El cajero define la modalidad elegida por el consumidor:
+Flujo por Efectivo: El cajero ingresa el monto de dinero recibido en físico.El sistema calcula de forma instantánea el regreso y confirma la venta.  
+Flujo por PayPal: El sistema crea la orden de pago conectando con la API de PayPal y redirige al cliente al portal de pago seguro. El backend queda a la espera de la confirmación: 
+Si se recibe la confirmación del Webhook: El sistema actualiza el estado de la venta como completado/pagado. 
+Si NO se recibe o hay error/cancelación: El proceso se interrumpe y se reporta el fallo. 
+Procesamiento Post-Venta Automático: Una vez consolidado el pago por cualquiera de las dos vías, el sistema ejecuta de manera automática cadena e interna las siguientes actividades en: 
+Descuenta los insumos del inventario de forma inmediata calculando en las recetas estándar asignadas a los productos vendidos.
+Genera el asiento y registro correspondiente en el Kardex. 
+Construye y emite el comprobante de venta genérico (ticket de mostrador). 
+Actualiza los indicadores y gráficos del tablero general del negocio, finalizando con una venta registrada con trazabilidad completa.
+ Especificación de Requerimientos de Software
+Cuadro de Requerimientos funcionales Inicial
+Código
+Requerimiento Funcional
+Descripción / Alcance
+RF-001
+Autenticar usuario
+El sistema deberá permitir el inicio de sesión seguro mediante la validación de credenciales (correo y contraseña).
+RF-002
+Agregar usuario
+El sistema deberá registrar nuevos usuarios guardando sus datos de identificación en la base de datos.
+RF-003
+Editar rol
+El sistema deberá modificar los permisos y roles asignados a los usuarios (Administrador, Cajero, Cocinero).
+RF-004
+Agregar producto
+El sistema deberá registrar nuevos productos finales configurando su precio de venta y categoría.
+RF-005
+Editar producto
+El sistema deberá actualizar los atributos comerciales de un producto existente (nombre, precio, categoría, etc.).
+RF-006
+Agregar receta a un producto
+El sistema deberá asociar un producto final con los insumos y las cantidades exactas requeridas para su preparación.
+RF-007
+Editar receta
+El sistema deberá modificar las materias primas o las porciones que integran la receta activa de un producto.
+RF-008
+Agregar insumo
+El sistema deberá registrar nuevas materias primas definiendo sus características básicas en el almacén.
+RF-009
+Editar insumo
+El sistema deberá actualizar la información maestra de los insumos (nombre, unidad de medida base, etc.).
+RF-010
+Registrar entrada de insumos al inventario
+El sistema deberá registrar el ingreso manual de stock de insumos provenientes de las compras o reabastecimiento de proveedores.
+RF-011
+Registrar mermas o salidas de insumos manualmente
+El sistema deberá descontar stock de insumos de forma manual indicando pérdidas, caducidad, roturas o daños materiales.
+RF-012
+Descontar automáticamente insumos del inventario
+El sistema deberá restablecer automáticamente los insumos del almacén en base a la receta técnica del producto cuando se consolide una venta..
+RF-013
+Emitir alertas de stock
+El sistema deberá notificar visualmente al usuario cuando un insumo o producto alcance el nivel mínimo tolerable configurado. 
+RF-014
+Registrar venta de productos
+El sistema deberá procesar la orden de compra en el mostrador asentando la transacción financiera en la base de datos.
+RF-015
+Procesar pagos digitales mediante integración con PayPal
+El sistema deberá ejecutar el cobro electrónico de la venta mediante la integración oficial con la pasarela de pagos de PayPal..
+RF-016
+Generar comprobante de pago
+El sistema deberá emitir el ticket, boleta o factura correspondiente de forma automática tras confirmar el pago de la venta..
+RF-017
+Visualizar dashboard con indicadores
+El sistema deberá mostrar un panel gráfico interactivo con las métricas y KPIs clave del negocio en tiempo real..
+RF-018
+Generar reportes de ventas e inventario
+El sistema deberá construir informes detallados sobre los movimientos históricos de stock (Kardex) y transacciones realizadas..
+RF-019
+Exportar reportes de ventas
+El sistema deberá permitir la descarga de los informes generados en formatos estándar universales (PDF y Excel/CSV).
+Cuadro de Requerimientos No funcionales
+ID
+Tipo
+Descripción
+RNF01
+Rendimiento
+El sistema deberá responder a las peticiones del usuario en menos de 3 segundos bajo condiciones normales de uso..
+RNF02
+Seguridad
+El sistema deberá implementar autenticación segura y control de acceso basado en roles jerárquicos.
+RNF03
+Disponibilidad
+El sistema deberá estar disponible al menos el 99% del tiempo durante el horario operativo habitual de la cafetería..
+RNF04
+Usabilidad
+La interfaz del sistema deberá ser intuitiva y operable por personal con conocimientos básicos en informática, sin requerir capacitación extensa..
+RNF05
+Compatibilidad
+El sistema deberá garantizar su funcionamiento nativo y sin errores (Cross-Browser) en Google Chrome, Mozilla Firefox y Microsoft Edge..
+RNF06
+Mantenibilidad
+El código fuente del proyecto deberá seguir estándares de documentación y control de versiones centralizado mediante GitHub.
+RNF07
+Privacidad
+El sistema deberá cumplir con los lineamientos de resguardo de información estipulados en la Ley N° 29733 — Ley de Protección de Datos Personales del Perú.
+RNF08
+Portabilidad
+El sistema web deberá operar y ser responsivo en cualquier dispositivo que cuente con un navegador web moderno (computadoras de escritorio y tabletas).
+RNF09
+Integridad de datos
+La base de datos MySQL deberá garantizar la integridad referencial y el soporte transaccional (ACID) en todas las operaciones de inventario y ventas.
+Cuadro de Requerimientos funcionales Final
+ID
+Requerimiento Funcional
+Descripción Técnica
+Prioridad
+RF-001
+Autenticar usuario
+El sistema deberá permitir el inicio de sesión seguro mediante correo y contraseña, validando los roles correspondientes.
+Alta
+RF-002
+Registrar usuario
+El sistema deberá permitir al administrador registrar nuevos usuarios (empleados) en la base de datos.
+Alta
+RF-003
+Editar rol y permisos
+El sistema deberá permitir la modificación de los datos del usuario y la asignación o cambio de su rol operativo..
+Media
+RF-004
+Desactivar usuario (Nuevo)
+El sistema deberá permitir dar de baja a un usuario para impedir su acceso sin eliminar su historial de acciones.
+Alta
+RF-005
+Agregar producto
+El sistema deberá registrar un nuevo producto final destinado a la venta con su nombre, precio, foto y categoría..
+Alta
+RF-006
+Editar producto
+El sistema deberá permitir la modificación de la información comercial o técnica de un producto existente..
+Alta
+RF-007
+Desactivar producto (Nuevo)
+El sistema deberá permitir la habilitación de un producto para la venta sin eliminarlo de la base de datos..
+Alta
+RF-008
+Agregar receta a producto
+El sistema deberá asociar a un producto final la lista de insumos y las cantidades exactas necesarias para su preparación..
+Alta
+RF-009
+Editar receta
+El sistema deberá permitir la modificación de los insumos o las porciones que componen la receta de un producto activo..
+Media
+RF-010
+Agregar insumo
+El sistema deberá registrar una nueva materia prima en el almacén, definiendo su unidad de medida (gr, kg, ml, l, unidad).
+Alta
+RF-011
+Editar insumo
+El sistema deberá permitir la modificación de los datos maestros de un insumo existente..
+Alta
+RF-012
+Desactivar insumo (Nuevo)
+El sistema deberá inhabilitar un insumo en desuso, validando que no esté asociado a ninguna receta activa.
+Media
+RF-013
+Registrar entrada de insumos
+El sistema deberá registrar el ingreso manual de stock de insumos por compras a proveedores para incrementar el inventario..
+Alta
+RF-014
+Configurar stock mínimo (Nuevo)
+El sistema deberá permitir al usuario establecer el límite mínimo tolerable para cada insumo antes de considerar escasez.
+Media
+RF-015
+Emitir alertas de stock bajo
+El sistema deberá mostrar notificaciones visuales en la interfaz cuando un insumo se encuentre por debajo de su stock mínimo..
+Media
+RF-016
+Registrar mermas manualmente
+El sistema deberá registrar la salida o pérdida de insumos por caducidad, daño o robo, indicando el motivo del deseo..
+Alta
+RF-017
+Descontar stock automáticamente
+El sistema deberá restablecer automáticamente los insumos del inventario calculando en la receta al consolidar una venta.
+Alta
+RF-018
+Registrar datos de clientes (Nuevo)
+El sistema deberá permitir el registro de los datos básicos de clientes (Nombre/Razón Social, DNI/DNI) para la facturación..
+Media
+RF-019
+Registrar venta de productos
+El sistema deberá procesar el carrito de compras, calculando totales e impuestos, y registrando la transacción..
+Alta
+RF-020
+Procesar pagos con PayPal
+El sistema deberá conectarse con la API de PayPal para validar y procesar pagos con tarjetas o saldo electrónico.
+Alta
+RF-021
+Generar comprobante de pago
+El sistema deberá emitir de forma automática el comprobante (Ticket, Boleta o Factura) en formato imprimible o PDF.
+Alta
+RF-022
+Visualizar dashboard
+El sistema deberá mostrar una pantalla principal con gráficos de ventas diarias, productos más vendidos e insumos críticos..
+Media
+RF-023
+Generar reportes de ventas e inventario
+El sistema deberá permitir al usuario filtrar y visualizar informes históricos de movimientos de stock y ventas por fechas..
+Alta
+RF-024
+Exportar reportes
+El sistema deberá permitir la descarga de los informes generados en formatos externos (PDF y Excel/CSV).
+Alta
+Reglas de Negocio
+ID
+Regla de Negocio
+RN01
+Un producto no puede registrarse como disponible para venta si no tiene asociada una receta con insumos.
+RN02
+No se puede realizar una venta si el stock de uno o más insumos requeridos por la receta del producto es insuficiente.
+RN03
+El sistema debe descontar los insumos en el mismo momento en que se confirma la venta; no se admitirán descuentos diferidos.
+RN04
+El stock mínimo de cada insumo está configurado por el administrador; por defecto se establece en cero.
+RN05
+Las transacciones de pago mediante PayPal deben validarse con la respuesta de la API antes de registrar la venta como completada.
+RN06
+Solo el rol Administrador puede crear, editar o eliminar productos, insumos y recetas.
+RN07
+El rol Cajero/Vendedor puede registrar ventas y consultar el stock, pero no puede modificar configuraciones del sistema.
+RN08
+El rol Cocina puede consultar los insumos disponibles y reportar salidas manuales, pero no puede gestionar ventas ni configurar el sistema.
+RN09
+Los movimientos del Kardex son inmutables una vez registrados; solo se pueden corregir mediante un asiento de ajuste con justificación.
+RN10
+Todo ingreso de insumos debe registrarse al menos: nombre del insumo, cantidad, unidad de medida, fecha y responsable del ingreso.
+Fase de Desarrollo
+Perfiles de Usuario
+Perfil
+Descripción
+Permisos principales
+Administrador
+Dueño o gerente de la cafetería "Dante". Responsable de la configuración del sistema, supervisión del inventario y análisis de reportes.
+Operaciones completas (CRUD) de productos, insumos, recetas y usuarios; acceso irrestricto a todos los módulos funcionales, paneles analíticos e informes históricos de movimientos del negocio.
+Cajero/Vendedor
+Personal de atención que registra las ventas y cobra al cliente.
+Registro de ventas, procesamiento de pagos, consulta de stock.
+Personal de Cocina
+Encargado de la preparación de productos.
+Consulta de disponibilidad de insumos, reporte de salidas manuales.
+Modelo Conceptual
+Diagrama de Paquetes
+Diagrama de Casos de Uso
+Escenarios de Caso de Uso (narrativa)
+UC-001: Autenticar Usuario
+Actores:
+ Principal: Administrador, Cajero, Personal de Cocina.
+Descripción: 
+Este caso de uso permite a cualquier empleado de la cafetería (Administrador, Cajero o Personal de Cocina) acceder de manera segura a la plataforma web mediante la validación de sus credenciales corporativas (correo electrónico y contraseña). El sistema verifica la identidad y el estado activo del usuario, inicializando la sesión y cargando los componentes de la interfaz según los permisos asignados a su rol jerárquico.
+Precondición:
+ El usuario debe estar previamente registrado en el sistema y su cuenta debe estar en estado "Activa".
+Flujo Básico: Acción del Actor
+Respuesta del Sistema
+1.
+ El empleado ingresa a la URL del sistema web de la cafetería.
+2.
+ El sistema muestra el formulario de inicio de sesión solicitando correo electrónico y contraseña.
+3.
+ El empleado introduce sus credenciales válidas y presiona el botón "Iniciar Sesión".
+4.
+ El sistema valida las credenciales contra la base de datos, verifica el rol asociado y redirige al usuario a la pantalla de inicio o dashboard correspondiente a su perfil.
+Postcondición:
+ El empleado accede con éxito al sistema y se inicializa su sesión de usuario activa en Next.js.
+Excepciones:
+ * 
+Contraseña o Correo Incorrecto:
+ El sistema muestra un mensaje de alerta flotante "Credenciales inválidas" y mantiene el formulario limpio para un nuevo intento.
+Usuario Inactivo:
+ Si la cuenta del empleado fue dada de baja (RF-004), el sistema muestra el mensaje "Acceso denegado. Cuenta inhabilitada".
+UC-002: Gestionar Personal y Roles
+Actores:
+ Principal: Administrador.
+Descripción: 
+Permite al Administrador centralizar el control del capital humano de la cafetería "Dante". El caso de uso abarca el registro de nuevos trabajadores, la actualización de sus datos personales, la asignación o modificación de sus roles del sistema y la inhabilitación preventiva (desactivación) de cuentas para restringir accesos sin alterar el historial transaccional de la base de datos.
+Precondición:
+ El Administrador ha iniciado sesión correctamente en el sistema (UC-001).
+Flujo Básico: Acción del Actor
+Respuesta del Sistema
+1.
+ El Administrador ingresa al menú de "Configuración" y selecciona la opción "Gestión de Personal".
+2.
+ El sistema lista en una tabla todos los usuarios actuales con sus nombres, correos, roles asignados y estados (Activo/Inactivo).
+3.
+ El Administrador hace clic en "Registrar Nuevo Usuario", completa el formulario (Nombre, correo, contraseña, asignación de rol) y presiona "Guardar".
+4.
+ El sistema valida que el correo electrónico sea único, encripta la contraseña de forma segura, guarda el nuevo registro y actualiza la lista visual en pantalla.
+5.
+ El Administrador puede seleccionar un usuario existente, modificar su información o cambiar su estado a "Inactivo" para quitarle el acceso.
+6.
+ El sistema procesa los cambios, actualiza los permisos del rol en tiempo real y muestra un mensaje de confirmación "Usuario actualizado correctamente".
+Postcondición:
+ Los cambios en las cuentas de los empleados quedan guardados de manera persistente en la tabla Usuario.
+Excepciones:
+Correo Duplicado: El sistema alerta que el correo ya está registrado y no permite guardar el registro hasta que sea modificado.
+UC-003: Gestionar Catálogo de Productos
+Actores:
+ Principal: Administrador.
+Descripción: 
+Permite al Administrador estructurar la oferta comercial de la cafetería visible en el punto de venta. Su alcance incluye dar de alta nuevos productos finales (como cafés, postres o bebidas), editar sus atributos comerciales (nombre, categoría, precio de venta al público y fotografía) o desactivar artículos que salgan de circulación de manera temporal o definitiva.
+Precondición:
+ El Administrador está autenticado en el sistema.
+Flujo Básico: Acción del Actor
+Respuesta del Sistema
+1.
+ El Administrador accede a la sección "Productos" desde el menú lateral.
+2.
+ El sistema muestra la cuadrícula con todos los productos registrados, organizados por categorías (Postres, Cafés, Bebidas frías, etc.) junto con sus precios e imágenes.
+3.
+ El Administrador selecciona "Añadir Producto", ingresa el nombre, precio base, categoría, sube una foto del producto y presiona "Guardar".
+4.
+ El sistema almacena los datos comerciales, procesa el archivo de imagen en el servidor, coloca el producto en estado "Inactivo" (hasta que se defina su receta) y actualiza la vista de catálogo.
+Postcondición:
+ El nuevo producto queda disponible en el sistema con sus atributos comerciales listos en la tabla 
+Producto
+.
+Excepciones:
+Campos Obligatorios Vacíos:
+ El sistema resalta en rojo los campos requeridos (ej. precio) e impide el envío de los datos.
+UC-004: Administrar Recetas de Productos
+Actores:
+ Principal: Administrador.
+Descripción: 
+Este caso de uso regula la vinculación técnica obligatoria entre los productos comerciales y las materias primas necesarias para su elaboración. Permite al Administrador formular recetas estándar detallando las cantidades exactas e insumos requeridos en medidas métricas o fraccionales (gr, ml, unidades), asegurando que el producto quede habilitado para la venta y con trazabilidad hacia el almacén.
+Precondición:
+ El insumo y el producto deben existir previamente en el sistema.
+Flujo Básico: Acción del Actor
+Respuesta del Sistema
+1.
+ El Administrador entra al detalle de un producto del catálogo y hace clic en "Configurar Receta".
+2.
+ El sistema abre la sección de formulación mostrando la lista de insumos actualmente asociados (si los tiene) y un buscador de materias primas.
+3.
+ El Administrador busca un insumo (ej. Café en grano, Leche, Zanahoria) y especifica la cantidad necesaria, admitiendo tanto números enteros (unidades) como decimales para porciones exactas o fracciones (gr, ml, oz o fracción de unidad como 0.5).
+4.
+ El sistema agrega temporalmente el insumo y su medida calculada al listado de preparación de la receta en pantalla.
+5.
+ El Administrador revisa el listado final de ingredientes y presiona "Confirmar Receta".
+6.
+ El sistema genera los registros correspondientes en las tablas 
+Receta
+ y 
+DetalleReceta
+, cambia el estado del producto a "Disponible para Venta" y muestra un mensaje de éxito.
+Postcondición:
+ El producto queda habilitado para la venta rápida en el POS gracias a tener su receta enlazada de forma obligatoria.
+UC-005: Gestionar Almacén de Insumos
+Actores:
+ Principal: Administrador.
+Descripción: 
+Permite al Administrador dar de alta y controlar las materias primas o insumos básicos de la cafetería. El caso de uso contempla la definición de nombres de insumos, la asignación de sus unidades de medida base y la parametrización del stock mínimo tolerable, lo cual sirve de regla base para el disparo automático de alertas visuales de desabastecimiento dentro del sistema.
+Precondición:
+ El Administrador se encuentra en el módulo de Inventarios.
+Flujo Básico: Acción del Actor
+Respuesta del Sistema
+1.
+ El Administrador selecciona "Catálogo de Insumos" en el sistema.
+2.
+ El sistema despliega la lista global de materias primas registradas detallando su nombre, unidad de medida base (gr, ml, unidad) y stock actual.
+3.
+ El Administrador hace clic en "Nuevo Insumo", rellena los datos base y especifica el "Stock Mínimo Tolerable" antes de que el negocio caiga en desabastecimiento (ej. 5000 gr o 10 unidades).
+4.
+ El sistema guarda el insumo básico con stock inicial en cero (o el monto ingresado), asienta su regla de alerta y actualiza el panel.
+Postcondición:
+ El nuevo insumo queda disponible en el almacén digital listo para ser utilizado en el módulo de recetas.
+UC-006: Registrar Entrada de Insumos
+Actores: 
+Principal: Administrador / Supervisor. 
+Descripción: 
+Permite al Administrador o Supervisor documentar de manera manual el abastecimiento físico de materias primas adquiridas a los proveedores. El sistema procesa el ingreso registrando cantidades y costos unitarios, incrementando el stock real de los insumos y generando un asiento inmutable y fechado dentro del Kardex de almacén para mantener la auditoría de compras.
+Precondición:
+ Los insumos a reabastecer deben estar dados de alta en el sistema. 
+Flujo Básico: Acción del Actor
+Respuesta del Sistema
+1.
+ El usuario selecciona la opción "Nueva Entrada de Almacén". 
+2.
+ El sistema abre un formulario de entrada manual de inventario. 
+3.
+ El usuario selecciona el insumo que llegó de los proveedores, digita la cantidad física ingresada, costo unitario y opcionalmente el número de documento/comprobante de compra. 
+4.
+ El usuario revisa los ítems de la compra en su lista y presiona el botón "Procesar Entrada". 
+5. El sistema incrementa directamente el 
+stockActual
+ en la tabla de insumos, genera una fila de tipo 'Entrada' de manera inmutable en 
+MovimientoKardex
+ con la fecha y firma del responsable, y actualiza los indicadores del dashboard. 
+6. El sistema muestra la notificación en verde: "Entrada de inventario registrada con éxito".
+Postcondición:
+ El inventario aumenta físicamente y queda la trazabilidad legal del movimiento registrada en el Kardex.
+UC-007: Registrar Mermas Manualmente
+Actores:
+ Principal: Personal de Cocina | Secundario: Administrador.
+Descripción: 
+Este caso de uso regula el control de pérdidas o desechos de materias primas dentro del área operativa. Permite al Personal de Cocina reportar insumos dañados, rotos o vencidos especificando cantidades y motivos obligatorios. El movimiento queda retenido en estado pendiente hasta que el Administrador lo evalúa y autoriza, ejecutando en ese momento la rebaja real del inventario y su registro en el Kardex.
+Precondición:
+ El personal identifica insumos dañados, rotos o vencidos en el área de cocina. 
+Flujo Básico: Acción del Actor
+Respuesta del Sistema
+1.
+ El Personal de Cocina accede a su sección de "Reportar Desechos / Mermas". 
+2.
+ El sistema despliega un formulario simplificado de merma de insumos. 
+3.
+ El cocinero selecciona el insumo afectado, la cantidad que va a desechar y escribe el motivo obligatorio (ej. "Zanahoria podrida" o "Leche vencida"). Al finalizar presiona "Enviar a Revisión". 
+4.
+ El sistema guarda la solicitud de merma en estado 
+"Pendiente de Aprobación"
+ para no alterar el Kardex de forma automática y emite un aviso al panel del administrador. 
+5. El Administrador ingresa a su bandeja de autorizaciones, revisa la merma reportada por la cocina y presiona el botón "Aprobar Merma".
+6. El sistema procesa la autorización, resta de manera oficial la cantidad del stockActual del insumo, registra la fila 'Salida por Merma' inmutable en MovimientoKardex y notifica a ambas partes.
+Postcondición:
+ El inventario se descuenta de forma controlada garantizando que el Personal de Cocina no altere los números sin supervisión directa. 
+UC-008: Registrar Venta de Productos
+Actores:
+ Principal: Cajero / Vendedor.
+Descripción: 
+Es el núcleo transaccional del Punto de Venta (POS) operado por el Cajero. Permite estructurar un carrito de compras interactivo seleccionando productos del catálogo, calcular montos totales, registrar la transacción en efectivo de forma directa y desencadenar dos subprocesos automáticos del sistema: la disminución de insumos en tiempo real según las recetas vendidas y el asiento de salida física en el Kardex.
+Precondición:
+ El turno del POS está activo y hay productos con recetas que cuentan con stock suficiente en almacén.
+Flujo Básico: Acción del Actor
+Respuesta del Sistema
+1.
+ El Cajero accede al módulo del Punto de Venta (POS) en su terminal. 
+2.
+ El sistema muestra la interfaz gráfica interactiva del POS con el catálogo visual de los productos organizados por pestañas o categorías rápidos. 
+3.
+ El Cajero hace clic sobre los productos solicitados por el cliente en el mostrador (ej. 2 Cafés Capuccino), configurando las cantidades requeridas. 
+4.
+ El sistema agrega los productos a la sección derecha del "Carrito de Compras" y calcula el monto subtotal, los impuestos (IGV) y el precio total neto de forma automática. 
+5. El Cajero presiona el botón "Proceder al Pago", omitiendo el ingreso de datos de cliente ya que se trata de una venta rápida de mostrador sin comprobante nominal (boleta/factura). 
+6. El sistema despliega las dos opciones de medios de pago disponibles: "Efectivo" y "Digital (PayPal)". 
+7. El Cajero selecciona "Efectivo", digita el monto de dinero recibido por el cliente y presiona "Confirmar Venta". 
+8. El sistema ejecuta internamente tres acciones automáticas en la base de datos: 
+a) Guarda el registro de la transacción en la tabla Venta.
+b) Consulta las recetas de los productos vendidos y descuenta los insumos del stock según las proporciones estipuladas.
+c) Inserta las filas de salida automáticas en MovimientoKardex.
+9. El sistema gatilla de manera automática la impresión del comprobante genérico (Ticket de venta rápida) (UC-010), limpia el carrito de compras y actualiza los gráficos del Dashboard del negocio.
+Postcondición: 
+La venta queda asentada con éxito financiero y el inventario de materias primas disminuye de manera sincronizada en tiempo real.
+  
+Excepciones: 
+Insumos Insuficientes: Al intentar agregar un producto al carrito, el sistema cruza los datos con las recetas y el stock actual. Si falta algún insumo crítico, bloquea la acción mostrando un mensaje en pantalla: "No se puede vender el producto. Stock insuficiente de Leche/Café".
+UC-009: Procesar Pago con PayPal
+Actores:
+ Cajero / Vendedor | Secundario: API de PayPal.
+Descripción: 
+Funciona como una extensión especializada de pasarela de pagos digitales dentro del flujo del POS. Conecta el backend de la aplicación con la API oficial de PayPal mediante un componente flotante (modal inteligente) para procesar transacciones electrónicas seguras con tarjetas de crédito, débito o saldo PayPal. Al recibir la confirmación exitosa del webhook, valida la operación y consolida la venta.
+Precondición:
+ Se está ejecutando una venta en el POS (UC-008) y se selecciona como modalidad de cobro "PayPal".
+Flujo Básico: Acción del Actor
+Respuesta del Sistema
+1.
+ En el flujo de pago de la venta, el Cajero selecciona el botón digital "Pagar con PayPal". 
+2.
+ El sistema conecta con la API de PayPal usando sus credenciales de Laravel e invoca el SDK flotante en Next.js, abriendo una ventana modal de inicio de sesión seguro de PayPal sobre el POS. 
+3.
+ El cliente digita de forma privada sus credenciales de cuenta PayPal o procesa su tarjeta de crédito/débito en la interfaz externa y confirma la transacción de pago. 
+4.
+ La API de PayPal procesa la transacción financiera de manera segura externa, debita los fondos y envía de regreso una respuesta de confirmación de éxito ("APPROVED") junto con el ID de la orden de pago internacional. 
+5.
+ El sistema (Backend Laravel) intercepta la respuesta a través del Webhook oficial, valida que el monto cobrado coincida exactamente con el total del carrito, guarda los datos del ID de rastreo en la tabla 
+PagoPayPal
+ y cambia el estado de la venta a "Completada/Pagada"
+6.
+ El sistema cierra la ventana flotante de pagos de manera automática, le indica al cajero que el dinero digital está asegurado en la cuenta del negocio y procede a ejecutar los descuentos automáticos de inventario (Paso 8 del UC-008). 
+Postcondición: 
+El pago electrónico queda validado y amarrado de manera persistente a la orden de venta mediante registros ACID seguros.
+Excepciones: 
+Transacción Rechazada / Fondos Insuficientes: Si PayPal deniega la operación, la API retorna un estado de error, la ventana modal se cierra mostrando una advertencia "Pago no procesado por el banco" y el sistema devuelve al cajero a la pantalla del carrito permitiéndole cambiar a cobro por efectivo.
+UC-010: Emitir Comprobante de Venta
+Actores:
+ Principal: Cajero / Vendedor.
+Descripción: 
+Este caso de uso automatizado se ejecuta inmediatamente después de confirmarse y validarse el pago de una venta (ya sea en efectivo o mediante PayPal). Se encarga de construir dinámicamente un comprobante de pago genérico simplificado (ticket de venta rápida de mostrador) en formato PDF imprimible para ser despachado físicamente por la ticketera térmica de la cafetería.
+Precondición:
+ Una venta ha sido confirmada y pagada en su totalidad mediante efectivo o PayPal (UC-008 / UC-009).
+Flujo Básico: Acción del Actor
+Respuesta del Sistema
+1.
+ El sistema finaliza el procesamiento financiero de la venta en el POS. 
+2.
+ El sistema genera un archivo digital estructurado en formato de Ticket de venta genérica no nominal (sin datos fiscales obligatorios de RUC o DNI) que contiene: Nombre de la cafetería "Dante", fecha, hora, desglose de ítems vendidos, método de pago y el total cobrado. 
+3.
+ El sistema envía la orden de impresión directa a la ticketera térmica conectada al Punto de Venta y de forma paralela despliega una vista previa limpia en formato PDF descargable en la pantalla de Next.js por si se requiere enviar digitalmente. 
+Postcondición: E
+l ticket físico/digital es emitido dándole el comprobante de compra inmediato al consumidor en el mostrador.
+UC-011: Consultar Dashboard e Informes
+Actores:
+ Principal: Administrador.
+Descripción: 
+Proporciona al Administrador una herramienta visual centralizada para monitorear la salud comercial y operativa de la cafetería "Dante" en tiempo real. El caso de uso renderiza indicadores clave (KPIs) en la pantalla principal —como las ventas del día, productos más/menos vendidos e insumos en stock crítico— y permite filtrar históricos transaccionales para exportar reportes detallados en archivos descargables Excel (CSV) y PDF.
+Precondición:
+ El Administrador ha iniciado sesión en su cuenta jerárquica corporativa.
+Flujo Básico: Acción del Actor
+Respuesta del Sistema
+1.
+ El Administrador se dirige al menú principal del sistema y hace clic en la pantalla de "Dashboard". 
+2.
+ El sistema realiza consultas indexadas ágiles a la base de datos de MySQL/MariaDB y renderiza de forma visual un panel interactivo con las siguientes tarjetas de control clave:
+a) Ventas Totales:
+ Monto bruto recaudado en soles del día corriente.
+b) Producto Más Vendido:
+ Nombre y cantidad del artículo con mayor demanda.
+c) Producto Menos Vendido:
+ Identificación de productos de baja rotación en vitrina.
+d) Alerta de Insumos Críticos:
+ Listado parpadeante en rojo de los insumos que cruzaron la línea del stock mínimo configurado.
+3.
+ El Administrador puede ir a la sección secundaria de "Reportes", configurar un filtro por rangos de fechas específicos (ej. "Mes Actual") y hacer clic en el botón "Exportar". 
+4.
+ El sistema empaqueta de forma ordenada la información histórica recopilada de movimientos y ventas, generando archivos limpios descargables en formatos universales Excel (.csv) o documentos estáticos PDF. 
+Postcondición: 
+El Administrador obtiene la inteligencia de negocios idónea para tomar decisiones sobre compras de suministros de manera proactiva y fundamentada.
+Modelo Lógico
+Diagrama de Actividades con objetos
+UC-001: Autenticar Usuario
+UC-002: Gestionar Personal y Roles
+UC-003: Gestionar Catálogo de Productos
+UC-004: Administrar Recetas de Productos
+UC-005: Gestionar Almacén de Insumos
+UC-006: Registrar Entrada de Insumos
+UC-007: Registrar Mermas Manualmente
+UC-008: Registrar Venta de Productos
+UC-009: Procesar Pago con PayPal
+UC-010: Emitir Comprobante de Venta
+UC-011: Consultar Dashboard e Informes
+Diagramas de secuencia:
+UC-001: Autenticar Usuario
+UC-002: Gestionar Personal y Roles
+UC-003: Gestionar Catálogo de Productos
+UC-004: Administrar Recetas de Productos
+UC-005: Gestionar Almacén de Insumos
+UC-006: Registrar Entrada de Insumos
+UC-007: Registrar Mermas Manualmente
+UC-008: Registrar Venta de Productos
+UC-009: Procesar Pago con PayPal
+UC-010: Emitir Comprobante de Venta
+UC-011: Consultar Dashboard e Informes
+Diagrama de Clases
+CONCLUSIONES
+El documento de Especificación de Requerimientos de Software (SRS) presentado define de manera exhaustiva y técnicamente rigurosa los requerimientos funcionales y no funcionales del "Sistema Integral de Gestión de Insumos y Ventas Automatizadas", proporcionando una base sólida para las fases de diseño e implementación del proyecto.
+El análisis del proceso actual de la cafetería "Dante" confirma la existencia de brechas operativas críticas: desconexión entre ventas e inventario, ausencia de trazabilidad automática, limitación a un único método de pago y dependencia de controles manuales propensos a error. El sistema propuesto aborda cada una de estas deficiencias de manera sistemática.
+La arquitectura tecnológica seleccionada (PHP 8.x, PostgreSQL 16, Tailwind CSS, API PayPal, VPS con SSL) es coherente con los recursos del equipo de desarrollo, los requisitos de rendimiento y disponibilidad del sistema, y las restricciones económicas identificadas en el informe de factibilidad.
+Los 14 requerimientos funcionales y 10 requerimientos no funcionales identificados cubren de manera integral las necesidades operativas de la cafetería, garantizando la automatización del control de inventarios, la seguridad de las transacciones, la usabilidad del sistema y la trazabilidad completa de los movimientos.
+Los indicadores financieros del proyecto (VAN = S/ 12,917.71, TIR = 95.93%, B/C = 2.75) confirman la viabilidad y rentabilidad de la inversión, con un período de recuperación estimado de 11 meses desde la implementación, lo que valida la pertinencia del desarrollo del sistema.
+La definición de cuatro perfiles de usuario con permisos diferenciados (Administrador, Supervisor, Cajero, Cocina) garantiza el principio de mínimo privilegio y protege la integridad de los datos sensibles del sistema.
+RECOMENDACIONES
+Implementar el sistema siguiendo una metodología de desarrollo ágil (Scrum) con sprints de dos semanas, priorizando en el primer sprint los módulos de autenticación, gestión de usuarios e inventario básico, por ser la base sobre la que se construyen los demás módulos.
+Realizar pruebas exhaustivas de la integración con la API de PayPal en el entorno sandbox antes del despliegue en producción, verificando especialmente el flujo de webhooks y el manejo de pagos rechazados o expirados.
+Establecer un plan de capacitación diferenciado por rol de usuario, con énfasis en el administrador y el cajero, quienes utilizarán el sistema con mayor frecuencia e intensidad. Se recomienda un mínimo de dos horas de capacitación práctica por rol.
+Configurar el sistema de respaldos automáticos de PostgreSQL con una frecuencia diaria y almacenamiento en una ubicación externa al servidor de producción (almacenamiento en la nube), garantizando la recuperabilidad de los datos ante cualquier incidente.
+Implementar un plan de mantenimiento preventivo mensual que incluya: revisión de logs de auditoría, verificación del espacio en disco del servidor, actualización de dependencias y revisión del rendimiento de las consultas a la base de datos.
+Para versiones futuras del sistema, se recomienda considerar la integración de facturación electrónica conforme a los requerimientos de SUNAT, la incorporación de un módulo de gestión de proveedores con órdenes de compra automatizadas y el desarrollo de una aplicación móvil nativa para el personal de cocina.

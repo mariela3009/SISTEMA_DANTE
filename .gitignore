@@ -1,0 +1,9 @@
+eva-frontend/node_modules/
+eva-frontend/.next/
+eva-backend/vendor/
+eva-backend/.env
+eva-ai/venv/
+eva-ai/__pycache__/
+
+eva-frontend/.env.local
+*.env*
