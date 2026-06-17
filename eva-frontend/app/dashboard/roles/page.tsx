@@ -25,10 +25,7 @@ const ROLES = [
 ];
 
 const PERMISSION_COLS = [
-  { key: "can_view", label: "Ver", icon: "visibility" },
-  { key: "can_create", label: "Crear", icon: "add_circle" },
-  { key: "can_edit", label: "Editar", icon: "edit" },
-  { key: "can_delete", label: "Eliminar", icon: "delete" },
+  { key: "can_view", label: "Acceso al Módulo", icon: "vpn_key" },
 ];
 
 const MODULE_ICONS: Record<string, string> = {
@@ -78,13 +75,20 @@ export default function RolesPage() {
     fetchPermissions();
   }, []);
 
-  const togglePermission = (module: string, field: string) => {
+  const togglePermission = (module: string) => {
     setPermissions((prev) => {
       const updated = { ...prev };
       const rolePerms = [...(updated[activeRole] || [])];
       const idx = rolePerms.findIndex((p) => p.module === module);
       if (idx !== -1) {
-        rolePerms[idx] = { ...rolePerms[idx], [field]: !rolePerms[idx][field as keyof Permission] };
+        const newVal = !rolePerms[idx].can_view;
+        rolePerms[idx] = { 
+          ...rolePerms[idx], 
+          can_view: newVal,
+          can_create: newVal,
+          can_edit: newVal,
+          can_delete: newVal
+        };
       }
       updated[activeRole] = rolePerms;
       return updated;
@@ -92,12 +96,19 @@ export default function RolesPage() {
     setHasChanges(true);
   };
 
-  const toggleAllInColumn = (field: string) => {
+  const toggleAllInColumn = () => {
     setPermissions((prev) => {
       const updated = { ...prev };
       const rolePerms = [...(updated[activeRole] || [])];
-      const allEnabled = rolePerms.every((p) => p[field as keyof Permission]);
-      updated[activeRole] = rolePerms.map((p) => ({ ...p, [field]: !allEnabled }));
+      const allEnabled = rolePerms.every((p) => p.can_view);
+      const newVal = !allEnabled;
+      updated[activeRole] = rolePerms.map((p) => ({ 
+        ...p, 
+        can_view: newVal,
+        can_create: newVal,
+        can_edit: newVal,
+        can_delete: newVal
+      }));
       return updated;
     });
     setHasChanges(true);
@@ -168,11 +179,8 @@ export default function RolesPage() {
   };
 
   const currentPerms = permissions[activeRole] || [];
-  const activeCount = currentPerms.reduce(
-    (acc, p) => acc + (p.can_view ? 1 : 0) + (p.can_create ? 1 : 0) + (p.can_edit ? 1 : 0) + (p.can_delete ? 1 : 0),
-    0
-  );
-  const totalCount = currentPerms.length * 4;
+  const activeCount = currentPerms.filter((p) => p.can_view).length;
+  const totalCount = currentPerms.length;
 
   return (
     <div className="space-y-6">
@@ -220,10 +228,7 @@ export default function RolesPage() {
         {ROLES.map((role) => {
           const isActive = activeRole === role.key;
           const rolePerms = permissions[role.key] || [];
-          const count = rolePerms.reduce(
-            (a, p) => a + (p.can_view ? 1 : 0) + (p.can_create ? 1 : 0) + (p.can_edit ? 1 : 0) + (p.can_delete ? 1 : 0),
-            0
-          );
+          const count = rolePerms.filter((p) => p.can_view).length;
 
           return (
             <button
@@ -279,7 +284,7 @@ export default function RolesPage() {
               {ROLES.find((r) => r.key === activeRole)?.label}
             </span>
             <span className="text-on-surface-variant font-body-md ml-2">
-              — {activeCount} de {totalCount} permisos habilitados
+              — {activeCount} de {totalCount} módulos habilitados
             </span>
           </div>
         </div>
@@ -321,7 +326,7 @@ export default function RolesPage() {
                         className="px-4 py-4 text-center"
                       >
                         <button
-                          onClick={() => toggleAllInColumn(col.key)}
+                          onClick={() => toggleAllInColumn()}
                           className="inline-flex flex-col items-center gap-1 group cursor-pointer"
                           title={`${allChecked ? "Desmarcar" : "Marcar"} todos — ${col.label}`}
                         >
@@ -360,7 +365,7 @@ export default function RolesPage() {
                       return (
                         <td key={col.key} className="px-4 py-4 text-center">
                           <button
-                            onClick={() => togglePermission(perm.module, col.key)}
+                            onClick={() => togglePermission(perm.module)}
                             className={`
                               relative w-11 h-6 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30
                               ${checked ? "bg-primary" : "bg-latte/40"}

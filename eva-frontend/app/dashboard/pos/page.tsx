@@ -17,6 +17,7 @@ export default function POSPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState<any[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -86,9 +87,11 @@ export default function POSPage() {
     fetchClients();
   }, []);
 
-  const filteredProducts = activeCategory 
-    ? products.filter(p => p.category?.id.toString() === activeCategory)
-    : products;
+  const filteredProducts = products.filter(p => {
+    const matchCategory = activeCategory ? p.category?.id.toString() === activeCategory : true;
+    const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchCategory && matchSearch;
+  });
 
   const addToCart = (product: any) => {
     setErrorMsg("");
@@ -200,36 +203,66 @@ export default function POSPage() {
         setErrorMsg("El sistema de pagos no está cargado.");
         return;
       }
-      // Configure Culqi
-      window.Culqi.publicKey = process.env.NEXT_PUBLIC_CULQI_PUBLIC_KEY || "pk_test_kgvtwFBjH89SWsSW";
-      window.Culqi.settings({
-          title: 'Cafetería Dante',
-          currency: 'PEN',
-          amount: Math.round(totalCart * 100),
-      });
-      window.Culqi.options({
-          lang: 'auto',
-          installments: false, 
-          modal: true,
-      });
 
-      // Bind the callback
-      window.culqi = async () => {
-        if (window.Culqi.token) {
-            const token = window.Culqi.token.id;
-            await submitSale(token);
-        } else if (window.Culqi.error) {
-            setErrorMsg(window.Culqi.error.user_message || "Error en el pago con tarjeta.");
-        }
-      };
-      
-      window.Culqi.open();
+      setIsProcessing(true);
+      setErrorMsg("");
+      try {
+        // 1. Solicitar Orden de Culqi al Backend (necesario para Yape)
+        const res = await apiFetch(`${API_BASE_URL}/api/sales/culqi-order`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            items: cart.map(item => ({ product_id: item.product_id, quantity: item.quantity })),
+            client_id: selectedClientId ? parseInt(selectedClientId) : null,
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || "Error al generar orden en Culqi");
+
+        const orderId = data.order_id;
+
+        // 2. Configurar Culqi inyectando el parámetro 'order'
+        window.Culqi.publicKey = process.env.NEXT_PUBLIC_CULQI_PUBLIC_KEY || "pk_test_kgvtwFBjH89SWsSW";
+        window.Culqi.settings({
+            title: 'Cafetería Dante',
+            currency: 'PEN',
+            amount: Math.round(totalCart * 100),
+            order: orderId // <--- Esto habilita PagoEfectivo y Yape
+        });
+        window.Culqi.options({
+            lang: 'auto',
+            installments: false, 
+            modal: true,
+        });
+
+        // 3. Callback global para recibir token (Tarjeta) o la confirmación de Yape
+        window.culqi = async () => {
+          if (window.Culqi.token) {
+              const token = window.Culqi.token.id;
+              await submitSale(token, null);
+          } else if (window.Culqi.order) {
+              // Yape devuelve window.Culqi.order.id cuando el pago se completa
+              const orderCompleted = window.Culqi.order.id;
+              await submitSale(null, orderCompleted);
+          } else if (window.Culqi.error) {
+              setErrorMsg(window.Culqi.error.user_message || "Error en el pago de Culqi.");
+              window.Culqi.close();
+              setIsProcessing(false);
+          }
+        };
+        
+        // 4. Abrir la ventana de Culqi
+        window.Culqi.open();
+      } catch (error: any) {
+        setErrorMsg(error.message);
+        setIsProcessing(false);
+      }
     } else {
-      await submitSale(null);
+      await submitSale(null, null);
     }
   };
 
-  const submitSale = async (culqiTokenId: string | null = null) => {
+  const submitSale = async (culqiTokenId: string | null = null, culqiOrderId: string | null = null) => {
     setIsProcessing(true);
     setErrorMsg("");
     setSuccessMsg("");
@@ -250,7 +283,8 @@ export default function POSPage() {
           payment_method: paymentMethod,
           invoice_type: invoiceType,
           client_id: selectedClientId ? parseInt(selectedClientId) : null,
-          culqi_token_id: culqiTokenId
+          culqi_token_id: culqiTokenId,
+          culqi_order_id: culqiOrderId
         })
       });
 
@@ -282,6 +316,9 @@ export default function POSPage() {
     } catch (err: any) {
       setErrorMsg(err.message);
     } finally {
+      if (paymentMethod === "culqi" && window.Culqi) {
+          window.Culqi.close(); // Forzar el cierre del modal en caso de error o éxito
+      }
       setIsProcessing(false);
     }
   };
@@ -301,21 +338,33 @@ export default function POSPage() {
     <div className="h-[calc(100vh-2rem)] flex gap-6 -m-4 relative overflow-hidden print:hidden">
       <div className="flex-1 flex flex-col bg-surface-container-lowest lg:rounded-xl shadow-sm lg:border border-latte/30 overflow-hidden w-full max-w-full">
         
-        <div className="bg-mist p-4 border-b border-latte/30 flex gap-2 overflow-x-auto">
-          {categories.map(cat => (
-            <button
-              key={cat.name}
-              onClick={() => setActiveCategory(cat.id ? cat.id.toString() : "")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full font-label-md whitespace-nowrap transition-colors ${
-                activeCategory === (cat.id ? cat.id.toString() : "")
-                  ? "bg-primary text-white"
-                  : "bg-white text-espresso border border-latte hover:bg-latte/20"
-              }`}
-            >
-              <span className="material-symbols-outlined text-[18px]">{cat.icon || "category"}</span>
-              {cat.name}
-            </button>
-          ))}
+        <div className="bg-mist p-4 border-b border-latte/30 flex flex-col gap-4">
+          <div className="relative">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+            <input 
+              type="text" 
+              placeholder="Buscar producto por nombre..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-latte/50 bg-white text-espresso focus:ring-2 focus:ring-primary focus:border-primary transition-all font-body-lg"
+            />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {categories.map(cat => (
+              <button
+                key={cat.name}
+                onClick={() => setActiveCategory(cat.id ? cat.id.toString() : "")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full font-label-md transition-colors ${
+                  activeCategory === (cat.id ? cat.id.toString() : "")
+                    ? "bg-primary text-white shadow-sm"
+                    : "bg-white text-espresso border border-latte hover:bg-latte/20"
+                }`}
+              >
+                <span className="material-symbols-outlined text-[18px]">{cat.icon || "category"}</span>
+                {cat.name}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="flex-1 p-6 overflow-y-auto">
@@ -411,31 +460,31 @@ export default function POSPage() {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto p-2">
           {cart.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-on-surface-variant opacity-60">
-              <span className="material-symbols-outlined text-6xl mb-4">shopping_cart</span>
-              <p className="font-label-lg font-semibold">No hay productos en la orden</p>
+              <span className="material-symbols-outlined text-4xl mb-2">shopping_cart</span>
+              <p className="font-label-md font-semibold">No hay productos en la orden</p>
             </div>
           ) : (
-            <ul className="space-y-4">
+            <ul className="space-y-2">
               {cart.map(item => (
-                <li key={item.product_id} className="flex flex-col gap-2 bg-mist p-3 rounded-lg border border-latte/20 shadow-sm">
+                <li key={item.product_id} className="flex flex-col gap-1 bg-mist p-2 rounded-lg border border-latte/20 shadow-sm">
                   <div className="flex justify-between items-start">
-                    <span className="font-label-lg text-espresso pr-4 font-semibold">{item.name}</span>
+                    <span className="font-label-md text-espresso pr-4 font-semibold">{item.name}</span>
                     <button onClick={() => removeFromCart(item.product_id)} className="text-on-surface-variant hover:text-error transition-colors">
-                      <span className="material-symbols-outlined text-[18px]">close</span>
+                      <span className="material-symbols-outlined text-[16px]">close</span>
                     </button>
                   </div>
                   <div className="flex justify-between items-end">
                     <span className="font-label-md text-terracota font-bold">S/ {item.subtotal.toFixed(2)}</span>
-                    <div className="flex items-center gap-3 bg-white border border-latte/30 rounded-full px-2 py-1">
+                    <div className="flex items-center gap-2 bg-white border border-latte/30 rounded-full px-1 py-0.5">
                       <button onClick={() => updateQuantity(item.product_id, -1)} className="text-espresso hover:text-terracota">
-                        <span className="material-symbols-outlined text-[16px] block">remove</span>
+                        <span className="material-symbols-outlined text-[14px] block">remove</span>
                       </button>
-                      <span className="font-label-md w-4 text-center font-semibold">{item.quantity}</span>
+                      <span className="text-xs w-4 text-center font-semibold">{item.quantity}</span>
                       <button onClick={() => updateQuantity(item.product_id, 1)} className="text-espresso hover:text-terracota">
-                        <span className="material-symbols-outlined text-[16px] block">add</span>
+                        <span className="material-symbols-outlined text-[14px] block">add</span>
                       </button>
                     </div>
                   </div>
@@ -446,32 +495,32 @@ export default function POSPage() {
         </div>
 
         {/* Totales, Cliente y Checkout */}
-        <div className="bg-mist p-6 border-t border-latte/30 space-y-4">
+        <div className="bg-mist p-4 border-t border-latte/30 space-y-2">
           {/* Client Selection (RF-018) */}
-          <div className="space-y-1.5 border-b border-latte/40 pb-4">
+          <div className="space-y-1 border-b border-latte/40 pb-2">
             <div className="flex justify-between items-center">
-              <label className="text-xs font-bold text-espresso uppercase tracking-wider flex items-center gap-1">
-                <span className="material-symbols-outlined text-[16px]">person</span>
-                Cliente (Opcional)
+              <label className="text-[10px] font-bold text-espresso uppercase tracking-wider flex items-center gap-1">
+                <span className="material-symbols-outlined text-[14px]">person</span>
+                Cliente
               </label>
               <button 
                 onClick={() => setIsClientModalOpen(true)}
-                className="text-xs font-bold text-primary hover:text-terracota flex items-center gap-0.5"
+                className="text-[10px] font-bold text-primary hover:text-terracota flex items-center gap-0.5"
                 title="Registrar cliente rápido"
               >
-                <span className="material-symbols-outlined text-[14px]">add_circle</span>
+                <span className="material-symbols-outlined text-[12px]">add_circle</span>
                 Nuevo
               </button>
             </div>
             <select
               value={selectedClientId}
               onChange={e => setSelectedClientId(e.target.value)}
-              className="w-full text-xs px-2 py-2 bg-white border border-latte rounded-lg focus:outline-none focus:border-primary text-espresso font-medium"
+              className="w-full text-xs px-2 py-1.5 bg-white border border-latte rounded-lg focus:outline-none focus:border-primary text-espresso font-medium"
             >
-              <option value="">— Venta Rápida (Sin Cliente) —</option>
+              <option value="">— Venta Rápida —</option>
               {clients.map(c => (
                 <option key={c.id} value={c.id.toString()}>
-                  {c.name} ({c.document_type.toUpperCase()}: {c.document_number})
+                  {c.name}
                 </option>
               ))}
             </select>
@@ -484,35 +533,35 @@ export default function POSPage() {
           </div>
 
           {/* Resumen Totales */}
-          <div className="space-y-2">
-            <div className="flex justify-between text-on-surface-variant font-label-md">
+          <div className="space-y-1">
+            <div className="flex justify-between text-on-surface-variant text-xs">
               <span>Subtotal</span>
               <span>S/ {subtotalCart.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-on-surface-variant font-label-md">
+            <div className="flex justify-between text-on-surface-variant text-xs">
               <span>IGV (18%)</span>
               <span>S/ {taxCart.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-espresso font-headline-md text-xl pt-2 border-t border-latte/30 mt-2 font-bold">
+            <div className="flex justify-between text-espresso font-headline-md text-lg pt-1 border-t border-latte/30 mt-1 font-bold">
               <span>Total</span>
               <span className="text-terracota">S/ {totalCart.toFixed(2)}</span>
             </div>
           </div>
-          <div className="pt-2">
-            <label className="text-xs font-bold text-espresso mb-1 uppercase tracking-wider block">Método de Pago</label>
-            <div className="grid grid-cols-2 gap-2 mb-3">
+          <div className="pt-1">
+            <label className="text-[10px] font-bold text-espresso mb-1 uppercase tracking-wider block">Método de Pago</label>
+            <div className="grid grid-cols-2 gap-2 mb-2">
               <button 
                 onClick={() => setPaymentMethod("cash")}
-                className={`py-2 rounded-lg border-2 font-bold flex flex-col items-center justify-center transition-colors ${paymentMethod === "cash" ? "border-primary bg-primary/10 text-primary" : "border-latte text-on-surface-variant hover:bg-mist"}`}
+                className={`py-1.5 rounded-lg border-2 text-xs font-bold flex flex-col items-center justify-center transition-colors ${paymentMethod === "cash" ? "border-primary bg-primary/10 text-primary" : "border-latte text-on-surface-variant hover:bg-mist"}`}
               >
-                <span className="material-symbols-outlined text-[20px]">payments</span>
+                <span className="material-symbols-outlined text-[16px]">payments</span>
                 Efectivo
               </button>
               <button 
                 onClick={() => setPaymentMethod("culqi")}
-                className={`py-2 rounded-lg border-2 font-bold flex flex-col items-center justify-center transition-colors ${paymentMethod === "culqi" ? "border-[#FF5A5F] bg-[#FF5A5F]/10 text-[#FF5A5F]" : "border-latte text-on-surface-variant hover:bg-mist"}`}
+                className={`py-1.5 rounded-lg border-2 text-xs font-bold flex flex-col items-center justify-center transition-colors ${paymentMethod === "culqi" ? "border-[#FF5A5F] bg-[#FF5A5F]/10 text-[#FF5A5F]" : "border-latte text-on-surface-variant hover:bg-mist"}`}
               >
-                <span className="material-symbols-outlined text-[20px]">credit_card</span>
+                <span className="material-symbols-outlined text-[16px]">credit_card</span>
                 Culqi (Tarjeta)
               </button>
             </div>

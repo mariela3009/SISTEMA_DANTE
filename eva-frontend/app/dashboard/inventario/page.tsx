@@ -47,6 +47,7 @@ export default function InventarioPage() {
 
   // Merma states
   const [isMermaModalOpen, setIsMermaModalOpen] = useState(false);
+  const [isPendingMermasModalOpen, setIsPendingMermasModalOpen] = useState(false);
   const [mermaData, setMermaData] = useState({ product_id: "", quantity: 1, reason: "" });
 
   const fetchIngredients = async (page = currentPage) => {
@@ -192,11 +193,20 @@ export default function InventarioPage() {
     if (!entradaIngredient) return;
     setIsSubmitting(true);
     try {
+      // El usuario ingresará el Costo Total de su compra (ej. 50 soles por 3000 gramos)
+      // Internamente lo dividimos para mandarlo a la BD como costo_unitario (por gramo/unidad)
+      const totalCostInput = entradaData.cost_per_unit || 0;
+      const computedCostPerUnit = totalCostInput > 0 ? (totalCostInput / entradaData.quantity) : 0;
+
       const res = await apiFetch(`${API_BASE_URL}/api/inventory/entrada`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          items: [{ ingredient_id: entradaIngredient.id, ...entradaData }]
+          items: [{ 
+            ingredient_id: entradaIngredient.id, 
+            quantity: entradaData.quantity,
+            cost_per_unit: computedCostPerUnit
+          }]
         })
       });
       if (res.ok) {
@@ -288,29 +298,18 @@ export default function InventarioPage() {
         </div>
       </div>
 
-      {/* Pending Mermas section */}
+      {/* Floating Action Button for Pending Mermas */}
       {pendingMermas.length > 0 && (
-        <div className="bg-error/10 border border-error/30 rounded-xl p-4">
-          <h3 className="text-error font-bold mb-3 flex items-center gap-2">
-            <span className="material-symbols-outlined">warning</span>
-            Mermas Pendientes de Aprobación
-          </h3>
-          <div className="space-y-2">
-            {pendingMermas.map(merma => (
-              <div key={merma.id} className="bg-white rounded-lg p-3 flex justify-between items-center shadow-sm">
-                <div>
-                  <p className="font-bold text-sm text-espresso">Insumo: {merma.ingredient?.name}</p>
-                  <p className="text-xs text-on-surface-variant">Cant: {merma.quantity} {merma.ingredient?.unit} - Razón: {merma.reason}</p>
-                  <p className="text-[10px] text-on-surface-variant/70">Solicitado por: {merma.user?.name}</p>
-                </div>
-                <div className="flex gap-2">
-                  <button onClick={() => handleApproveMerma(merma.id, true)} className="bg-sage text-white px-3 py-1.5 rounded text-xs font-bold hover:opacity-90">Aprobar</button>
-                  <button onClick={() => handleApproveMerma(merma.id, false)} className="bg-espresso text-white px-3 py-1.5 rounded text-xs font-bold hover:opacity-90">Rechazar</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <button
+          onClick={() => setIsPendingMermasModalOpen(true)}
+          className="fixed bottom-6 right-6 z-40 flex items-center gap-2 bg-error text-white px-4 py-3 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-1 hover:bg-error/90 transition-all font-label-lg"
+        >
+          <span className="material-symbols-outlined text-[24px]">warning</span>
+          <span className="hidden sm:inline">Mermas Pendientes</span>
+          <span className="bg-white text-error w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs">
+            {pendingMermas.length}
+          </span>
+        </button>
       )}
 
       <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-latte/30 overflow-hidden">
@@ -585,8 +584,8 @@ export default function InventarioPage() {
             <input type="number" step="0.01" required min="0.01" value={entradaData.quantity} onChange={e => setEntradaData({...entradaData, quantity: parseFloat(e.target.value) || 0})} className="w-full px-3 py-2 border rounded-lg" />
           </div>
           <div>
-            <label className="block font-label-md text-espresso mb-1">Costo por Unidad de Medida (S/) (Opcional)</label>
-            <input type="number" step="0.01" min="0" value={entradaData.cost_per_unit} onChange={e => setEntradaData({...entradaData, cost_per_unit: parseFloat(e.target.value) || 0})} className="w-full px-3 py-2 border rounded-lg" />
+            <label className="block font-label-md text-espresso mb-1">Costo Total de la Compra (S/) (Opcional)</label>
+            <input type="number" step="0.01" min="0" value={entradaData.cost_per_unit} onChange={e => setEntradaData({...entradaData, cost_per_unit: parseFloat(e.target.value) || 0})} className="w-full px-3 py-2 border rounded-lg" placeholder="Ej. Lo que pagaste por el total de esta cantidad" />
           </div>
           <div className="pt-4 flex justify-end gap-3">
             <button type="button" onClick={() => setEntradaIngredient(null)} className="px-4 py-2 border rounded-lg">Cancelar</button>
@@ -625,6 +624,35 @@ export default function InventarioPage() {
             <button type="submit" disabled={isSubmitting} className="px-4 py-2 bg-error text-white rounded-lg">{isSubmitting ? "Enviando..." : "Solicitar Merma"}</button>
           </div>
         </form>
+      </Modal>
+      {/* Pending Mermas Modal */}
+      <Modal isOpen={isPendingMermasModalOpen} onClose={() => setIsPendingMermasModalOpen(false)} title="Mermas Pendientes de Aprobación">
+        <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
+          {pendingMermas.length === 0 ? (
+            <p className="text-sm text-on-surface-variant text-center py-6">No hay mermas pendientes de aprobación.</p>
+          ) : (
+            pendingMermas.map(merma => (
+              <div key={merma.id} className="bg-mist border border-latte/50 rounded-xl p-4 shadow-sm flex flex-col gap-3">
+                <div>
+                  <p className="font-bold text-base text-espresso flex items-center gap-2">
+                    <span className="material-symbols-outlined text-error text-[18px]">inventory_2</span>
+                    {merma.ingredient?.name}
+                  </p>
+                  <p className="text-sm text-on-surface-variant mt-1">
+                    <strong className="text-espresso">{merma.quantity} {merma.ingredient?.unit}</strong> — {merma.reason}
+                  </p>
+                  <p className="text-[11px] text-on-surface-variant/70 mt-2 bg-white px-2 py-1 inline-block rounded-md border border-latte/30">
+                    Solicitado por: <strong>{merma.user?.name}</strong>
+                  </p>
+                </div>
+                <div className="flex gap-2 pt-2 border-t border-latte/30">
+                  <button onClick={() => { handleApproveMerma(merma.id, false); if(pendingMermas.length === 1) setIsPendingMermasModalOpen(false); }} className="flex-1 bg-white border border-error text-error px-3 py-2 rounded-lg text-sm font-bold hover:bg-error/5 transition-colors">Rechazar</button>
+                  <button onClick={() => { handleApproveMerma(merma.id, true); if(pendingMermas.length === 1) setIsPendingMermasModalOpen(false); }} className="flex-1 bg-espresso text-mist px-3 py-2 rounded-lg text-sm font-bold hover:bg-terracota transition-colors">Aprobar Merma</button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </Modal>
     </div>
   );

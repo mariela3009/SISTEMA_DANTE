@@ -47,6 +47,20 @@ class DashboardController extends Controller
             ->with('ingredient:id,name,unit')->get()
             ->map(fn($m) => ['name' => $m->ingredient->name, 'consumido' => $m->consumido, 'unit' => $m->ingredient->unit]);
 
+        // Datos para las gráficas de tendencia (últimos 7 días)
+        $trendData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i)->toDateString();
+            $diaIngresos = Sale::whereDate('created_at', $date)->where('status', 'completed')->sum('total');
+            $diaVentas = Sale::whereDate('created_at', $date)->where('status', 'completed')->count();
+            $trendData[] = [
+                'date' => now()->subDays($i)->format('d M'),
+                'ingresos' => round($diaIngresos, 2),
+                'ventas' => $diaVentas,
+                'ticket' => $diaVentas > 0 ? round($diaIngresos / $diaVentas, 2) : 0
+            ];
+        }
+
         return response()->json([
             'today'               => now()->format('d M Y'),
             'ingresos'            => $totalIngresos,
@@ -56,6 +70,7 @@ class DashboardController extends Controller
             'top_vendidos'        => $topVendidos,
             'bottom_vendidos'     => $bottomVendidos,
             'insumos_rotacion'    => $insumosMayorRotacion,
+            'trend_data'          => $trendData,
         ]);
     }
 

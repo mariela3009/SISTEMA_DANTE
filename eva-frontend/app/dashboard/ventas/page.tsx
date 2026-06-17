@@ -3,6 +3,7 @@ import { API_BASE_URL } from "@/app/lib/api";
 
 import { useEffect, useState } from "react";
 import { apiFetch } from "../../lib/api";
+import KPICardDark from "@/app/components/KPICardDark";
 
 interface SaleItem {
   id: number;
@@ -144,23 +145,11 @@ export default function VentasPage() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          { label: "Ingresos Totales", value: fmt(totalRevenue), icon: "payments", color: "text-green-600", bg: "bg-green-50" },
-          { label: "IGV Recaudado", value: fmt(totalTax), icon: "account_balance", color: "text-blue-600", bg: "bg-blue-50" },
-          { label: "Ticket Promedio", value: fmt(avgTicket), icon: "avg_pace", color: "text-primary", bg: "bg-primary/5" },
-          { label: "Ventas Completadas", value: `${completed.length} / ${sales.length}`, icon: "check_circle", color: "text-terracota", bg: "bg-terracota/5" },
-        ].map((kpi) => (
-          <div key={kpi.label} className={`${kpi.bg} border border-latte/30 rounded-xl p-4 flex items-center gap-4`}>
-            <div className={`w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm`}>
-              <span className={`material-symbols-outlined ${kpi.color} text-[22px]`}>{kpi.icon}</span>
-            </div>
-            <div>
-              <p className="text-xs text-on-surface-variant font-medium">{kpi.label}</p>
-              <p className={`text-lg font-bold ${kpi.color}`}>{kpi.value}</p>
-            </div>
-          </div>
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <KPICardDark title="Ingresos Totales" value={fmt(totalRevenue)} icon="payments" />
+        <KPICardDark title="IGV Recaudado" value={fmt(totalTax)} icon="account_balance" />
+        <KPICardDark title="Ticket Promedio" value={fmt(avgTicket)} icon="avg_pace" />
+        <KPICardDark title="Ventas Completadas" value={`${completed.length} / ${sales.length}`} icon="check_circle" />
       </div>
 
       {/* Filters */}

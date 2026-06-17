@@ -1,7 +1,8 @@
 "use client";
 import { API_BASE_URL } from "@/app/lib/api";
-
 import { useEffect, useState } from "react";
+import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, BarChart, Bar } from "recharts";
+import KPICardDark from "@/app/components/KPICardDark";
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<any>(null);
@@ -39,24 +40,72 @@ export default function DashboardPage() {
         <p className="text-on-surface-variant font-body-md">Métricas operativas de la fecha: {stats?.today || "Hoy"}</p>
       </div>
 
-      {/* KPI Cards */}
+      {/* KPI Cards con Gráficos */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-latte/30 flex flex-col justify-center items-center">
-          <span className="material-symbols-outlined text-4xl text-terracota mb-2">payments</span>
-          <h3 className="font-label-md text-on-surface-variant uppercase tracking-wider mb-1">Ingresos Totales</h3>
-          <p className="font-headline-xl text-3xl text-espresso">S/ {stats?.ingresos ? Number(stats.ingresos).toFixed(2) : "0.00"}</p>
-        </div>
-        
-        <div className="bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-latte/30 flex flex-col justify-center items-center">
-          <span className="material-symbols-outlined text-4xl text-terracota mb-2">receipt_long</span>
-          <h3 className="font-label-md text-on-surface-variant uppercase tracking-wider mb-1">Ventas Realizadas</h3>
-          <p className="font-headline-xl text-3xl text-espresso">{stats?.ventas_totales || 0}</p>
+        <KPICardDark 
+          title="Ingresos Totales" 
+          value={`S/ ${stats?.ingresos ? Number(stats.ingresos).toFixed(2) : "0.00"}`} 
+          icon="payments"
+          trend={stats?.trend_data?.length > 1 ? `${(((stats.trend_data[stats.trend_data.length-1].ingresos - stats.trend_data[stats.trend_data.length-2].ingresos) / (stats.trend_data[stats.trend_data.length-2].ingresos || 1)) * 100).toFixed(1)}%` : ""}
+          trendLabel="Crecimiento"
+        />
+        <KPICardDark 
+          title="Ventas Realizadas" 
+          value={stats?.ventas_totales || 0} 
+          icon="receipt_long"
+        />
+        <KPICardDark 
+          title="Ticket Promedio" 
+          value={`S/ ${stats?.ticket_promedio ? Number(stats.ticket_promedio).toFixed(2) : "0.00"}`} 
+          icon="local_atm"
+        />
+      </div>
+
+      {/* Gráficos de Tendencias (Estilo Dashboard Beige/Marrón) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+        {/* Trend Area Chart */}
+        <div className="bg-[#EAE1D0] rounded-xl shadow-md border border-[#D5C2A5] overflow-hidden p-6 relative">
+          <h3 className="font-label-md text-espresso uppercase tracking-wider mb-6 font-bold">Tendencia de Ingresos Semanal</h3>
+          <div className="h-64">
+            {stats?.trend_data && stats.trend_data.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={stats.trend_data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <XAxis dataKey="date" stroke="#6F4E37" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#6F4E37" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip contentStyle={{ backgroundColor: '#6F4E37', color: '#FFF', borderRadius: '8px', border: 'none' }} />
+                  <Area 
+                    type="monotone" 
+                    dataKey="ingresos" 
+                    stroke="#5C4033" 
+                    strokeWidth={3}
+                    fill="#7B5C46" 
+                    fillOpacity={0.2}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-full text-[#6F4E37]">Sin datos suficientes</div>
+            )}
+          </div>
         </div>
 
-        <div className="bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-latte/30 flex flex-col justify-center items-center">
-          <span className="material-symbols-outlined text-4xl text-terracota mb-2">local_atm</span>
-          <h3 className="font-label-md text-on-surface-variant uppercase tracking-wider mb-1">Ticket Promedio</h3>
-          <p className="font-headline-xl text-3xl text-espresso">S/ {stats?.ticket_promedio ? Number(stats.ticket_promedio).toFixed(2) : "0.00"}</p>
+        {/* Top Vendidos Bar Chart */}
+        <div className="bg-[#EAE1D0] rounded-xl shadow-md border border-[#D5C2A5] overflow-hidden p-6 relative">
+          <h3 className="font-label-md text-espresso uppercase tracking-wider mb-6 font-bold">Top 5 Productos Vendidos</h3>
+          <div className="h-64">
+            {stats?.top_vendidos && stats.top_vendidos.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={stats.top_vendidos} layout="vertical" margin={{ top: 0, right: 30, left: 20, bottom: 0 }}>
+                  <XAxis type="number" stroke="#6F4E37" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis dataKey="name" type="category" stroke="#6F4E37" fontSize={12} tickLine={false} axisLine={false} width={100} />
+                  <Tooltip cursor={{fill: '#D5C2A5'}} contentStyle={{ backgroundColor: '#6F4E37', color: '#FFF', borderRadius: '8px', border: 'none' }} />
+                  <Bar dataKey="qty" fill="#5C4033" radius={[0, 4, 4, 0]} barSize={20} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-full text-[#6F4E37]">Sin datos suficientes</div>
+            )}
+          </div>
         </div>
       </div>
 

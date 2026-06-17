@@ -60,6 +60,8 @@ Route::middleware('auth:api')->group(function () {
     // Promociones (Admin)
     Route::middleware('role:admin')->group(function () {
         Route::apiResource('/promotions', \App\Http\Controllers\Api\PromotionController::class);
+        Route::get('/combos/ai-suggestions', [\App\Http\Controllers\Api\ComboController::class, 'aiSuggestions']);
+        Route::apiResource('/combos', \App\Http\Controllers\Api\ComboController::class);
     });
 
     // Insumos (Admin y Cocina)
@@ -83,6 +85,10 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/inventory/merma-producto',         [InventoryController::class, 'mermaProducto'])->middleware('role:admin,cocina');
     Route::post('/inventory/merma/{movement}/approve', [InventoryController::class, 'approveMerma'])->middleware('role:admin');
     Route::post('/inventory/merma/{movement}/reject',  [InventoryController::class, 'rejectMerma'])->middleware('role:admin');
+    
+    Route::get('/inventory/product-mermas',            [InventoryController::class, 'productMermas'])->middleware('role:admin,cocina');
+    Route::post('/inventory/product-merma/{merma}/approve', [InventoryController::class, 'approveProductMerma'])->middleware('role:admin');
+    Route::post('/inventory/product-merma/{merma}/reject',  [InventoryController::class, 'rejectProductMerma'])->middleware('role:admin');
 
     // Cocina (KDS)
     Route::middleware('role:admin,cocina')->group(function () {
@@ -93,14 +99,15 @@ Route::middleware('auth:api')->group(function () {
 
     // Ventas / POS (Solo Cajero y Admin)
     Route::middleware('role:admin,cajero')->group(function () {
+        Route::post('/sales/culqi-order', [\App\Http\Controllers\Api\SaleController::class, 'createCulqiOrder']);
         Route::apiResource('/sales', \App\Http\Controllers\Api\SaleController::class)->except(['update', 'destroy']);
     });
 
-    // Inteligencia Artificial (Admin)
-    Route::middleware('role:admin')->group(function () {
-        Route::get('/ai/dashboard', [\App\Http\Controllers\Api\AiDashboardController::class, 'index']);
-        // Sugerencias de productos por insumos próximos a vencer
-        Route::get('/ai/expiring-suggestions',  [\App\Http\Controllers\Api\ExpiringProductSuggestionController::class, 'index']);
+    // Inteligencia Artificial (IA)
+    Route::middleware('role:admin,cajero')->group(function () {
+        Route::get('/ai/demand-forecast', [\App\Http\Controllers\Api\AiDashboardController::class, 'index']);
+        Route::get('/ai/expiring-suggestions', [\App\Http\Controllers\Api\ExpiringProductSuggestionController::class, 'index']);
         Route::post('/ai/expiring-suggestions/create-product', [\App\Http\Controllers\Api\ExpiringProductSuggestionController::class, 'createProduct']);
+        Route::get('/ai/restock-suggestions', [\App\Http\Controllers\Api\AiRestockController::class, 'index']);
     });
 });

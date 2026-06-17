@@ -22,6 +22,25 @@ class InventoryMovement extends Model
         'approved_at'    => 'datetime',
     ];
 
+    protected $appends = ['total_cost', 'saldo_costo_unitario', 'saldo_costo_total'];
+
+    public function getTotalCostAttribute()
+    {
+        return round($this->quantity * $this->cost_per_unit, 2);
+    }
+
+    public function getSaldoCostoUnitarioAttribute()
+    {
+        // El costo por unidad guardado en el momento del movimiento es el costo promedio vigente
+        return round($this->cost_per_unit, 2);
+    }
+
+    public function getSaldoCostoTotalAttribute()
+    {
+        // El saldo_cantidad * costo_promedio
+        return round($this->saldo_cantidad * $this->cost_per_unit, 2);
+    }
+
     public function ingredient()
     {
         return $this->belongsTo(Ingredient::class);

@@ -140,6 +140,7 @@ class RolePermissionController extends Controller
                 'personal'   => ['can_view' => true,  'can_create' => true,  'can_edit' => true,  'can_delete' => true],
                 'roles'      => ['can_view' => true,  'can_create' => true,  'can_edit' => true,  'can_delete' => true],
                 'auditoria'  => ['can_view' => true,  'can_create' => false, 'can_edit' => false, 'can_delete' => false],
+                'cocina'     => ['can_view' => true,  'can_create' => false, 'can_edit' => true,  'can_delete' => false],
             ],
             'cajero' => [
                 'dashboard'  => ['can_view' => true,  'can_create' => false, 'can_edit' => false, 'can_delete' => false],
@@ -154,6 +155,7 @@ class RolePermissionController extends Controller
                 'personal'   => ['can_view' => false, 'can_create' => false, 'can_edit' => false, 'can_delete' => false],
                 'roles'      => ['can_view' => false, 'can_create' => false, 'can_edit' => false, 'can_delete' => false],
                 'auditoria'  => ['can_view' => false, 'can_create' => false, 'can_edit' => false, 'can_delete' => false],
+                'cocina'     => ['can_view' => false, 'can_create' => false, 'can_edit' => false, 'can_delete' => false],
             ],
             'cocina' => [
                 'dashboard'  => ['can_view' => false, 'can_create' => false, 'can_edit' => false, 'can_delete' => false],
@@ -168,6 +170,7 @@ class RolePermissionController extends Controller
                 'personal'   => ['can_view' => false, 'can_create' => false, 'can_edit' => false, 'can_delete' => false],
                 'roles'      => ['can_view' => false, 'can_create' => false, 'can_edit' => false, 'can_delete' => false],
                 'auditoria'  => ['can_view' => false, 'can_create' => false, 'can_edit' => false, 'can_delete' => false],
+                'cocina'     => ['can_view' => true,  'can_create' => false, 'can_edit' => true,  'can_delete' => false],
             ],
         ];
     }

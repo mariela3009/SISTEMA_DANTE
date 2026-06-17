@@ -24,7 +24,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   </div>;
 
   return (
-    <div className="flex min-h-screen bg-surface relative">
+    <div className="flex h-screen bg-surface relative overflow-hidden">
       {/* Mobile Toggle Button */}
       <button 
         className="md:hidden fixed top-4 left-4 z-50 p-2 bg-espresso text-mist rounded-lg shadow-md print:hidden"

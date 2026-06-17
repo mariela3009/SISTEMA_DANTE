@@ -1,8 +1,9 @@
 "use client";
 import { API_BASE_URL } from "@/app/lib/api";
-
 import { useEffect, useState } from "react";
+import KPICardDark from "@/app/components/KPICardDark";
 import { apiFetch } from "../../lib/api";
+import RestockTab from "./RestockTab";
 
 /* ─── Types ─────────────────────────────────────────────── */
 interface Urgency {
@@ -53,15 +54,15 @@ interface Category {
 }
 
 /* ─── Helpers ────────────────────────────────────────────── */
-const URGENCY_STYLES: Record<string, string> = {
-  critical:  "bg-red-50 border-red-300 text-red-700",
-  warning:   "bg-orange-50 border-orange-300 text-orange-700",
-  attention: "bg-yellow-50 border-yellow-300 text-yellow-700",
+const URGENCY_TEXT: Record<string, string> = {
+  critical:  "text-red-700",
+  warning:   "text-orange-700",
+  attention: "text-yellow-700",
 };
 const URGENCY_BADGE: Record<string, string> = {
-  critical:  "bg-red-100 text-red-700",
-  warning:   "bg-orange-100 text-orange-700",
-  attention: "bg-yellow-100 text-yellow-700",
+  critical:  "bg-red-50 text-red-700 border-red-200",
+  warning:   "bg-orange-50 text-orange-700 border-orange-200",
+  attention: "bg-yellow-50 text-yellow-700 border-yellow-200",
 };
 
 /* ─── Component ──────────────────────────────────────────── */
@@ -70,6 +71,12 @@ export default function ExpiringSuggestionsPage() {
   const [loading, setLoading] = useState(true);
   const [daysWindow, setDaysWindow] = useState(14);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<'expiring' | 'restock'>('expiring');
+
+  const toggleAccordion = (idx: number) => {
+    setExpandedIndex(expandedIndex === idx ? null : idx);
+  };
 
   // Create product modal state
   const [creating, setCreating] = useState<{ idea: SuggestionIdea; ingredient: IngredientSuggestion["ingredient"] } | null>(null);
@@ -145,17 +152,37 @@ export default function ExpiringSuggestionsPage() {
   return (
     <div className="space-y-6">
 
-      {/* Header */}
+      {/* Header Tabs */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-espresso flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary">auto_awesome</span>
-            Sugerencias IA — Insumos por Vencer
-          </h1>
-          <p className="text-sm text-on-surface-variant mt-1">
-            Detecta ingredientes con fecha de vencimiento próxima y sugiere nuevos productos para aprovechar el stock antes de que se pierda.
-          </p>
+        <div className="flex gap-4 border-b border-latte/30 pb-2 w-full sm:w-auto">
+          <button 
+            onClick={() => setActiveTab('expiring')}
+            className={`pb-2 px-2 text-lg font-bold flex items-center gap-2 border-b-2 transition-colors ${activeTab === 'expiring' ? 'border-primary text-primary' : 'border-transparent text-on-surface-variant hover:text-espresso'}`}
+          >
+            <span className="material-symbols-outlined">auto_awesome</span>
+            Ideas para Menú
+          </button>
+          <button 
+            onClick={() => setActiveTab('restock')}
+            className={`pb-2 px-2 text-lg font-bold flex items-center gap-2 border-b-2 transition-colors ${activeTab === 'restock' ? 'border-primary text-primary' : 'border-transparent text-on-surface-variant hover:text-espresso'}`}
+          >
+            <span className="material-symbols-outlined">inventory_2</span>
+            Plan de Abastecimiento
+          </button>
         </div>
+      </div>
+
+      {activeTab === 'restock' ? (
+        <RestockTab />
+      ) : (
+        <>
+          {/* Subheader for Expiring */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <p className="text-sm text-on-surface-variant mt-1">
+                Detecta ingredientes con fecha de vencimiento próxima y sugiere nuevos productos para aprovechar el stock.
+              </p>
+            </div>
 
         {/* Days filter */}
         <div className="flex items-center gap-2 text-sm">
@@ -176,21 +203,11 @@ export default function ExpiringSuggestionsPage() {
 
       {/* Stats */}
       {data && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { label: "Total por vencer", value: data.stats.total_expiring, color: "text-espresso", bg: "bg-latte/20", icon: "hourglass_top" },
-            { label: "Crítico (≤3 días)", value: data.stats.critical, color: "text-red-600", bg: "bg-red-50", icon: "emergency" },
-            { label: "Urgente (4-7 días)", value: data.stats.warning, color: "text-orange-600", bg: "bg-orange-50", icon: "warning" },
-            { label: "Atención (8+ días)", value: data.stats.attention, color: "text-yellow-600", bg: "bg-yellow-50", icon: "schedule" },
-          ].map(kpi => (
-            <div key={kpi.label} className={`${kpi.bg} border border-latte/30 rounded-xl p-4 flex items-center gap-3`}>
-              <span className={`material-symbols-outlined ${kpi.color} text-[28px]`}>{kpi.icon}</span>
-              <div>
-                <p className="text-xs text-on-surface-variant">{kpi.label}</p>
-                <p className={`text-2xl font-bold ${kpi.color}`}>{kpi.value}</p>
-              </div>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <KPICardDark title="Total por vencer" value={data.stats.total_expiring} icon="hourglass_top" />
+          <KPICardDark title="Crítico (≤3 días)" value={data.stats.critical} icon="emergency" />
+          <KPICardDark title="Urgente (4-7 días)" value={data.stats.warning} icon="warning" />
+          <KPICardDark title="Atención (8+ días)" value={data.stats.attention} icon="schedule" />
         </div>
       )}
 
@@ -208,91 +225,116 @@ export default function ExpiringSuggestionsPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          {data.suggestions.map((item, idx) => (
-            <div
-              key={idx}
-              className={`border rounded-xl overflow-hidden shadow-sm ${URGENCY_STYLES[item.urgency.level]}`}
-            >
-              {/* Ingredient Header */}
-              <div className="p-4 flex flex-wrap items-center justify-between gap-3 border-b border-current/20">
-                <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-[26px]">{item.urgency.icon}</span>
-                  <div>
-                    <h3 className="font-bold text-lg">{item.ingredient.name}</h3>
-                    <p className="text-sm opacity-75">
-                      Stock: <strong>{item.ingredient.stock_actual} {item.ingredient.unit}</strong>
-                      &nbsp;·&nbsp;Vence: <strong>{new Date(item.ingredient.fecha_vencimiento + 'T00:00:00').toLocaleDateString("es-PE", { day: "2-digit", month: "short", year: "numeric" })}</strong>
-                    </p>
+          {data.suggestions.map((item, idx) => {
+            const isOpen = expandedIndex === idx;
+            return (
+              <div key={idx} className="bg-white border border-latte/30 rounded-xl overflow-hidden shadow-sm transition-all duration-300">
+                {/* Accordion Header (Barra Delgada) */}
+                <button 
+                  onClick={() => toggleAccordion(idx)}
+                  className="w-full text-left p-4 flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 hover:bg-mist/50 transition-colors"
+                >
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className={`material-symbols-outlined text-[24px] ${URGENCY_TEXT[item.urgency.level]}`}>{item.urgency.icon}</span>
+                    <h3 className="font-bold text-lg text-espresso">{item.ingredient.name}</h3>
                   </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${URGENCY_BADGE[item.urgency.level]}`}>
-                    {item.urgency.label} — {item.ingredient.dias_restantes} día{item.ingredient.dias_restantes !== 1 ? "s" : ""}
-                  </span>
-                </div>
-              </div>
-
-              <div className="bg-white/60 p-4 space-y-4">
-
-                {/* Existing products using this ingredient */}
-                {item.existing_products.length > 0 && (
-                  <div className="text-xs text-on-surface-variant flex flex-wrap gap-2 items-center">
-                    <span className="font-semibold">Ya en menú:</span>
-                    {item.existing_products.map(p => (
-                      <span key={p.id} className={`px-2 py-0.5 rounded-full ${p.is_active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500 line-through"}`}>
-                        {p.name}
+                  
+                  <div className="flex items-center gap-4 sm:gap-6 justify-end w-full sm:w-auto">
+                    <div className="text-right hidden sm:block">
+                      <p className="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold mb-0.5">Stock Actual</p>
+                      <p className="text-sm font-semibold text-espresso">{item.ingredient.stock_actual} {item.ingredient.unit}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold mb-0.5">Vencimiento</p>
+                      <span className={`px-2 py-0.5 rounded text-[11px] font-bold uppercase border shadow-sm ${URGENCY_BADGE[item.urgency.level]}`}>
+                        {item.urgency.label} — {item.ingredient.dias_restantes} día{item.ingredient.dias_restantes !== 1 ? "s" : ""}
                       </span>
-                    ))}
+                    </div>
+                    <span className="material-symbols-outlined text-on-surface-variant transition-transform duration-300" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                      expand_more
+                    </span>
+                  </div>
+                </button>
+
+                {/* Accordion Body */}
+                {isOpen && (
+                  <div className="border-t border-latte/30 bg-mist/20 p-5 space-y-5 animate-in slide-in-from-top-2 fade-in duration-200">
+                    {/* Existing products */}
+                    {item.existing_products.length > 0 && (
+                      <div className="text-xs text-espresso flex flex-wrap gap-2 items-center">
+                        <span className="font-bold uppercase tracking-wider text-[10px]">Ya en menú:</span>
+                        {item.existing_products.map(p => (
+                          <span key={p.id} className={`px-2 py-0.5 rounded-md border shadow-sm ${p.is_active ? "bg-white text-espresso border-latte" : "bg-gray-100 text-gray-500 border-gray-200 line-through"}`}>
+                            {p.name}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Suggestions Grid (Horizontal Flat Cards) */}
+                    <div>
+                      <p className="text-sm font-bold text-espresso uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-terracota text-[18px]">auto_awesome</span>
+                        Ideas de productos sugeridos por IA
+                      </p>
+                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                        {item.suggestions.map((idea, sIdx) => (
+                          <div key={sIdx} className="bg-white border border-latte/40 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-3 relative">
+                            {/* Header: Title, Category, Price & Tooltip */}
+                            <div className="flex justify-between items-start gap-4">
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-2">
+                                  <h4 className="font-bold text-base text-espresso truncate">{idea.product_name}</h4>
+                                  <div className="group relative flex items-center justify-center shrink-0">
+                                    <span className="material-symbols-outlined text-[16px] text-primary/70 hover:text-primary cursor-help transition-colors">info</span>
+                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-2 bg-espresso text-white text-[11px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 text-center leading-relaxed">
+                                      {idea.description}
+                                      {/* Tooltip arrow */}
+                                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-t-espresso"></div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <span className="inline-block mt-1 bg-latte/20 text-espresso px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+                                  {idea.category_name}
+                                </span>
+                              </div>
+                              <div className="shrink-0 text-right">
+                                <span className="font-headline-md text-lg font-bold text-espresso">
+                                  S/ {idea.suggested_price.toFixed(2)}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Ingredients horizontal pills */}
+                            {idea.full_recipe && idea.full_recipe.length > 0 && (
+                              <div className="flex flex-wrap gap-1.5 mt-1">
+                                {idea.full_recipe.map((ri, i) => (
+                                  <span key={i} className="bg-mist border border-latte/50 text-espresso text-[10px] px-2 py-1 rounded-full whitespace-nowrap shadow-sm">
+                                    <strong className="text-primary">{ri.quantity}{ri.unit}</strong> {ri.ingredient_name}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+
+                            {/* Discret button aligned to right */}
+                            <div className="flex justify-end mt-2 pt-3 border-t border-latte/20">
+                              <button
+                                onClick={() => openCreateModal(idea, item.ingredient)}
+                                className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-primary hover:text-white hover:bg-primary border border-primary hover:border-transparent rounded-lg transition-all"
+                              >
+                                <span className="material-symbols-outlined text-[16px]">add</span>
+                                Añadir al Menú
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 )}
-
-                {/* Suggestions grid */}
-                <div>
-                  <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-wide mb-3 flex items-center gap-1">
-                    <span className="material-symbols-outlined text-[14px]">lightbulb</span>
-                    Ideas de productos sugeridos por IA
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {item.suggestions.map((idea, sIdx) => (
-                      <div
-                        key={sIdx}
-                        className="bg-white border border-latte/40 rounded-xl p-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow"
-                      >
-                        <div>
-                          <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-bold text-espresso text-sm">{idea.product_name}</h4>
-                            <span className="text-primary font-bold text-sm whitespace-nowrap ml-2">S/ {idea.suggested_price.toFixed(2)}</span>
-                          </div>
-                          <p className="text-xs text-on-surface-variant mb-2 leading-relaxed">{idea.description}</p>
-                          <div className="flex flex-wrap gap-1 mt-2">
-                            <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-[10px] font-semibold">{idea.category_name}</span>
-                          </div>
-                          {idea.full_recipe && idea.full_recipe.length > 0 && (
-                            <div className="mt-3 bg-latte/10 p-2 rounded-lg border border-latte/30">
-                              <p className="text-[10px] font-bold text-espresso uppercase mb-1">Receta generada:</p>
-                              <ul className="text-[10px] text-on-surface-variant space-y-0.5 list-disc list-inside">
-                                {idea.full_recipe.map((ri, i) => (
-                                  <li key={i}>{ri.ingredient_name}: <span className="font-semibold text-espresso">{ri.quantity} {ri.unit}</span></li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                        </div>
-
-                        <button
-                          onClick={() => openCreateModal(idea, item.ingredient)}
-                          className="mt-4 w-full flex items-center justify-center gap-2 py-2 bg-espresso text-mist rounded-lg text-xs font-semibold hover:bg-terracota transition-colors"
-                        >
-                          <span className="material-symbols-outlined text-[16px]">add_circle</span>
-                          Crear este producto
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -401,6 +443,8 @@ export default function ExpiringSuggestionsPage() {
             </form>
           </div>
         </div>
+      )}
+      </>
       )}
     </div>
   );

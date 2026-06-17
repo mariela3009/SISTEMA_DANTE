@@ -1,14 +1,16 @@
 <?php
+
 require __DIR__.'/vendor/autoload.php';
 $app = require_once __DIR__.'/bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
-use Illuminate\Support\Facades\DB;
+use App\Models\InventoryMovement;
 
-try {
-    DB::statement("ALTER TABLE sales MODIFY COLUMN payment_method ENUM('efectivo','paypal','culqi') NOT NULL DEFAULT 'efectivo'");
-    echo "OK";
-} catch (\Exception $e) {
-    echo "ERROR: " . $e->getMessage();
+$movements = InventoryMovement::where('type', 'entrada')->where('cost_per_unit', '>', 5)->get();
+
+foreach($movements as $mov) { 
+    $mov->cost_per_unit = $mov->cost_per_unit / $mov->quantity; 
+    $mov->save(); 
+    echo "Fixed mov {$mov->id}\n"; 
 }
