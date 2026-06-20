@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import KPICardDark from "@/app/components/KPICardDark";
 import { apiFetch } from "../../lib/api";
 import RestockTab from "./RestockTab";
+import DemandForecastTab from "./DemandForecastTab";
+import WasteAnomaliesTab from "./WasteAnomaliesTab";
 
 /* ─── Types ─────────────────────────────────────────────── */
 interface Urgency {
@@ -72,7 +74,7 @@ export default function ExpiringSuggestionsPage() {
   const [daysWindow, setDaysWindow] = useState(14);
   const [categories, setCategories] = useState<Category[]>([]);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<'expiring' | 'restock'>('expiring');
+  const [activeTab, setActiveTab] = useState<'expiring' | 'restock' | 'demand' | 'anomalies'>('expiring');
 
   const toggleAccordion = (idx: number) => {
     setExpandedIndex(expandedIndex === idx ? null : idx);
@@ -169,10 +171,28 @@ export default function ExpiringSuggestionsPage() {
             <span className="material-symbols-outlined">inventory_2</span>
             Plan de Abastecimiento
           </button>
+          <button 
+            onClick={() => setActiveTab('demand')}
+            className={`pb-2 px-2 text-lg font-bold flex items-center gap-2 border-b-2 transition-colors ${activeTab === 'demand' ? 'border-primary text-primary' : 'border-transparent text-on-surface-variant hover:text-espresso'}`}
+          >
+            <span className="material-symbols-outlined">monitoring</span>
+            Predicción de Demanda
+          </button>
+          <button 
+            onClick={() => setActiveTab('anomalies')}
+            className={`pb-2 px-2 text-lg font-bold flex items-center gap-2 border-b-2 transition-colors ${activeTab === 'anomalies' ? 'border-primary text-primary' : 'border-transparent text-on-surface-variant hover:text-espresso'}`}
+          >
+            <span className="material-symbols-outlined">policy</span>
+            Anomalías en Mermas
+          </button>
         </div>
       </div>
 
-      {activeTab === 'restock' ? (
+      {activeTab === 'demand' ? (
+        <DemandForecastTab />
+      ) : activeTab === 'anomalies' ? (
+        <WasteAnomaliesTab />
+      ) : activeTab === 'restock' ? (
         <RestockTab />
       ) : (
         <>

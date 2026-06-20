@@ -50,11 +50,15 @@ export default function PromocionesPage() {
         </button>
       </div>
 
-      {activeTab === 'ofertas' ? (
+      <div className={activeTab === 'ofertas' ? 'block' : 'hidden'}>
         <OfertasTab products={products} />
-      ) : (
-        <SugerenciasIaTab />
-      )}
+      </div>
+      <div className={activeTab === 'ia' ? 'block' : 'hidden'}>
+        <SugerenciasIaTab onApplySuggestion={(sugg) => {
+          document.dispatchEvent(new CustomEvent('applyAiCombo', { detail: sugg }));
+          setActiveTab('ofertas');
+        }} />
+      </div>
     </div>
   );
 }
@@ -98,14 +102,32 @@ function OfertasTab({ products }: { products: any[] }) {
       // Ordenar por fecha de creación (si la tuvieran) o simplemente por nombre
       combined.sort((a, b) => a.name.localeCompare(b.name));
       setOfertas(combined);
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { fetchOfertas(); }, []);
+  useEffect(() => {
+    fetchOfertas();
+
+    const handleApplyAiCombo = (e: any) => {
+      const sugg = e.detail;
+      setOfferType('combo');
+      setEditOffer(null);
+      setFormData({
+        ...emptyForm,
+        name: sugg.suggested_name,
+        special_price: String(sugg.suggested_price),
+        items: sugg.items.map((i: any) => ({ product_id: i.product_id, quantity: i.quantity }))
+      });
+      setIsModalOpen(true);
+    };
+
+    document.addEventListener('applyAiCombo', handleApplyAiCombo);
+    return () => document.removeEventListener('applyAiCombo', handleApplyAiCombo);
+  }, []);
 
   const resetForm = () => { 
     setFormData({ ...emptyForm }); 
@@ -442,7 +464,7 @@ function OfertasTab({ products }: { products: any[] }) {
 
 // ─── SUGERENCIAS IA ──────────────────────────────────────────────────────────
 
-function SugerenciasIaTab() {
+function SugerenciasIaTab({ onApplySuggestion }: { onApplySuggestion?: (sugg: any) => void }) {
   const [aiSuggestions, setAiSuggestions] = useState<any[]>([]);
   const [loadingAi, setLoadingAi] = useState(true);
 
@@ -491,6 +513,13 @@ function SugerenciasIaTab() {
                     </div>
                   ))}
                 </div>
+                <div className="bg-indigo-50 border border-indigo-100 p-3 rounded-lg mb-4">
+                  <p className="text-xs text-indigo-800 flex items-start gap-2">
+                    <span className="material-symbols-outlined text-[16px] mt-0.5">insights</span>
+                    <span>Estos productos tienen una <b>alta frecuencia de compra conjunta ({sugg.frequency} ventas)</b>. Unirlos en un combo incentivará aún más la rotación.</span>
+                  </p>
+                </div>
+                
                 <div className="bg-mist p-3 rounded-lg mb-4">
                   <div className="flex justify-between text-sm mb-1">
                     <span className="text-on-surface-variant">Valor Original:</span>
@@ -501,9 +530,16 @@ function SugerenciasIaTab() {
                     <span className="text-terracota">S/ {sugg.suggested_price.toFixed(2)}</span>
                   </div>
                 </div>
-                <p className="text-xs text-on-surface-variant/70 text-center italic">
-                  Para aplicar esta sugerencia, ve a "Mis Ofertas" y crea un nuevo Combo usando estos productos.
-                </p>
+                
+                {onApplySuggestion && (
+                  <button 
+                    onClick={() => onApplySuggestion(sugg)}
+                    className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-bold flex items-center justify-center gap-2 transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">add_circle</span>
+                    Aprobar y Crear Combo
+                  </button>
+                )}
               </div>
             ))}
           </div>

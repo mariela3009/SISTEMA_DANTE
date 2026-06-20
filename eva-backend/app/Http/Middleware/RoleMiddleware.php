@@ -23,6 +23,11 @@ class RoleMiddleware
             return response()->json(['message' => 'No autenticado.'], 401);
         }
 
+        // Si $roles viene como un array con un solo string "admin,cajero", lo separamos
+        if (count($roles) === 1 && strpos($roles[0], ',') !== false) {
+            $roles = explode(',', $roles[0]);
+        }
+
         if (!empty($roles) && !in_array($user->role, $roles)) {
             return response()->json([
                 'message' => 'Acceso denegado. Permisos insuficientes para tu rol.'

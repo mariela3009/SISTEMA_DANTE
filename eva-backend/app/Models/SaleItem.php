@@ -9,7 +9,7 @@ class SaleItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['sale_id', 'product_id', 'quantity', 'unit_price', 'subtotal'];
+    protected $fillable = ['sale_id', 'product_id', 'quantity', 'unit_price', 'subtotal', 'status', 'is_cancelled', 'kitchen_notified'];
 
     protected $casts = [
         'unit_price' => 'float',

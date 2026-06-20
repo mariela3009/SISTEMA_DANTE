@@ -14,14 +14,19 @@ class KitchenController extends Controller
      */
     public function index(Request $request)
     {
-        // Traer items no entregados, ordenados por fecha ascendente (FIFO)
-        $items = SaleItem::with(['product.category', 'sale.client', 'sale.user'])
-            ->whereIn('status', ['pending', 'preparing', 'ready'])
+        // 1. Obtener los IDs de las ventas que tienen al menos un item pendiente, preparando o listo
+        $activeSaleIds = SaleItem::whereIn('status', ['pending', 'preparing', 'ready'])
             ->where('is_cancelled', false)
+            ->pluck('sale_id')
+            ->unique();
+
+        // 2. Traer todos los items (incluyendo los cancelados) pero SOLO de esas ventas activas
+        $items = SaleItem::with(['product.category', 'sale.client', 'sale.user'])
+            ->whereIn('sale_id', $activeSaleIds)
             ->orderBy('created_at', 'asc')
             ->get();
 
-        // Agrupar los items por ID de Venta (Ticket/Comanda)
+        // 3. Agrupar los items por ID de Venta
         $grouped = $items->groupBy('sale_id')->map(function ($saleItems, $saleId) {
             $sale = $saleItems->first()->sale;
             return [
@@ -35,6 +40,7 @@ class KitchenController extends Controller
                         'product_name' => $item->product->name,
                         'quantity' => $item->quantity,
                         'status' => $item->status,
+                        'is_cancelled' => $item->is_cancelled,
                         'category_icon' => optional($item->product->category)->icon,
                     ];
                 })->values()
@@ -42,6 +48,30 @@ class KitchenController extends Controller
         })->values();
 
         return response()->json($grouped);
+    }
+
+    /**
+     * Obtener el historial de items cancelados del día actual.
+     */
+    public function getCancelledHistory()
+    {
+        $history = SaleItem::with(['product', 'sale.user'])
+            ->where('is_cancelled', true)
+            ->whereDate('updated_at', \Carbon\Carbon::today())
+            ->orderBy('updated_at', 'desc')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'sale_id' => $item->sale_id,
+                    'product_name' => $item->product->name,
+                    'quantity' => $item->quantity,
+                    'cancelled_at' => $item->updated_at->format('H:i:s'),
+                    'user_name' => $item->sale->user->name,
+                ];
+            });
+
+        return response()->json($history);
     }
 
     /**
@@ -62,7 +92,7 @@ class KitchenController extends Controller
     }
 
     /**
-     * Cancelar un item desde cocina y retornar insumos.
+     * Cancelar un item desde despacho/cajero.
      */
     public function cancelItem(Request $request, SaleItem $saleItem)
     {
@@ -70,36 +100,40 @@ class KitchenController extends Controller
             return response()->json(['message' => 'No se puede cancelar este item.'], 422);
         }
 
-        \Illuminate\Support\Facades\DB::transaction(function () use ($request, $saleItem) {
-            $saleItem->update([
-                'is_cancelled' => true,
-                'status' => 'pending' // o dejar en el estado que estaba, is_cancelled manda
-            ]);
+        $saleItem->update([
+            'is_cancelled' => true,
+            'kitchen_notified' => false
+        ]);
 
-            $product = $saleItem->product()->with('recipeItems.ingredient')->first();
-            
-            // Retornar insumos al inventario (tipo entrada)
-            foreach ($product->recipeItems as $recipeItem) {
-                $returnQuantity = $recipeItem->quantity * $saleItem->quantity;
-                $ingredient = \App\Models\Ingredient::lockForUpdate()->findOrFail($recipeItem->ingredient_id);
-                
-                $ingredient->increment('stock_actual', $returnQuantity);
+        return response()->json(['message' => 'Producto cancelado. Se ha notificado a cocina.']);
+    }
 
-                \App\Models\InventoryMovement::create([
-                    'ingredient_id' => $ingredient->id,
-                    'user_id'       => $request->user()->id,
-                    'type'          => 'entrada', // Devolución
-                    'quantity'      => $returnQuantity,
-                    'cost_per_unit' => $ingredient->costo_promedio,
-                    'saldo_cantidad'=> $ingredient->stock_actual,
-                    'reason'        => "Cancelación KDS - Venta #{$saleItem->sale_id} - {$product->name}",
-                    'status'        => 'approved',
-                    'approved_by'   => $request->user()->id,
-                    'approved_at'   => now(),
-                ]);
-            }
-        });
+    /**
+     * Obtener alertas de cancelación no leídas para la cocina.
+     */
+    public function getAlerts()
+    {
+        $alerts = SaleItem::with('product')
+            ->where('is_cancelled', true)
+            ->where('kitchen_notified', false)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'sale_id' => $item->sale_id,
+                    'product_name' => $item->product->name,
+                ];
+            });
 
-        return response()->json(['message' => 'Comanda cancelada e insumos devueltos al stock.']);
+        return response()->json($alerts);
+    }
+
+    /**
+     * Marcar la alerta como entendida por la cocina.
+     */
+    public function acknowledgeAlert(SaleItem $saleItem)
+    {
+        $saleItem->update(['kitchen_notified' => true]);
+        return response()->json(['message' => 'Alerta marcada como entendida']);
     }
 }

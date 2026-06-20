@@ -42,7 +42,7 @@ Route::middleware('auth:api')->group(function () {
 
     // Dashboard (Admin y Cajero)
     Route::get('/dashboard/stats', [DashboardController::class, 'stats'])->middleware('role:admin,cajero');
-    Route::get('/alerts/stock',    [DashboardController::class, 'stockAlerts'])->middleware('role:admin,cajero');
+    Route::get('/alerts/stock',    [DashboardController::class, 'stockAlerts'])->middleware('role:admin,cajero,cocina');
 
     // Categorías (Todos autenticados)
     Route::get('/categories', [CategoryController::class, 'index']);
@@ -90,12 +90,17 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/inventory/product-merma/{merma}/approve', [InventoryController::class, 'approveProductMerma'])->middleware('role:admin');
     Route::post('/inventory/product-merma/{merma}/reject',  [InventoryController::class, 'rejectProductMerma'])->middleware('role:admin');
 
-    // Cocina (KDS)
-    Route::middleware('role:admin,cocina')->group(function () {
-        Route::get('/kitchen', [\App\Http\Controllers\Api\KitchenController::class, 'index']);
-        Route::put('/kitchen/{saleItem}/status', [\App\Http\Controllers\Api\KitchenController::class, 'updateStatus']);
-        Route::post('/kitchen/{saleItem}/cancel', [\App\Http\Controllers\Api\KitchenController::class, 'cancelItem']);
-    });
+    // Cocina (KDS) y Despacho (Cajero)
+    Route::get('/kitchen', [\App\Http\Controllers\Api\KitchenController::class, 'index'])->middleware('role:admin,cocina,cajero');
+    Route::put('/kitchen/{saleItem}/status', [\App\Http\Controllers\Api\KitchenController::class, 'updateStatus'])->middleware('role:admin,cocina,cajero');
+    
+    // Alertas de Cancelación y Mermas (Cocina)
+    Route::get('/kitchen/alerts', [\App\Http\Controllers\Api\KitchenController::class, 'getAlerts'])->middleware('role:admin,cocina');
+    Route::post('/kitchen/alerts/{saleItem}/acknowledge', [\App\Http\Controllers\Api\KitchenController::class, 'acknowledgeAlert'])->middleware('role:admin,cocina');
+    Route::get('/kitchen/history/cancelled', [\App\Http\Controllers\Api\KitchenController::class, 'getCancelledHistory'])->middleware('role:admin,cocina');
+
+    // Cancelación (Cajero)
+    Route::post('/kitchen/{saleItem}/cancel', [\App\Http\Controllers\Api\KitchenController::class, 'cancelItem'])->middleware('role:admin,cajero');
 
     // Ventas / POS (Solo Cajero y Admin)
     Route::middleware('role:admin,cajero')->group(function () {
@@ -105,7 +110,8 @@ Route::middleware('auth:api')->group(function () {
 
     // Inteligencia Artificial (IA)
     Route::middleware('role:admin,cajero')->group(function () {
-        Route::get('/ai/demand-forecast', [\App\Http\Controllers\Api\AiDashboardController::class, 'index']);
+        Route::get('/ai/demand-forecast', [\App\Http\Controllers\Api\AiDemandForecastController::class, 'index']);
+        Route::get('/ai/waste-anomalies', [\App\Http\Controllers\Api\AiWasteAnomalyController::class, 'index']);
         Route::get('/ai/expiring-suggestions', [\App\Http\Controllers\Api\ExpiringProductSuggestionController::class, 'index']);
         Route::post('/ai/expiring-suggestions/create-product', [\App\Http\Controllers\Api\ExpiringProductSuggestionController::class, 'createProduct']);
         Route::get('/ai/restock-suggestions', [\App\Http\Controllers\Api\AiRestockController::class, 'index']);

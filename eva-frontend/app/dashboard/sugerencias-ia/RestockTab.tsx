@@ -40,12 +40,13 @@ export default function RestockTab() {
     }
   };
 
-  const getUrgencyLabel = (urgency: string) => {
-    switch (urgency) {
-      case 'critical': return 'Crítico (≤3 días)';
-      case 'warning': return 'Advertencia (≤7 días)';
-      default: return 'Atención (≤15 días)';
+  const getUrgencyLabel = (urgency: string, item: any) => {
+    if (urgency === 'critical') return 'Crítico (≤3 días)';
+    if (urgency === 'warning') return 'Advertencia (≤7 días)';
+    if (item.metrics.days_remaining > 15 && item.ingredient.stock_actual <= item.ingredient.stock_minimo) {
+      return 'Atención (Stock Bajo)';
     }
+    return 'Atención (≤15 días)';
   };
 
   return (
@@ -93,7 +94,7 @@ export default function RestockTab() {
                 </div>
                 <div className="flex flex-col items-end">
                   <span className="material-symbols-outlined text-3xl opacity-80">{getUrgencyIcon(item.suggestion.urgency)}</span>
-                  <span className="text-[10px] font-bold uppercase mt-1 opacity-90">{getUrgencyLabel(item.suggestion.urgency)}</span>
+                  <span className="text-[10px] font-bold uppercase mt-1 opacity-90">{getUrgencyLabel(item.suggestion.urgency, item)}</span>
                 </div>
               </div>
 

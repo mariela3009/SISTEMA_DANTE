@@ -1,5 +1,5 @@
 "use client";
-import { API_BASE_URL } from "@/app/lib/api";
+import { API_BASE_URL, apiFetch } from "@/app/lib/api";
 
 import { useState, useEffect } from "react";
 
@@ -21,13 +21,8 @@ export default function AlertsNavbar() {
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
-        const token = localStorage.getItem("eva_token");
-        const res = await fetch(`${API_BASE_URL}/api/alerts/stock`, {
-          headers: {
-            "Authorization": `Bearer ${token}`
-          }
-        });
-        if (res.ok) {
+        const res = await apiFetch(`${API_BASE_URL}/api/alerts/stock`);
+        if (res && res.ok) {
           const data = await res.json();
           setAlerts(data.alertas || []);
         }

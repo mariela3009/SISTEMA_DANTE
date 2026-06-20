@@ -33,6 +33,7 @@ export default function Sidebar() {
       title: "Operaciones de Caja",
       items: [
         { name: "Punto de Venta", href: "/dashboard/pos", icon: "point_of_sale", module: "pos" },
+        { name: "Monitor de Pedidos", href: "/dashboard/despacho", icon: "takeout_dining", module: "ventas" },
         { name: "Ventas", href: "/dashboard/ventas", icon: "receipt_long", module: "ventas" },
         { name: "Promociones", href: "/dashboard/promociones", icon: "campaign", module: "promociones" },
         { name: "Clientes", href: "/dashboard/clientes", icon: "group", module: "clientes" },
@@ -101,7 +102,6 @@ export default function Sidebar() {
         {menuCategories.map((category) => {
           // Filtrar items según permisos
           const allowedItems = category.items.filter(item => {
-            if (isSuperAdmin) return true;
             return user.permissions && user.permissions[item.module] && user.permissions[item.module].can_view;
           });
 
