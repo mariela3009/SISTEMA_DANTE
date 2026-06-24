@@ -9,6 +9,11 @@ export default function DespachoPage() {
   const [loading, setLoading] = useState(true);
   const [itemToCancel, setItemToCancel] = useState<number | null>(null);
 
+  /**
+   * fetchOrders()
+   * Obtiene la lista de pedidos en tiempo real desde el backend.
+   * Se ejecuta de forma automática cada 5 segundos para mantener la pantalla actualizada.
+   */
   const fetchOrders = async () => {
     try {
       const res = await apiFetch(`${API_BASE_URL}/api/kitchen`);
@@ -28,6 +33,11 @@ export default function DespachoPage() {
     return () => clearInterval(intervalId);
   }, []);
 
+  /**
+   * changeStatus()
+   * Permite marcar un producto individual como "Entregado".
+   * Se oculta de la pantalla una vez que todos los productos del pedido se entregan.
+   */
   const changeStatus = async (itemId: number, newStatus: string) => {
     try {
       const res = await apiFetch(`${API_BASE_URL}/api/kitchen/${itemId}/status`, {
@@ -43,6 +53,11 @@ export default function DespachoPage() {
     }
   };
 
+  /**
+   * confirmCancel()
+   * Función para cancelar un producto específico (ej. si el cliente se arrepiente o no hay stock).
+   * Envía una notificación inmediata a la cocina para que detengan la preparación.
+   */
   const confirmCancel = async () => {
     if (itemToCancel === null) return;
     
@@ -71,6 +86,8 @@ export default function DespachoPage() {
         return <span className="text-[10px] bg-tertiary-container/50 text-tertiary px-2 py-0.5 rounded font-bold uppercase animate-pulse">Preparando</span>;
       case 'ready': 
         return <span className="text-[10px] bg-sage text-white px-2 py-0.5 rounded font-bold uppercase shadow-sm">Listo</span>;
+      case 'cancelled':
+        return <span className="text-[10px] bg-error/20 text-error px-2 py-0.5 rounded font-bold uppercase shadow-sm">Cancelado</span>;
       default: 
         return null;
     }
@@ -108,8 +125,9 @@ export default function DespachoPage() {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4 items-start">
             {orders.map(order => {
-              const allReady = order.items.every((i: any) => i.status === 'ready');
-              const someReady = order.items.some((i: any) => i.status === 'ready');
+              // Excluir cancelados y entregados para saber si el pedido está listo para entregar en su totalidad
+              const activeItems = order.items.filter((i: any) => !i.is_cancelled && i.status !== 'delivered');
+              const allReady = activeItems.length > 0 && activeItems.every((i: any) => i.status === 'ready');
               
               return (
                 <div key={order.sale_id} className={`bg-white rounded-xl shadow-sm border overflow-hidden flex flex-col transition-all ${allReady ? 'border-sage/50 ring-2 ring-sage/20 shadow-sage/10' : 'border-latte/40'}`}>
@@ -135,19 +153,22 @@ export default function DespachoPage() {
                   {/* Lista de Items */}
                   <div className="p-3 space-y-2 flex-1">
                     {order.items.map((item: any) => (
-                      <div key={item.id} className="flex justify-between items-center gap-2 p-2 rounded-lg bg-surface-container-lowest border border-latte/20 hover:bg-mist/50 transition-colors">
+                      <div key={item.id} className={`flex justify-between items-center gap-2 p-2 rounded-lg border transition-colors ${item.is_cancelled ? 'bg-surface-container-lowest border-latte/10 opacity-60' : 'bg-surface-container-lowest border-latte/20 hover:bg-mist/50'}`}>
                         <div className="flex items-center gap-2 flex-1 min-w-0">
-                          <span className="font-bold text-espresso bg-latte/20 px-1.5 rounded text-xs">{item.quantity}x</span>
-                          <span className="font-medium text-sm text-espresso truncate" title={item.product_name}>
+                          <span className={`font-bold px-1.5 rounded text-xs ${item.is_cancelled ? 'text-on-surface-variant bg-latte/10' : 'text-espresso bg-latte/20'}`}>{item.quantity}x</span>
+                          <span className={`font-medium text-sm truncate ${item.is_cancelled ? 'text-on-surface-variant line-through' : 'text-espresso'}`} title={item.product_name}>
                             {item.product_name}
                           </span>
                         </div>
                         
                         <div className="flex items-center gap-2 shrink-0">
-                          {getStatusBadge(item.status)}
+                          {item.is_cancelled 
+                            ? <span className="text-[10px] bg-error/20 text-error px-2 py-0.5 rounded font-bold uppercase shadow-sm">Cancelado</span>
+                            : getStatusBadge(item.status)
+                          }
                           
                           {/* Botón de Entregar Individual */}
-                          {item.status === 'ready' && (
+                          {item.status === 'ready' && !item.is_cancelled && (
                             <button 
                               onClick={() => changeStatus(item.id, 'delivered')}
                               className="ml-1 bg-primary text-white p-1 rounded-md hover:bg-terracota transition-colors shadow-sm"
@@ -158,7 +179,7 @@ export default function DespachoPage() {
                           )}
 
                           {/* Botón de Cancelar Individual */}
-                          {item.status !== 'delivered' && (
+                          {item.status !== 'delivered' && !item.is_cancelled && (
                             <button 
                               onClick={() => setItemToCancel(item.id)}
                               className="ml-1 bg-error/10 text-error p-1 rounded-md hover:bg-error hover:text-white transition-colors shadow-sm"

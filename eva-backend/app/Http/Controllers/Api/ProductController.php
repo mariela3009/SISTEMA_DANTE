@@ -13,7 +13,11 @@ use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
-    /** GET /api/products */
+    /** 
+     * GET /api/products
+     * Lista todos los productos del menú.
+     * Soporta filtros por categoría, si está activo y búsqueda por nombre.
+     */
     public function index(Request $request)
     {
         $query = Product::with(['category', 'recipeItems.ingredient']);
@@ -42,7 +46,11 @@ class ProductController extends Controller
         return response()->json($this->formatProduct($product));
     }
 
-    /** POST /api/products */
+    /** 
+     * POST /api/products 
+     * Crea un nuevo producto (ej. Capuchino). 
+     * Nace inactivo hasta que se le asigne su receta.
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -83,7 +91,12 @@ class ProductController extends Controller
         return response()->json(['message' => 'Producto desactivado.']);
     }
 
-    /** POST /api/products/{id}/recipe - Define o reemplaza la receta completa */
+    /** 
+     * POST /api/products/{id}/recipe 
+     * Define o reemplaza la receta completa de un producto.
+     * Enlaza el producto con sus insumos (ej. 1 Capuchino = 15g Café + 100ml Leche).
+     * Activa el producto automáticamente al tener receta.
+     */
     public function saveRecipe(Request $request, Product $product)
     {
         $request->validate([

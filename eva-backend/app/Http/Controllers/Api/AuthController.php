@@ -15,6 +15,9 @@ class AuthController extends Controller
 {
     /**
      * POST /api/login
+     * Valida el correo y contraseña del usuario.
+     * Si son correctos, devuelve un Token JWT de seguridad para mantener la sesión abierta.
+     * También valida si la cuenta del usuario no ha sido desactivada por un Administrador.
      */
     public function login(Request $request)
     {
@@ -51,6 +54,12 @@ class AuthController extends Controller
         return response()->json(['message' => 'Sesión cerrada correctamente.']);
     }
 
+    /**
+     * GET /api/me
+     * Obtiene los datos del usuario que actualmente tiene sesión iniciada.
+     * Carga todos sus permisos dependiendo de su Rol (ej. Admin, Cajero, Cocinero)
+     * para saber qué pantallas del frontend mostrarle.
+     */
     public function me()
     {
         $user = auth('api')->user();

@@ -19,6 +19,12 @@ export default function LoginPage() {
     }
   }, [router]);
 
+  /**
+   * handleSubmit()
+   * Envia el correo y contraseña al backend para validarlos.
+   * Si es correcto, el backend responde con un "Token" (llave de seguridad).
+   * Este token se guarda en el "localStorage" (memoria del navegador) para mantener iniciada la sesión.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");

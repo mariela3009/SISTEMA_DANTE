@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\DB;
 
 class SaleController extends Controller
 {
+    /**
+     * Obtiene la lista de todas las ventas registradas en el sistema.
+     * Soporta filtrado por fecha para generar reportes en el panel de administrador.
+     */
     public function index(Request $request)
     {
         $query = Sale::with(['user', 'client', 'items.product'])->orderBy('created_at', 'desc');
@@ -22,6 +26,10 @@ class SaleController extends Controller
         return response()->json($query->paginate(20));
     }
 
+    /**
+     * Integración con Culqi: Crea una 'Order' en la API de Culqi (Requerido para pagos con Yape).
+     * Calcula el total a cobrar, inyecta los datos del cliente y se comunica de forma segura con Culqi.
+     */
     public function createCulqiOrder(Request $request)
     {
         $request->validate([
@@ -74,6 +82,13 @@ class SaleController extends Controller
         return response()->json(['message' => $errorMsg], 400);
     }
 
+    /**
+     * Guarda la venta final en la base de datos (Transacción Principal).
+     * 1. Verifica si se pagó con tarjeta o Yape usando Culqi.
+     * 2. Calcula subtotales, impuestos y totales.
+     * 3. Registra la venta y los detalles (items).
+     * 4. Descuenta automáticamente el inventario de los insumos usando las recetas.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -164,7 +179,7 @@ class SaleController extends Controller
                 'tax'             => $igv,
                 'total'           => $total,
                 'payment_method'  => $paymentMethod,
-                'paypal_order_id' => $culqiChargeId, // Guardamos el ID del cargo en la columna existente
+                'culqi_order_id' => $culqiChargeId,
                 'invoice_type'    => $invoiceType,
                 'status'          => 'completed',
             ]);
@@ -210,6 +225,10 @@ class SaleController extends Controller
         return response()->json(['message' => 'Venta registrada con éxito.', 'sale' => $result], 201);
     }
 
+    /**
+     * Obtiene los detalles específicos de una sola venta (por ID).
+     * Útil para imprimir comprobantes o ver el desglose de productos.
+     */
     public function show(Sale $sale)
     {
         return response()->json($sale->load(['user', 'client', 'items.product']));

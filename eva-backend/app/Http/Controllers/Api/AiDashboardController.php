@@ -7,6 +7,10 @@ use App\Models\AiRecommendation;
 
 class AiDashboardController extends Controller
 {
+    /**
+     * GET /api/ai/dashboard (o similar)
+     * Obtiene las últimas recomendaciones generadas por la Inteligencia Artificial.
+     */
     public function index()
     {
         $recommendations = AiRecommendation::all()->groupBy('type');

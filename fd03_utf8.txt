@@ -1,0 +1,209 @@
+﻿UNIVERSIDAD PRIVADA DE TACNA
+FACULTAD DE INGENIER�A
+Escuela Profesional de Ingenier�a de Sistemas
+ Sistema Web de Gesti�n inteligente de inventarios y pasarela de pagos con Culqi para la cafeter�a �Dante�
+Curso: Gesti�n de proyectos de TI
+Docente: Dra. Martha Paredes Vignola
+Integrantes:
+Laos Gonz�lez, Adriana Rafaela        		(2023077474)
+Ramos Loza, Mariela Estefany			(2023077478)
+Calloticona Chambilla, Marymar Danytza   	(2023076791)
+Choque�a Choque, Mauricio Arian		(2023076799)
+Tacna � Per�
+2026
+Sistema Web de Gesti�n inteligente de inventarios y pasarela de pagos con Culqi para la cafeter�a �Dante�
+Versi�n 1.0
+�NDICE GENERAL
+INTRODUCCI�N
+El presente documento constituye la Especificaci�n de Requerimientos de Software (SRS) del sistema web de gesti�n inteligente de inventarios integrado con pasarela de pagos para la cafeter�a "Dante". 
+El sistema surge ante la necesidad de digitalizar y automatizar los procesos de control de insumos, ventas y cobros, eliminando la gesti�n manual que actualmente genera p�rdidas operativas y econ�micas en el negocio.
+Generalidades de la empresa
+Nombre de la Empresa
+Cafeter�a "Dante"
+Visi�n 
+Ser reconocida como una cafeter�a moderna, eficiente y de calidad, que brinde una experiencia �ptima a sus clientes mediante la digitalizaci�n de sus procesos operativos y administrativos.
+Misi�n 
+Brindar productos y servicios de cafeter�a con calidad, rapidez y transparencia, optimizando la gesti�n de recursos mediante el uso de tecnolog�a para garantizar la sostenibilidad del negocio.
+Organigrama de la Empresa
+A partir de la estructura organizada inferida en el diagrama jer�rquico del documento , el organigrama se compone de la siguiente manera:
+Direcci�n General: Due�o de la cafeter�a. 
+Gesti�n y Supervisi�n: Administrador. 
+�rea Operativa: 
+Personal de cocina. 
+Personal de Atenci�n al Cliente
+Visionamiento de la Empresa
+Descripci�n del Problema
+La cafeter�a "Dante" carece de un sistema integral que permita realizar el inventario y el control de insumos con actualizaciones en tiempo real..Esta ausencia tecnol�gica genera las siguientes cr�ticas problem�ticas en el negocio:
+P�rdida de insumos: Se producen p�rdidas materiales debido al vencimiento, obsolescencia, extrav�o o mal manejo de la materia prima, al no existir trazabilidad ni alertas tempranas. 
+Exceso de inventario: Acumulaci�n innecesaria de stock en demas�a, lo que eleva los costos de almacenamiento e inmoviliza el capital operativo.
+Desabastecimiento cr�tico: Falta de insumos esenciales en momentos clave de la operaci�n, forzando la ejecuci�n de compras de emergencia a precios desfavorables.
+Toma de decisiones reactivas: Decisiones administrativas poco fundamentadas, estructuradas sobre datos desactualizados o incompletos. 
+Deficiencia en la planificaci�n: Dificultad severa para planificar compras y presupuestos ante la falta de hist�ricos confiables y tendencias de consumo reales. 
+Objetivos de Negocios
+Reducir las p�rdidas mensuales provocadas por la mala gesti�n del inventario actual. 
+Ampliar las modalidades de cobro de la cafeter�a, aceptando pagos digitales mediante la integraci�n de Culqi.
+Mejorar la planificaci�n de compras con datos hist�ricos confiables del consumo de insumos.
+Agilizar la atenci�n al cliente reduciendo el tiempo de registro de ventas y actualizaci�n del stock.
+ Objetivos de Dise�o
+Desarrollar un panel de control (dashboard) con indicadores clave de ventas, inventario y productos m�s vendidos.
+Dise�ar una interfaz intuitiva con Tailwind CSS, accesible para personal con conocimientos b�sicos en inform�tica.
+Implementar una arquitectura que vincule directamente la venta de productos con el descuento de insumos en el inventario (via recetas digitalizadas).
+Integrar la API de Culqi para procesar transacciones seguras en el punto de venta.
+Garantizar la integridad referencial de los datos mediante MySQL 16 con soporte ACID.
+Alcance del proyecto
+El sistema abarca el desarrollo e implementaci�n de los siguientes m�dulos funcionales para la cafeter�a "Dante":
+M�dulo de Autenticaci�n y Gesti�n de Usuarios: control de acceso basado en roles (Administrador, Cajero, Cocina, Supervisor).
+M�dulo de Gesti�n de Productos e Insumos: cat�logos completos con gesti�n de recetas est�ndar para el c�lculo autom�tico de consumo.
+M�dulo de Inventario y Kardex Autom�tico: control de entradas, salidas y movimientos de insumos con valorizaci�n autom�tica.
+M�dulo de Punto de Venta (POS): registro de ventas, c�lculo de totales y descuento autom�tico de inventario.
+M�dulo de Integraci�n Culqi: procesamiento de pagos digitales mediante la API oficial de Culqi.
+M�dulo de Dashboard y Reportes: panel de control con estad�sticas en tiempo real y generaci�n de reportes exportables.
+M�dulo de Alertas: notificaciones autom�ticas de stock m�nimo y eventos cr�ticos del sistema.
+El sistema NO incluir�: facturaci�n electr�nica, integraci�n con sistemas de contabilidad externos, gesti�n de n�mina del personal, aplicaciones m�viles nativas, ni m�dulos de gesti�n de delivery o pedidos en l�nea.
+Viabilidad del Sistema
+El an�lisis de factibilidad realizado en el documento FD01 confirma la viabilidad del proyecto en todas sus dimensiones:
+Viabilidad T�cnica:
+El equipo de desarrollo dispone de las competencias t�cnicas requeridas en PHP 8.0, Mysql, JavaScript y Tailwind CSS. Las herramientas utilizadas son de c�digo abierto y gratuitas, y la infraestructura de despliegue (VPS con soporte PHP y MySQL) es accesible y de bajo costo.
+Viabilidad Econ�mica:
+La inversi�n total del proyecto es de S/ 7,375.00, con un Valor Actual Neto (VAN) de S/ 12,917.71, una Tasa Interna de Retorno (TIR) del 95.93% muy superior al costo de oportunidad del capital del 10% y una relaci�n Beneficio/Costo de 2.75. La inversi�n se recupera en aproximadamente 11 meses desde la implementaci�n.
+Viabilidad Operativa:
+El sistema puede ser operado por el personal actual de la cafeter�a con conocimientos b�sicos de inform�tica, gracias a la interfaz intuitiva dise�ada con Tailwind CSS. El impacto operativo estimado incluye una reducci�n de 3 horas semanales en tareas de control manual y la eliminaci�n de errores humanos en el registro de inventarios.
+Viabilidad Legal:
+Todas las tecnolog�as empleadas (PHP, MySQL, Tailwind CSS, VS Code) est�n licenciadas bajo t�rminos que permiten uso comercial sin restricciones. La integraci�n con Culqi cumple con los t�rminos de servicio de la plataforma.
+Informaci�n obtenida del Levantamiento de Informaci�n
+El levantamiento de informaci�n se realiz� mediante reuniones directas con el propietario y el personal administrativo de la cafeter�a "Dante", complementado con la observaci�n directa de los procesos operativos. Los hallazgos principales fueron:
+El registro de insumos se realiza en hojas de c�lculo (Excel) de manera manual, sin actualizaciones en tiempo real.
+No existe un sistema automatizado de descuento de materia prima al momento de registrar una venta; el control se realiza de forma peri�dica y aproximada.
+Las alertas de reabastecimiento dependen exclusivamente de la memoria y experiencia del administrador.
+Los reportes de ventas se generan manualmente y no est�n integrados con el control de inventarios.
+La cafeter�a acepta �nicamente pagos en efectivo, lo que limita las opciones para los clientes y genera riesgos operativos.
+El personal de cocina no tiene acceso a informaci�n actualizada sobre el stock de insumos disponibles.
+La cafeter�a cuenta con un semi-ERP (Wally) para ventas y cobranza b�sica, pero sin integraci�n con inventarios ni m�dulo de recetas.
+Los stakeholders identificados son: el propietario (beneficiario final), el administrador (usuario principal), el personal de cocina y atenci�n (usuarios operativos) y el equipo de desarrollo (implementadores).
+An�lisis de Procesos
+Diagrama del Proceso Actual � Diagrama de actividades
+El proceso actual de gesti�n de inventarios y ventas en la cafeter�a "Dante" se desarrolla de manera manual y desarticulada, sin integraci�n entre los diferentes puntos del flujo operativo.
+A continuaci�n, se detalla la secuencia l�gica del Proceso Actual de Control de Inventario reconstruida a partir del levantamiento de informaci�n.
+Proceso Actual de Control de Inventario:
+Frecuencia: El Administrador toma la decisi�n de verificar el inventario de una a dos veces por semana. 
+Acceso: Acceda a una hoja de c�lculo en Excel destinada al registro manual de insumos. 
+Conteo: Se traslada al almac�n para realizar un conteo f�sico y manual de las existencias. 
+Actualizaci�n: Regresa a la hoja de Excel para transcribir y actualizar los datos recopilados manualmente. 
+Evaluaci�n de Stock: Se eval�a si el nivel de stock es bajo: 
+Si el stock es bajo: El administrador toma nota de los requerimientos y realiza un pedido al proveedor mediante una llamada telef�nica o un mensaje de WhatsApp.Posteriormente, recibe la mercader�a, realiza un conteo manual en f�sico y vuelve a actualizar la hoja de Excel antes de finalizar.
+Si el stock NO es bajo: El flujo avanza directamente hacia el fin del proceso. 
+Nota Cr�tica del Flujo Actual: No existe un registro autom�tico de salidas de insumos por producci�n.El descuento de materia prima se realiza al c�lculo estimado o, en su defecto, simplemente no se ejecuta. 
+Diagrama del Proceso Propuesto � Diagrama de actividades Inicial
+El modelo optimizado introduce la automatizaci�n mediante el sistema web para asegurar que la informaci�n fluya continuamente y sin errores humanos.. El dise�o se segmenta en dos flujos esenciales:
+Proceso Propuesto de Control de Inventario:
+Autenticaci�n: El usuario (Administrador o Supervisor) inicia sesi�n de forma segura en la plataforma. 
+Visualizaci�n: El sistema despliega inmediatamente el panel de control (dashboard) con el inventario actualizado en tiempo real.
+Evaluaci�n de Acci�n: El usuario decide si registrar� una nueva entrada de mercanc�a: 
+Si decide la entrada del registrador: Acceda al subm�dulo de Inventario e inicie una "Nueva Entrada".Complete el formulario digital ingresando el insumo, cantidad, precio, proveedor y el documento de compra correspondiente.El sistema procesa los datos y actualiza el Kardex autom�ticamente. 
+Si decide NO registrar entrada: El flujo salta directamente a la evaluaci�n de umbrales. 
+Control de Escasez: El sistema eval�a si el stock de alg�n insumo alcanz� su nivel m�nimo tolerable configurado: 
+Si alcanza el nivel m�nimo: El sistema genera de forma autom�tica una alerta visual parpadeante en el tablero y notifica de inmediato al administrador.
+Si NO alcanza el nivel m�nimo: El proceso concluye exitosamente manteniendo el inventario actualizado de forma continua y autom�tica.
+Proceso Propuesto de Registro de Ventas:
+Inicio de Turno: El Cajero inicia sesi�n y accede directamente al m�dulo de Punto de Venta (POS). 
+Configuraci�n de la Orden: Selecciona los productos y las cantidades solicitadas del pedido del cliente.El sistema calcula de manera autom�tica el monto total neto.
+Bifurcaci�n por M�todo de Pago: El cajero define la modalidad elegida por el consumidor:
+Flujo por Efectivo: El cajero ingresa el monto de dinero recibido en f�sico.El sistema calcula de forma instant�nea el regreso y confirma la venta.  
+Flujo por Culqi: El sistema crea la orden de pago conectando con la API de Culqi y procesa el cobro de forma segura. El backend queda a la espera de la confirmaci�n: 
+Si se recibe la confirmaci�n del Webhook: El sistema actualiza el estado de la venta como completado/pagado. 
+Si NO se recibe o hay error/cancelaci�n: El proceso se interrumpe y se reporta el fallo. 
+Procesamiento Post-Venta Autom�tico: Una vez consolidado el pago por cualquiera de las dos v�as, el sistema ejecuta de manera autom�tica cadena e interna las siguientes actividades en: 
+Descuenta los insumos del inventario de forma inmediata calculando en las recetas est�ndar asignadas a los productos vendidos.
+Genera el asiento y registro correspondiente en el Kardex. 
+Construye y emite el comprobante de venta gen�rico (ticket de mostrador). 
+Actualiza los indicadores y gr�ficos del tablero general del negocio, finalizando con una venta registrada con trazabilidad completa.
+ Especificaci�n de Requerimientos de Software
+Cuadro de Requerimientos funcionales Inicial
+Cuadro de Requerimientos No funcionales
+Cuadro de Requerimientos funcionales Final
+Requerimientos no funcionales finales:
+Reglas de Negocio
+Fase de Desarrollo
+Perfiles de Usuario
+Modelo Conceptual
+Diagrama de Paquetes
+Diagrama de Casos de Uso
+Escenarios de Caso de Uso (narrativa)
+UC-MCA-01: Gestionar Autenticaci�n y Sesiones de Usuario
+UC-MCA-02: Gestionar Personal
+UC-MCA-03: Gestionar Roles y Permisos
+UC-MCR-04: Gestionar Cat�logo de Productos Comerciales
+UC-MCR-05: Gestionar Recetas y Dosificaci�n de Productos
+UC-MCR-06: Gestionar Promociones Programadas
+UC-MCR-07: Gestionar Combos Comerciales
+UC-MIA-08: Gestionar Almac�n Principal de Insumos
+UC-MIA-09: Gestionar Transferencias Internas a Cocina
+UC-MIA-10: Gestionar Alertas de Stock M�nimo
+UC-MIA-11: Gestionar Mermas de Insumos
+UC-MIA-12: Gestionar Mermas de Productos Terminados
+UC-MIA-13: Procesar Descuento Automatizado de Inventario
+UC-MPV-14: Gestionar Registro de Ventas
+UC-MPV-15: Procesar Pagos Electr�nicos
+UC-MPV-16: Gestionar Emisi�n de Comprobantes
+UC-MCC-17: Gestionar Flujo de Comandas
+UC-MCC-18: Gestionar Notificaciones de Cancelaci�n
+UC-MIA-19: Gestionar Optimizaci�n de Recetas Anti-Merma mediante IA
+UC-MIA-20: Gestionar Predicci�n de Demanda mediante IA
+UC-MIA-21: Gestionar Recomendaciones de Combos mediante IA
+UC-MIA-22: Gestionar Detecci�n de Anomal�as en Mermas mediante IA
+UC-MIA-23: Gestionar Sugerencias de Abastecimiento mediante IA
+UC-SYS-24: Gestionar Auditor�a de Modificaciones y Eventos
+Modelo L�gico
+Diagrama de Actividades con objetos
+UC-001: Autenticar Usuario
+UC-002: Gestionar Personal y Roles
+UC-003: Gestionar Cat�logo de Productos
+UC-004: Administrar Recetas de Productos
+UC-005: Gestionar Almac�n de Insumos
+UC-006: Registrar Entrada de Insumos
+UC-007: Registrar Mermas Manualmente
+UC-008: Registrar Venta de Productos
+UC-009: Procesar Pago con Culqi
+UC-010: Emitir Comprobante de Venta
+UC-011: Consultar Dashboard e Informes
+Diagramas de secuencia:
+UC-MCA-01 � Autenticar Usuario
+UC-MCA-02 � Gestionar Personal
+UC-MCA-03 � Gestionar Roles y Permisos
+UC-MCR-04 � Gestionar Cat�logo de Productos
+UC-MCR-05 � Gestionar Recetas y Dosificaci�n
+UC-MCR-06 � Gestionar Promociones Programadas
+UC-MCR-07 � Gestionar Combos Comerciales
+UC-MIA-08 � Gestionar Almac�n Principal de Insumos
+UC-MIA-09 � Gestionar Transferencias a Cocina
+UC-MIA-10 � Gestionar Alertas de Stock M�nimo
+UC-MIA-11 � Gestionar Mermas de Insumos
+UC-MIA-12 � Gestionar Mermas de Productos Terminados
+UC-MIA-13 � Procesar Descuento Automatizado de Inventario
+UC-MPV-14 � Gestionar Registro de Ventas
+UC-MPV-15 � Procesar Pagos Electr�nicos
+UC-MPV-16 � Gestionar Emisi�n de Comprobantes
+UC-MCC-17 � Gestionar Flujo de Comandas
+UC-MCC-18 � Gestionar Notificaciones de Cancelaci�n
+UC-MIA-19 � Gestionar Optimizaci�n de Recetas Anti-Merma
+UC-MIA-20 � Gestionar Predicci�n de Demanda Diaria
+UC-MIA-21 � Gestionar Recomendaciones de Combos
+UC-MIA-22 � Gestionar Detecci�n de Anomal�as en Mermas
+UC-MIA-23 � Gestionar Sugerencias de Abastecimiento
+UC-SYS-24 � Auditar Modificaciones de Datos y Eventos
+	Diagrama Entidad Relaci�n
+	Diagrama de Clases
+CONCLUSIONES
+El documento de Especificaci�n de Requerimientos de Software (SRS) presentado define de manera exhaustiva y t�cnicamente rigurosa los requerimientos funcionales y no funcionales del "Sistema Integral de Gesti�n de Insumos y Ventas Automatizadas", proporcionando una base s�lida para las fases de dise�o e implementaci�n del proyecto.
+El an�lisis del proceso actual de la cafeter�a "Dante" confirma la existencia de brechas operativas cr�ticas: desconexi�n entre ventas e inventario, ausencia de trazabilidad autom�tica, limitaci�n a un �nico m�todo de pago y dependencia de controles manuales propensos a error. El sistema propuesto aborda cada una de estas deficiencias de manera sistem�tica.
+La arquitectura tecnol�gica seleccionada (PHP 8.x, MySQL 16, Tailwind CSS, API Culqi, VPS con SSL) es coherente con los recursos del equipo de desarrollo, los requisitos de rendimiento y disponibilidad del sistema, y las restricciones econ�micas identificadas en el informe de factibilidad.
+Los 24 requerimientos funcionales y 9 requerimientos no funcionales identificados cubren de manera integral las necesidades operativas de la cafeter�a, garantizando la automatizaci�n del control de inventarios, la seguridad de las transacciones, la usabilidad del sistema y la trazabilidad completa de los movimientos.
+Los indicadores financieros del proyecto (VAN = S/ 10,580.07, TIR = 84.77%, B/C = 2.43) confirman la viabilidad y rentabilidad de la inversi�n.
+La definici�n de cuatro perfiles de usuario con permisos diferenciados (Administrador, Supervisor, Cajero, Cocina) garantiza el principio de m�nimo privilegio y protege la integridad de los datos sensibles del sistema.
+RECOMENDACIONES
+Implementar el sistema siguiendo una metodolog�a de desarrollo �gil (Scrum) con sprints de dos semanas, priorizando en el primer sprint los m�dulos de autenticaci�n, gesti�n de usuarios e inventario b�sico, por ser la base sobre la que se construyen los dem�s m�dulos.
+Realizar pruebas exhaustivas de la integraci�n con la API de Culqi en el entorno sandbox antes del despliegue en producci�n, verificando especialmente el flujo de webhooks y el manejo de pagos rechazados o expirados.
+Establecer un plan de capacitaci�n diferenciado por rol de usuario, con �nfasis en el administrador y el cajero, quienes utilizar�n el sistema con mayor frecuencia e intensidad. Se recomienda un m�nimo de dos horas de capacitaci�n pr�ctica por rol.
+Configurar el sistema de respaldos autom�ticos de MySQL con una frecuencia diaria y almacenamiento en una ubicaci�n externa al servidor de producci�n (almacenamiento en la nube), garantizando la recuperabilidad de los datos ante cualquier incidente.
+Implementar un plan de mantenimiento preventivo mensual que incluya: revisi�n de logs de auditor�a, verificaci�n del espacio en disco del servidor, actualizaci�n de dependencias y revisi�n del rendimiento de las consultas a la base de datos.
+Para versiones futuras del sistema, se recomienda considerar la integraci�n de facturaci�n electr�nica conforme a los requerimientos de SUNAT, la incorporaci�n de un m�dulo de gesti�n de proveedores con �rdenes de compra automatizadas y el desarrollo de una aplicaci�n m�vil nativa para el personal de cocina.

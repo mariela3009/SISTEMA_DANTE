@@ -11,6 +11,11 @@ export default function CocinaPage() {
   const [showHistory, setShowHistory] = useState(false);
   const [historyItems, setHistoryItems] = useState<any[]>([]);
 
+  /**
+   * fetchOrders()
+   * Obtiene la lista de pedidos activos directamente desde el backend.
+   * Se ejecuta al cargar la página y luego automáticamente cada 3 segundos (Long polling).
+   */
   const fetchOrders = async () => {
     try {
       const res = await apiFetch(`${API_BASE_URL}/api/kitchen`);
@@ -24,6 +29,11 @@ export default function CocinaPage() {
     }
   };
 
+  /**
+   * fetchAlerts()
+   * Revisa si Caja/Despacho ha cancelado algún producto que ya estaba en la cocina.
+   * Si encuentra una alerta, detiene la pantalla y reproduce un sonido de emergencia.
+   */
   const fetchAlerts = async () => {
     try {
       const res = await apiFetch(`${API_BASE_URL}/api/kitchen/alerts`);
@@ -75,6 +85,12 @@ export default function CocinaPage() {
     return () => clearInterval(intervalId);
   }, []);
 
+  /**
+   * changeStatus()
+   * Avanza el estado de un producto individualmente.
+   * Flujo: 'pending' (Pendiente) -> 'preparing' (Preparando) -> 'ready' (Listo).
+   * Al enviarse al backend, esto también actualiza la pantalla de Despacho (Caja).
+   */
   const changeStatus = async (itemId: number, newStatus: string) => {
     try {
       const res = await apiFetch(`${API_BASE_URL}/api/kitchen/${itemId}/status`, {

@@ -1,0 +1,118 @@
+﻿UNIVERSIDAD PRIVADA DE TACNA
+FACULTAD DE INGENIER�A
+Escuela Profesional de Ingenier�a de Sistemas
+Sistema Web de Gesti�n inteligente de inventarios y pasarela de pagos con Culqi para la cafeter�a �Dante�
+Curso: Gesti�n de Proyectos de TI
+Docente: Dra. Martha Paredes Vignola
+Integrantes:
+Laos Gonzales, Adriana Rafaela (2023077474)
+Calloticona Chambilla, Marymar Danytza (2023076791) 
+Ramos Loza, Mariela Estefany (2023077478)
+Choque�a Choque, Mauricio Arian (2023076799)
+Tacna � Per�
+2026
+Sistema Web de Gesti�n inteligente de inventarios y pasarela de pagos con Culqi para la cafeter�a �Dante�
+Versi�n 1.0
+�NDICE GENERAL
+Introducci�n
+Prop�sito
+El prop�sito de este Documento de Arquitectura de Software (SAD) es proveer una descripci�n detallada, t�cnica y exhaustiva de la arquitectura del "Sistema Web de Gesti�n Inteligente de Inventarios y Pasarela de Pagos con Culqi" para la cafeter�a �Dante�. A trav�s del modelo de vistas de arquitectura 4+1 de Philippe Kruchten, se articulan las decisiones de dise�o t�cnico que permiten resolver la problem�tica log�stica y transaccional del negocio, garantizando el alineamiento entre los requerimientos especificados en el SRS y la construcci�n f�sica del software.  Este dise�o prioriza una arquitectura desacoplada basada en API RESTful , estableciendo una clara divisi�n entre la interfaz del lado del cliente y el procesamiento de datos del lado del servidor. Se balancean atributos arquitect�nicos cr�ticos: se sacrifica la simplicidad de un despliegue monol�tico tradicional en favor de una alta eficiencia de respuesta (< 1.5 segundos) , seguridad transaccional (soporte ACID) y una mantenibilidad �ptima basada en el aislamiento completo del c�digo.
+Alcance
+El documento cubre el dise�o de las capas l�gicas, de implementaci�n, de procesos y f�sicas del sistema web. El alcance abarca la automatizaci�n total del control de inventarios mediante recetas digitalizadas , el registro de ventas presenciales en mostrador (POS) y la conciliaci�n inmediata mediante la integraci�n s�ncrona con la API de Culqi.  
+Se incluye: Arquitectura de los m�dulos de Autenticaci�n (RBAC) , Cat�logo de Productos y Recetas , Almac�n y Kardex Valorizado , Pasarela Culqi , Alertas Visuales de Stock M�nimo y Dashboard anal�tico en tiempo real.  
+Se excluye: Conforme a las restricciones expl�citas del negocio, el sistema no contempla facturaci�n electr�nica regulada por SUNAT, interfaces contables externas, gesti�n de n�mina/planillas, aplicaciones m�viles nativas, ni canales de delivery o pedidos remotos en l�nea.  
+Definici�n, siglas y abreviaturas
+ACID: Atomicity, Consistency, Isolation, Durability (Atomicidad, Consistencia, Aislamiento y Durabilidad). Propiedades que garantizan la confiabilidad de las transacciones en una base de datos.
+API: Application Programming Interface (Interfaz de Programaci�n de Aplicaciones). Mecanismo de comunicaci�n basado en HTTP.
+CORS: Cross-Origin Resource Sharing (Compartici�n de Recursos de Origen Cruzado). Mecanismo de seguridad configurado en el servidor backend.
+JWT: JSON Web Token. Est�ndar abierto para la transmisi�n segura de tokens de autenticaci�n entre el cliente y el servidor.
+Kardex: Sistema de registro log�stico inmutable para el control de las unidades f�sicas y costos de entradas y salidas de mercanc�as.
+POS: Point of Sale (Punto de Venta). Interfaz interactiva de mostrador utilizada por el cajero para procesar las �rdenes de los clientes.
+RBAC: Role-Based Access Control (Control de Acceso Basado en Roles). Modelo de seguridad jer�rquico.
+SAD: Software Architecture Document (Documento de Arquitectura de Software).
+SPA: Single Page Application (Aplicaci�n de P�gina �nica). Aplicaci�n web reactiva que no requiere recargar el navegador.
+SRS: Software Requirements Specification (Especificaci�n de Requerimientos de Software).
+VPS: Virtual Private Server (Servidor Privado Virtual). Servidor f�sico particionado en la nube donde se aloja el entorno de producci�n.
+Webhook: Protocolo HTTP POST as�ncrono mediante el cual un servicio externo (Culqi) notifica eventos confirmados al servidor backend del sistema.
+Organizaci�n del documento
+El presente documento est� estructurado en las siguientes secciones centrales:
+Secci�n 2: Objetivos y Restricciones Arquitect�nicas, que prioriza y clasifica los requerimientos funcionales y no funcionales (Atributos de Calidad).
+Secci�n 3: Representaci�n de la Arquitectura del Sistema, detallando las vistas de Casos de Uso, L�gica, Implementaci�n, Procesos y Despliegue mediante especificaciones textuales y scripts de diagramaci�n formal en formato PlantUML.
+Secci�n 4: Atributos de Calidad del Software, donde se validan los escenarios estructurales de funcionalidad, usabilidad, confiabilidad y rendimiento bajo la norma t�cnica de ingenier�a de software.
+OBJETIVOS Y RESTRICCIONES ARQUITECT�NICAS
+Requerimientos funcionales
+Requerimientos no funcionales
+Representaci�n Arquitect�nica del sistema
+Vista de caso de uso
+Diagramas de casos de uso
+Vista L�gica
+Diagrama de Subsistemas (paquetes)
+Diagrama de Secuencia
+UC-MCA-01 � Autenticar Usuario
+UC-MCA-02 � Gestionar Personal
+UC-MCA-03 � Gestionar Roles y Permisos
+UC-MCR-04 � Gestionar Cat�logo de Productos
+UC-MCR-05 � Gestionar Recetas y Dosificaci�n
+UC-MCR-06 � Gestionar Promociones Programadas
+UC-MCR-07 � Gestionar Combos Comerciales
+UC-MIA-08 � Gestionar Almac�n Principal de Insumos
+UC-MIA-09 � Gestionar Transferencias a Cocina
+UC-MIA-10 � Gestionar Alertas de Stock M�nimo
+UC-MIA-11 � Gestionar Mermas de Insumos
+UC-MIA-12 � Gestionar Mermas de Productos Terminados
+UC-MIA-13 � Procesar Descuento Automatizado de Inventario
+UC-MPV-14 � Gestionar Registro de Ventas
+UC-MPV-15 � Procesar Pagos Electr�nicos
+UC-MPV-16 � Gestionar Emisi�n de Comprobantes
+UC-MCC-17 � Gestionar Flujo de Comandas
+UC-MCC-18 � Gestionar Notificaciones de Cancelaci�n
+UC-MIA-19 � Gestionar Optimizaci�n de Recetas Anti-Merma
+UC-MIA-20 � Gestionar Predicci�n de Demanda Diaria
+UC-MIA-21 � Gestionar Recomendaciones de Combos
+UC-MIA-22 � Gestionar Detecci�n de Anomal�as en Mermas
+UC-MIA-23 � Gestionar Sugerencias de Abastecimiento
+UC-SYS-24 � Auditar Modificaciones de Datos y Eventos
+Diagrama de Colaboraci�n
+UC-MCA-01: Gestionar Autenticaci�n y Sesiones de Usuario
+UC-MCA-02: Gestionar Personal
+UC-MCA-03: Gestionar Roles y Permisos
+UC-MCR-04: Gestionar Cat�logo de Productos Comerciales
+UC-MCR-05: Gestionar Recetas y Dosificaci�n de Productos
+UC-MCR-06: Gestionar Promociones Programadas
+UC-MIA-07: Gestionar Combos Comerciales
+UC-MIA-08: Gestionar Almac�n Principal de Insumos
+UC-MIA-09: Gestionar Transferencias Internas a Cocina
+UC-MIA-10: Gestionar Alertas de Stock M�nimo
+UC-MIA-11: Gestionar Mermas de Insumos
+UC-MIA-12: Gestionar Mermas de Productos Terminados
+UC-MPV-13: Procesar Descuento Automatizado de Inventario
+UC-MPV-14: Gestionar Registro de Ventas
+UC-MPV-15: Procesar Pagos Electr�nicos
+UC-MCC-16: Gestionar Emisi�n de Comprobantes
+UC-MCC-17: Gestionar Flujo de Comandas
+UC-MIA-18: Gestionar Flujo de Comandas
+UC-MIA-19: Gestionar Optimizaci�n de Recetas Anti-Merma mediante IA
+UC-MIA-20: Gestionar Predicci�n de Demanda mediante IA
+UC-MIA-21: Gestionar Recomendaciones de Combos mediante IA
+UC-MIA-22: Gestionar Detecci�n de Anomal�as en Mermas mediante IA
+UC-SYS-23: Gestionar Sugerencias de Abastecimiento mediante IA
+UC-SYS-24: Gestionar Auditor�a de Eventos y Modificaciones
+Diagrama de Base de Datos
+Diagrama de clases
+Vista de implementaci�n
+Diagrama de arquitectura software (paquetes)
+Diagrama de arquitectura del sistema (Diagrama de componentes)
+Vista de procesos
+Diagrama de Procesos del sistema
+Vista Despliegue (vista f�sica)
+Diagrama de despliegue
+Diagramas C4
+Diagrama de contexto
+Diagrama de contenedor
+Diagrama de componentes
+Diagrama de Clases
+ATRIBUTOS DE CALIDAD DEL SOFTWARE
+Escenario de funcionalidad
+Escenario de Usabilidad
+Escenario de confiabilidad
+Escenario de rendimiento

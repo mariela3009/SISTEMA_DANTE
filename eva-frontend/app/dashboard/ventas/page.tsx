@@ -23,10 +23,10 @@ interface Sale {
   subtotal: string;
   tax: string;
   total: string;
-  payment_method: "efectivo" | "paypal";
+  payment_method: "efectivo" | "culqi";
   invoice_type: "ticket" | "boleta" | "factura";
   status: "completed" | "cancelled";
-  paypal_order_id: string | null;
+  culqi_order_id: string | null;
   created_at: string;
   updated_at: string;
   user?: { id: number; name: string; role: string };

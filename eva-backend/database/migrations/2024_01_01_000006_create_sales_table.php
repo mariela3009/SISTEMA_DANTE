@@ -14,9 +14,9 @@ class CreateSalesTable extends Migration
             $table->decimal('subtotal', 10, 2);
             $table->decimal('tax', 10, 2)->default(0);
             $table->decimal('total', 10, 2);
-            $table->enum('payment_method', ['efectivo', 'paypal'])->default('efectivo');
+            $table->enum('payment_method', ['efectivo', 'culqi'])->default('efectivo');
             $table->enum('status', ['completed', 'cancelled'])->default('completed');
-            $table->string('paypal_order_id')->nullable();
+            $table->string('culqi_order_id')->nullable();
             $table->timestamps();
         });
 

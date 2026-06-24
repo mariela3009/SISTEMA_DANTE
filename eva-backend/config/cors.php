@@ -25,6 +25,8 @@ return [
         'http://localhost:3001',
         'http://127.0.0.1:3000',
         'http://127.0.0.1:3001',
+        'http://dante-cafeteria-eva.online',
+        'https://dante-cafeteria-eva.online',
     ],
 
     'allowed_origins_patterns' => [],

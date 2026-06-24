@@ -50,6 +50,11 @@ export default function InventarioPage() {
   const [isPendingMermasModalOpen, setIsPendingMermasModalOpen] = useState(false);
   const [mermaData, setMermaData] = useState({ product_id: "", quantity: 1, reason: "" });
 
+  /**
+   * fetchIngredients()
+   * Carga la tabla de insumos desde el backend.
+   * Aplica los filtros de búsqueda y de estado (ej. "Sin Stock", "Por Vencer") y maneja la paginación.
+   */
   const fetchIngredients = async (page = currentPage) => {
     try {
       const url = new URL(`${API_BASE_URL}/api/ingredients`);
@@ -116,6 +121,10 @@ export default function InventarioPage() {
     }
   };
 
+  /**
+   * handleCreateIngredient()
+   * Crea un nuevo insumo (materia prima) en el sistema.
+   */
   const handleCreateIngredient = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -188,6 +197,11 @@ export default function InventarioPage() {
     }
   };
 
+  /**
+   * handleEntrada()
+   * Registra una "Entrada" de stock al inventario (ej. cuando llega un camión del proveedor).
+   * Se ingresa el costo total de la factura para recalcular automáticamente el "Costo Promedio Unitario" del insumo.
+   */
   const handleEntrada = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!entradaIngredient) return;

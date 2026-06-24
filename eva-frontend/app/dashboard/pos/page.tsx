@@ -195,6 +195,12 @@ export default function POSPage() {
     }
   };
 
+  /**
+   * processSale()
+   * Inicia el proceso de venta.
+   * Si el método es 'culqi' (Tarjeta/Yape), primero se comunica con el Backend para generar una 'Order'.
+   * Luego abre la ventana segura de Culqi para que el cliente meta su tarjeta o escanee el QR.
+   */
   const processSale = async () => {
     if (cart.length === 0) return;
     
@@ -262,6 +268,12 @@ export default function POSPage() {
     }
   };
 
+  /**
+   * submitSale()
+   * Función final que se ejecuta cuando el pago fue exitoso (o si se pagó en efectivo).
+   * Envía todos los productos del carrito al Backend para guardarlos en la base de datos
+   * y que se impriman en el ticket de venta.
+   */
   const submitSale = async (culqiTokenId: string | null = null, culqiOrderId: string | null = null) => {
     setIsProcessing(true);
     setErrorMsg("");

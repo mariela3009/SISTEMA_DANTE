@@ -6,18 +6,26 @@ import os
 
 # Configuración de BD
 DB_HOST = os.environ.get("DB_HOST", "127.0.0.1")
+DB_PORT = int(os.environ.get("DB_PORT", "3306"))
 DB_USER = os.environ.get("DB_USERNAME", "root")
 DB_PASS = os.environ.get("DB_PASSWORD", "")
 DB_NAME = os.environ.get("DB_DATABASE", "eva_db")
+DB_SSL_CA = os.environ.get("MYSQL_ATTR_SSL_CA", "")
 
 def connect_db():
     try:
-        return mysql.connector.connect(
-            host=DB_HOST,
-            user=DB_USER,
-            password=DB_PASS,
-            database=DB_NAME
-        )
+        connect_args = {
+            "host": DB_HOST,
+            "port": DB_PORT,
+            "user": DB_USER,
+            "password": DB_PASS,
+            "database": DB_NAME,
+        }
+        # Agregar SSL si el certificado existe (requerido por Aiven)
+        if DB_SSL_CA and os.path.exists(DB_SSL_CA):
+            connect_args["ssl_ca"] = DB_SSL_CA
+        
+        return mysql.connector.connect(**connect_args)
     except Exception as e:
         print(f"Error conectando a la BD: {e}")
         return None
@@ -111,4 +119,21 @@ def sync_ai():
         db.close()
 
 if __name__ == "__main__":
+    # Cargar variables desde archivo .env si existe (para producción)
+    env_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+    if os.path.exists(env_file):
+        with open(env_file) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    key, value = line.split("=", 1)
+                    os.environ.setdefault(key.strip(), value.strip())
+        # Re-read after loading .env
+        DB_HOST = os.environ.get("DB_HOST", "127.0.0.1")
+        DB_PORT = int(os.environ.get("DB_PORT", "3306"))
+        DB_USER = os.environ.get("DB_USERNAME", "root")
+        DB_PASS = os.environ.get("DB_PASSWORD", "")
+        DB_NAME = os.environ.get("DB_DATABASE", "eva_db")
+        DB_SSL_CA = os.environ.get("MYSQL_ATTR_SSL_CA", "")
+
     sync_ai()

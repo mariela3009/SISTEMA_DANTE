@@ -129,7 +129,7 @@ export default function WasteAnomaliesTab() {
                   <Tooltip 
                     contentStyle={{ borderRadius: '12px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
                     labelStyle={{ fontWeight: 'bold', color: '#374151', marginBottom: '8px' }}
-                    formatter={(value: number, name: string, props: any) => [
+                    formatter={(value: any, name: any, props: any) => [
                       `${value} ${selectedData.ingredient.unit} (Z-Score: ${props.payload.z_score})`,
                       'Cantidad Mermada'
                     ]}
