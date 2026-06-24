@@ -32,25 +32,25 @@ export default function InventarioPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [pendingMermas, setPendingMermas] = useState<any[]>([]);
 
-  // Pagination state
+  // Estados para la Paginación (Saber en qué página de la tabla estamos)
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [perPage, setPerPage] = useState(15);
 
-  // Create Modal states
+  // Estados de la Ventana Modal (Crear Insumo)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "", unit: "ml", stock_minimo: 0, stock_actual: 0, fecha_vencimiento: ""
   });
 
-  // Action states
+  // Estados de Acciones (Editar insumo o Registrar Entrada de Stock)
   const [editIngredient, setEditIngredient] = useState<any>(null);
   const [entradaIngredient, setEntradaIngredient] = useState<any>(null);
   const [entradaData, setEntradaData] = useState({ quantity: 0, cost_per_unit: 0 });
 
-  // Merma states
+  // Estados para el registro de Mermas (Desperdicios)
   const [isMermaModalOpen, setIsMermaModalOpen] = useState(false);
   const [isPendingMermasModalOpen, setIsPendingMermasModalOpen] = useState(false);
   const [mermaData, setMermaData] = useState({ product_id: "", quantity: 1, reason: "" });
