@@ -6,6 +6,11 @@ import Modal from "../../components/Modal";
 import { apiFetch } from "../../lib/api";
 import { showToast } from "../../components/Toast";
 
+/**
+ * extractErrorMessage()
+ * Extrae y formatea los mensajes de error devueltos por el servidor (Backend).
+ * Si el servidor envía múltiples errores, captura el primero para mostrarlo al usuario.
+ */
 async function extractErrorMessage(res: Response, fallback: string): Promise<string> {
   try {
     const data = await res.json();
@@ -78,6 +83,11 @@ export default function InventarioPage() {
     }
   };
 
+  /**
+   * fetchPendingMermas()
+   * Obtiene la lista de mermas (pérdidas o desperdicios) que han sido reportadas por la cocina
+   * y que están esperando a ser aprobadas o rechazadas por el Administrador.
+   */
   const fetchPendingMermas = async () => {
     try {
       const res = await apiFetch(`${API_BASE_URL}/api/inventory/movements?status=pending`);
@@ -90,6 +100,11 @@ export default function InventarioPage() {
     }
   };
 
+  /**
+   * fetchProducts()
+   * Carga el catálogo completo de productos finales disponibles en la cafetería.
+   * Se utiliza principalmente para asociar mermas directamente a un producto final.
+   */
   const fetchProducts = async () => {
     try {
       const res = await apiFetch(`${API_BASE_URL}/api/products`);
@@ -153,6 +168,11 @@ export default function InventarioPage() {
     }
   };
 
+  /**
+   * handleUpdateIngredient()
+   * Envía los datos modificados de un insumo al servidor para actualizarlo.
+   * Actualiza el nombre, la unidad de medida, el stock y la fecha de vencimiento.
+   */
   const handleUpdateIngredient = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editIngredient) return;
@@ -176,6 +196,11 @@ export default function InventarioPage() {
     }
   };
 
+  /**
+   * handleDeleteIngredient()
+   * Desactiva lógicamente un insumo en la base de datos (Soft Delete).
+   * Pide confirmación antes de enviar la petición de eliminación al servidor.
+   */
   const handleDeleteIngredient = async (item: any) => {
     if (!confirm(`¿Estás seguro de que deseas desactivar el insumo "${item.name}"?`)) return;
     
@@ -237,6 +262,11 @@ export default function InventarioPage() {
     }
   };
 
+  /**
+   * openEdit()
+   * Abre la ventana modal cargando los datos actuales del insumo seleccionado
+   * para prepararlos antes de la edición.
+   */
   const openEdit = (ing: any) => {
     setFormData({ 
       name: ing.name, unit: ing.unit, stock_minimo: ing.stock_minimo, 
@@ -245,6 +275,11 @@ export default function InventarioPage() {
     setEditIngredient(ing);
   };
 
+  /**
+   * handleMerma()
+   * Registra una nueva solicitud de merma (desperdicio) de un producto.
+   * Envía la cantidad y el motivo al servidor. Queda en estado pendiente.
+   */
   const handleMerma = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -268,6 +303,11 @@ export default function InventarioPage() {
     }
   };
 
+  /**
+   * handleApproveMerma()
+   * Permite al Administrador aprobar o rechazar una solicitud de merma pendiente.
+   * Si se aprueba, el inventario se descuenta de forma oficial.
+   */
   const handleApproveMerma = async (movementId: number, approve: boolean) => {
     try {
       const endpoint = approve ? "approve" : "reject";

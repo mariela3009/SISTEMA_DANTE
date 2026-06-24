@@ -12,6 +12,9 @@ class AiRestockController extends Controller
 {
     /**
      * GET /api/ai/restock-suggestions
+     * Genera recomendaciones automáticas de qué insumos comprar basándose en el ritmo de consumo.
+     * Analiza el historial del Kardex (InventoryMovements de tipo 'salida_venta' y 'salida_merma')
+     * y determina a qué ritmo diario se gastan los insumos para predecir si habrá un quiebre de stock.
      */
     public function index(Request $request)
     {

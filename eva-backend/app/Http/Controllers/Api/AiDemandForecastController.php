@@ -11,8 +11,11 @@ use Illuminate\Support\Carbon;
 class AiDemandForecastController extends Controller
 {
     /**
-     * Genera predicciones de demanda para los productos basadas en ventas históricas.
-     * RF-MIA-20
+     * GET /api/ai/demand-forecast
+     * Genera predicciones matemáticas de demanda futura (cuánto se venderá) para los productos.
+     * Toma las ventas reales de los últimos X días de la base de datos, 
+     * calcula una regresión lineal (tendencia) y proyecta las ventas para los próximos días.
+     * Si no hay historial suficiente, inyecta algo de ruido controlado para generar una gráfica base.
      */
     public function index(Request $request)
     {
